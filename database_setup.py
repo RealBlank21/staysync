@@ -2,8 +2,8 @@ import mysql.connector
 import argon2
 import os
 
-# Set up pepper (keep this secure)
-PEPPER = "SuperKeySecretVery"
+with open("PEPPER.txt", 'r') as file:
+    PEPPER = file.read().strip()
 
 # Function to hash passwords with Argon2, salt, and pepper
 def hash_password(password):

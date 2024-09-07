@@ -1,27 +1,42 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, session, flash
+import os
+from app import authentication, db
 
-from app import authentication
+with open("SESSION.txt", 'r') as file:
+    SESSION = file.read().strip()
 
 app = Flask(__name__)
+app.secret_key = SESSION
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def front_page():
+    return render_template('front_page.html')
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('index.html')
-    elif request.method == 'POST':
+    error_message = None
+
+    if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
 
-    authentication_status = authentication.validate_password(username, password)
+        if not username or not password:
+            error_message = "Please fill in all fields."
+        else:
+            authentication_status = authentication.validate_password(username, password)
+            if authentication_status:
+                user_role = db.retrieve_role(username)
+                session['username'] = username
+                session['user_role'] = user_role
+                return redirect(url_for('dashboard'))
+            else:
+                error_message = "Incorrect username or password."
 
-    if authentication_status:
-        return redirect(url_for('dashboard'))
-    else:
-        return "Login Failed"
+    return render_template('index.html', error_message=error_message)
 
 @app.route('/register_user')
 def register_user():
-    return render_template('register.html')
+    return render_template('register_user.html')
 
 
 """
@@ -52,7 +67,19 @@ def register_user():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    if 'username' in session:
+        username = session['username']
+        user_role = session.get('user_role')
+        return render_template('dashboard.html', username=username, user_role=user_role)
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/logout')
+def logout():
+    # Remove user from session
+    session.pop('username', None)
+    session.pop('user_role', None)
+    return redirect(url_for('login'))
 
 @app.route('/test')
 def test():

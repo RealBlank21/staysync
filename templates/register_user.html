@@ -13,12 +13,12 @@
         <div id="sidebar">
             <h4 class="text-center py-5">StaySync</h4>
 
-            <button class="hover-btn" onclick="window.location.href='{{ url_for('dashboard') }}';">Dashboard</button>
+            <button class="hover-btn" data-url="{{ url_for('dashboard') }}" onclick="window.location.href=this.getAttribute('data-url');">Dashboard</button>
             <button class="hover-btn">Admin</button>
             <button class="hover-btn">Warden</button>
             <button class="hover-btn">Student</button>
             <button class="hover-btn">Admissions</button>
-            <button class="hover-btn active" onclick="window.location.href='{{ url_for('register_user') }}';">Add User</button>
+            <button class="hover-btn active" data-url="{{ url_for('register_user') }}" onclick="window.location.href=this.getAttribute('data-url');">Add User</button>
         </div>
         <div id="content">
             

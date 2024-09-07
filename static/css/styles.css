@@ -250,3 +250,88 @@
     width: 100%;
     margin: 10px 0;
 }
+
+/* front_page.html */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.front-page-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full viewport height */
+}
+
+.carousel {
+    flex: 0 0 auto; /* Carousel keeps its height */
+}
+
+.carousel-img {
+    height: 60vh;
+    object-fit: cover;
+    object-position: 50% 70%;
+    opacity: 80%;
+}
+
+.front-page-content {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(#097693, #00ACA9);
+}
+
+.front-page-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.front-page-welcome {
+    color: white;
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 50px;
+    width: 700px;
+    margin-top: 60px;
+    text-align: center;
+}
+
+.front-page-buttons .btn-login {
+    width: 120px;
+    height: 40px;
+    background-color: transparent;
+    color: rgb(212, 212, 212);
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 5px;
+    padding: 0px;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 10px;
+}
+
+.front-page-buttons .btn-register {
+    width: 120px;
+    height: 40px;
+    background-color: rgb(212, 212, 212);
+    color: #097693;
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 5px;
+    padding: 0px;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 10px;
+}
+
+.front-page-buttons .btn-login:hover {
+    background-color: rgb(212, 212, 212);
+    border-color: rgb(212, 212, 212);
+    color: #097693;
+}
+
+.front-page-buttons .btn-register:hover {
+    background-color: transparent;
+    border-color: rgb(212, 212, 212);
+    color: rgb(212, 212, 212);
+}

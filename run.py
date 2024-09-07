@@ -32,7 +32,7 @@ def login():
             else:
                 error_message = "Incorrect username or password."
 
-    return render_template('index.html', error_message=error_message)
+    return render_template('login.html', error_message=error_message)
 
 @app.route('/register_user')
 def register_user():

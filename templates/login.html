@@ -6,72 +6,122 @@
     <title>Login Page</title>
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <style>
+        a, input, h1, .btn-login-page-login {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
         .login-wrapper {
-            height: 100%;
+            display: flex;
+            height: 100vh;
+            width: 100%;
         }
         
         .login-container {
+            flex: 0 0 60%;
             display: flex;
-            background-color: #00b5ac;
-            height: 100%;
-            width: 60%;
-            text-align: center;
             justify-content: center;
             align-items: center;
+            text-align: center;
+            background-color: var(--primary-color);
+            color: var(--text-color-2);
+        }
+        
+        .register-container {
+            flex: 0 0 40%;
+            background-color: var(--background-color);
+        }
+        
+        .login-box {
+            width: 40%;
+        }
+        
+        .login-box * {
+            border-radius: 30px !important;
+        }
+        
+        .login-box-upper * {
+            margin-bottom: 40px;
+            height: 60px;
+        }
+        
+        .form-text-login {
+            padding-left: 20px !important;
+            font-weight: 700 !important;
+            color: var(--text-color-2) !important;
+        }
+        
+        .btn-login-page-login {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 10px;
+            background-color: var(--secondary-color) !important;
+            border-color: transparent !important;
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+        }
+        
+        
+        .btn-login-page-login:hover {
+            background-color: var(--background-color) !important;
+            color: var(--text-color-2) !important;
+            cursor: pointer;
+        }
+        
+        .forgot-password {
+            color: var(--secondary-color);
+            text-decoration: none;
         }
 
-        .login-box-upper *
-        {
-            width: 600px;
-            height: 80px;
-            margin: 50px;
+        .forgot-password:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 2rem;
+            color: var(--text-color-2);
+            text-shadow: 1px 1px 2px var(--text-color-2);
+            background-color: transparent;
+            border-color: transparent;
             border-radius: 40px;
         }
 
-        .form-text::placeholder
-        {
-            padding-left: -40px;
-            color: #004b47;
-            font-size: 20px;
-            font-weight: 600;
+        .btn-back:hover {
+            background-color: var(--text-color-2);
+            border-color: transparent;
         }
-
-        .login-box-upper .form-text{
-            padding-left: 40px;
-            color: #004b47;
-            font-size: 20px;
-            font-weight: 600;
-        }
-
     </style>
-
 </head>
     <body>
         <div class="login-wrapper">
             <div class="login-container">
-                <div class="login-box">
+                <a href="{{ url_for('front_page') }}" class="btn btn-primary btn-back">
+                    <i class="bi bi-arrow-return-left top-left-icon"></i>
+                </a>
+                <form class="login-box" method="POST" action="{{ url_for('login') }}">
                     <div class="login-box-upper">
-                        <h1>Log in</h1>
-
-                        <input type="text" name="username" placeholder="Username" class="form-control form-text">
-                        <input type="password" name="password" placeholder="Password" class="form-control form-text">
+                        <h1>Log In</h1>
+                        <input type="text" name="username" placeholder="Username" class="form-control form-text form-text-login">
+                        <input type="password" name="password" placeholder="Password" class="form-control form-text form-text-login">
                     </div>
-                    <input type="submit" value="Log in" class="btn btn-primary btn-block">
-                    <a href="#" class="forgot-password">Forgot Password?</a>
-                </div>
+                    <input type="submit" value="Log in" class="btn btn-primary btn-login-page-login">
+                    <a href="forgot_password" class="forgot-password">Forgot Pessword?</a>
+                </form>
             </div>
             <div class="register-container">
-
+                
             </div>
         </div>
 
         {% if error_message %}
-            <button type="button" class="btn btn-primary" id="triggerModalButton" data-bs-toggle="modal" data-bs-target="#myModal" style="display: none;">
-                Open Modal
-            </button>
-            
             <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -94,14 +144,14 @@
             <script>
                 window.onload = function() {
                     var errorMessage = "{{ error_message }}";
-
+                    var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+        
                     if (errorMessage) {
-                        var modalTriggerButton = document.getElementById('triggerModalButton');
-                        modalTriggerButton.click();
+                        myModal.show();
                     }
                 };
             </script>
-        {% endif %}    
+        {% endif %}        
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>

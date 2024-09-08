@@ -9,26 +9,117 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
+    <style>
+          html, body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        .front-page-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Full viewport height */
+        }
+        
+        .carousel {
+            flex: 0 0 auto; /* Carousel keeps its height */
+        }
+        
+        .carousel-img {
+            height: 60vh;
+            object-fit: cover;
+            object-position: 50% 70%;
+            opacity: 80%;
+        }
+        
+        .front-page-content {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: linear-gradient(#097693, #00ACA9);
+        }
+        
+        .front-page-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .front-page-welcome {
+            color: white;
+            font-family: 'Bebas Neue', sans-serif !important;
+            font-size: 50px;
+            width: 700px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        .front-page-buttons .btn-login {
+            width: 120px;
+            height: 40px;
+            background-color: transparent;
+            color: rgb(212, 212, 212);
+            border: 1px solid rgb(212, 212, 212);
+            border-radius: 5px;
+            padding: 0px;
+            font-size: 18px;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .front-page-buttons .btn-register {
+            width: 120px;
+            height: 40px;
+            background-color: rgb(212, 212, 212);
+            color: #097693;
+            border: 1px solid rgb(212, 212, 212);
+            border-radius: 5px;
+            padding: 0px;
+            font-size: 18px;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .front-page-buttons .btn-login:hover {
+            background-color: rgb(212, 212, 212);
+            border-color: rgb(212, 212, 212);
+            color: #097693;
+        }
+        
+        .front-page-buttons .btn-register:hover {
+            background-color: transparent;
+            border-color: rgb(212, 212, 212);
+            color: rgb(212, 212, 212);
+        }
+    </style>
+  </head>
     <body class="front-page">
         <!-- Nav Bar -->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">Text & Link</a>
+              <a class="navbar-brand" href="#"></a>
               <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="#"></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
+                    <a class="nav-link" href="#"></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
+                    <a class="nav-link" href="#"></a>
                   </li>
                 </ul>
                 <span class="navbar-text">
-                    Text Right
+                    
                 </span>
               </div>
             </div>
@@ -69,13 +160,9 @@
                 <h1 class="front-page-welcome">WELCOME TO STAY SYNC, A MODERN HOSTEL MANAGEMENT SYSTEM</h1>
 
                 <div class="front-page-buttons">
-                    <form action="{{ url_for('login') }}" method="POST">
-                        <button type="submit" class="btn btn-primary btn-login">Login</button>
-                    </form>
-                    <form action="{{ url_for('login') }}" method="POST">
-                        <button type="submit" class="btn btn-primary btn-register">Register</button>
-                    </form>
-                </div>
+                  <a href="{{ url_for('login') }}" class="btn btn-primary btn-login">Login</a>
+                  <a href="{{ url_for('login') }}" class="btn btn-primary btn-register">Register</a>
+              </div>
             
             </div>
         </div>

@@ -1,9 +1,18 @@
-from flask import Flask, request, render_template, redirect, url_for, session, flash
+from flask import Flask, request, render_template, redirect, url_for, session, make_response
 import os
 from app import authentication, db
 
 with open("SESSION.txt", 'r') as file:
     SESSION = file.read().strip()
+
+try:
+    file_path = os.path.join(os.path.dirname(__file__), '../PEPPER.txt')
+    with open(file_path, 'r') as file:
+        PEPPER = file.read().strip()
+except FileNotFoundError:
+    print(f"File not found: {file_path}")
+except Exception as e:
+    print(f"Error reading file: {e}")
 
 app = Flask(__name__)
 app.secret_key = SESSION
@@ -33,11 +42,6 @@ def login():
                 error_message = "Incorrect username or password."
 
     return render_template('login.html', error_message=error_message)
-
-@app.route('/register_user')
-def register_user():
-    return render_template('register_user.html')
-
 
 """
 @app.route('/register_user', methods=['GET', 'POST'])
@@ -70,7 +74,11 @@ def dashboard():
     if 'username' in session:
         username = session['username']
         user_role = session.get('user_role')
-        return render_template('dashboard.html', username=username, user_role=user_role)
+        response = make_response(render_template('dashboard.html', username=username, user_role=user_role))
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
     else:
         return redirect(url_for('login'))
 
@@ -80,6 +88,10 @@ def logout():
     session.pop('username', None)
     session.pop('user_role', None)
     return redirect(url_for('login'))
+
+@app.route('/forgot_password')
+def forgot_password():
+    return render_template('forgot_password.html')
 
 @app.route('/test')
 def test():

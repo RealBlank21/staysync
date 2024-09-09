@@ -14,11 +14,13 @@
         h4 {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
+            font-size: 2rem;
         }
         
-        span {
+        span, .section-label {
             font-family: 'Poppins', sans-serif;
             font-weight: 500;
+            font-size: 1.4rem;
         }
 
         .wrapper {
@@ -30,9 +32,8 @@
 
         .sidebar {
             position: fixed;
-            min-width: 220px;
-            max-width: 220px;
-            height: 100vh; /* Ensure the height is 100% of the viewport height */
+            width: 15%;
+            height: 100vh;
             background-color: var(--primary-color);
             color: var(--text-color);
             display: flex;
@@ -86,6 +87,7 @@
             transition: background-color 0.3s;
             width: 100%;
             text-align: left;
+            margin-bottom: 15px;
         }
 
         .icon-text-btn:hover, .text-btn:hover {

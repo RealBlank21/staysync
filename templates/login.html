@@ -16,6 +16,19 @@
             font-weight: 700;
         }
 
+        .text-login {
+            font-size: 3rem;
+            margin-bottom: 100px !important;
+        }
+
+        .form-text-login, .forgot-password {
+            font-size: 1.4rem;
+        }
+
+        .btn-login-page-login {
+            font-size: 1.6rem;
+        }
+
         .login-wrapper {
             display: flex;
             height: 100vh;
@@ -42,23 +55,28 @@
         }
         
         .login-box * {
-            border-radius: 30px !important;
+            border-radius: 50px !important;
         }
         
         .login-box-upper * {
             margin-bottom: 40px;
             height: 60px;
         }
+
+        .form-control {
+            height: 7vh;
+        }
         
         .form-text-login {
-            padding-left: 20px !important;
+            padding-left: 30px !important;
             font-weight: 700 !important;
             color: var(--text-color-2) !important;
         }
         
         .btn-login-page-login {
             width: 100%;
-            height: 60px;
+            height: 7vh;
+            margin-top: 30px;
             margin-bottom: 10px;
             background-color: var(--secondary-color) !important;
             border-color: transparent !important;
@@ -84,19 +102,32 @@
 
         .btn-back {
             position: absolute;
-            top: 20px;
-            left: 30px;
-            font-size: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 30px;
+            left: 40px;
+            font-size: 3rem;
             color: var(--text-color-2);
-            text-shadow: 1px 1px 2px var(--text-color-2);
+            text-shadow: 2px 2px 2px var(--text-color-2);
             background-color: transparent;
             border-color: transparent;
-            border-radius: 40px;
+            border-radius: 100px;
+            width: 5%;
+            height: 10%;
         }
 
         .btn-back:hover {
             background-color: var(--text-color-2);
             border-color: transparent;
+        }
+
+        .btn-back:active {
+            background-color: var(--secondary-color) !important; /* Change background color on click */
+            border-color: transparent !important;
+            color: var(--background-color) !important;           /* Change text/icon color on click */
+            transform: scale(0.95) !important;                   /* Slightly shrink the button */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; /* Add shadow effect on click */
         }
     </style>
 </head>
@@ -108,7 +139,7 @@
                 </a>
                 <form class="login-box" method="POST" action="{{ url_for('login') }}">
                     <div class="login-box-upper">
-                        <h1>Log In</h1>
+                        <h1 class="text-login">Log In to continue</h1>
                         <input type="text" name="username" placeholder="Username" class="form-control form-text form-text-login">
                         <input type="password" name="password" placeholder="Password" class="form-control form-text form-text-login">
                     </div>

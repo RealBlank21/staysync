@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <style>
           html, body {
             height: 100%;
@@ -18,11 +21,21 @@
         .front-page-wrapper {
             display: flex;
             flex-direction: column;
-            height: 100vh; /* Full viewport height */
+            height: 100vh;
+        }
+
+        .navbar-brand {
+          font-family: 'Poppins', sans-serif !important;
+          font-weight: 700;
+        }
+
+        .navbar-text {
+          font-family: 'Poppins', sans-serif !important;
+          font-weight: 500;
         }
         
         .carousel {
-            flex: 0 0 auto; /* Carousel keeps its height */
+            flex: 0 0 auto;
         }
         
         .carousel-img {
@@ -36,9 +49,8 @@
             flex: 1 0 auto;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            background-image: linear-gradient(#097693, #00ACA9);
+            background-color: var(--primary-color);
         }
         
         .front-page-buttons {
@@ -52,74 +64,83 @@
             font-family: 'Bebas Neue', sans-serif !important;
             font-size: 50px;
             width: 700px;
-            margin-top: 60px;
             text-align: center;
+            margin-top: 80px;
         }
         
-        .front-page-buttons .btn-login {
+        .btn-login {
             width: 120px;
             height: 40px;
             background-color: transparent;
             color: rgb(212, 212, 212);
             border: 1px solid rgb(212, 212, 212);
+            border-color: transparent;
             border-radius: 5px;
             padding: 0px;
             font-size: 18px;
-            font-family: Arial, Helvetica, sans-serif;
-            margin: 10px;
+            margin: 0px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
-        .front-page-buttons .btn-register {
-            width: 120px;
-            height: 40px;
-            background-color: rgb(212, 212, 212);
-            color: #097693;
-            border: 1px solid rgb(212, 212, 212);
-            border-radius: 5px;
-            padding: 0px;
-            font-size: 18px;
-            font-family: Arial, Helvetica, sans-serif;
-            margin: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .front-page-buttons .btn-login:hover {
+        .btn-login:hover {
             background-color: rgb(212, 212, 212);
             border-color: rgb(212, 212, 212);
             color: #097693;
         }
-        
-        .front-page-buttons .btn-register:hover {
-            background-color: transparent;
-            border-color: rgb(212, 212, 212);
-            color: rgb(212, 212, 212);
+
+        .btn-login:active {
+          background-color: rgb(212, 212, 212) !important;
+          border-color: rgb(212, 212, 212) !important;
+          color: #097693 !important;
         }
+ 
+        .btn-apply {
+          background-color: white;
+          color: var(--primary-color);
+          border-color: transparent;
+          margin-top: 20px;
+        }
+
+        .btn-apply:hover {
+          background-color: var(--primary-color);
+          color: white;
+          border-color: white;
+        }
+
+        .btn-apply:active {
+          background-color: white !important;
+          color: var(--primary-color) !important;
+          border-color: transparent !important; 
+        }
+        
     </style>
   </head>
     <body class="front-page">
         <!-- Nav Bar -->
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar p-1 navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#"></a>
+              <a class="navbar-brand" href="#">StaySync</a>
               <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#"></a>
+                    <a class="nav-link navbar-text active" aria-current="page" href="#"></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#"></a>
+                    <a class="nav-link navbar-text" href="#"></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#"></a>
+                    <a class="nav-link navbar-text" href="#"></a>
                   </li>
                 </ul>
                 <span class="navbar-text">
-                    
+                  
+                  {% if username %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-login navbar-text">{{ username }}</a>
+                  {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-login navbar-text">Login</a>
+                  {% endif %}
                 </span>
               </div>
             </div>
@@ -158,12 +179,8 @@
     
             <div class="front-page-content">
                 <h1 class="front-page-welcome">WELCOME TO STAY SYNC, A MODERN HOSTEL MANAGEMENT SYSTEM</h1>
-
-                <div class="front-page-buttons">
-                  <a href="{{ url_for('login') }}" class="btn btn-primary btn-login">Login</a>
-                  <a href="{{ url_for('login') }}" class="btn btn-primary btn-register">Register</a>
-              </div>
-            
+                
+                <a href="{{ url_for('application') }}" class="btn btn-apply btn-primary navbar-text">Join Us Now!</a>
             </div>
         </div>
 

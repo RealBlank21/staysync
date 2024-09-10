@@ -1,25 +1,22 @@
 from flask import Flask, request, render_template, redirect, url_for, session, make_response
+from datetime import timedelta
 import os
 from app import authentication, db
 
 with open("SESSION.txt", 'r') as file:
     SESSION = file.read().strip()
 
-try:
-    file_path = os.path.join(os.path.dirname(__file__), '../PEPPER.txt')
-    with open(file_path, 'r') as file:
-        PEPPER = file.read().strip()
-except FileNotFoundError:
-    print(f"File not found: {file_path}")
-except Exception as e:
-    print(f"Error reading file: {e}")
-
 app = Flask(__name__)
 app.secret_key = SESSION
 
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=3)
+
 @app.route('/')
 def front_page():
-    return render_template('front_page.html')
+    username = session.get('username')
+    user_role = session.get('user_role')
+    
+    return render_template('front_page.html', username=username, user_role=user_role)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -37,37 +34,15 @@ def login():
                 user_role = db.retrieve_role(username)
                 session['username'] = username
                 session['user_role'] = user_role
-                return redirect(url_for('dashboard'))
+
+                # Mark the session as permanent
+                session.permanent = True
+
+                return redirect(url_for('front_page'))
             else:
                 error_message = "Incorrect username or password."
 
     return render_template('login.html', error_message=error_message)
-
-"""
-@app.route('/register_user', methods=['GET', 'POST'])
-def register_user():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        role = request.form.get('role')
-        
-        if not username or not password or not role:
-            return f"Please fill in all fields\n{username}, {password}, {role}", 400
-        
-        hashed_password = ph.hash(password)
-
-        sql = "INSERT INTO user_credentials (username, password, role) VALUES (%s, %s, %s)"
-        values = (username, hashed_password, role)
-        
-        try:
-            cursor.execute(sql, values)
-            mydb.commit()
-            return redirect(url_for('register_user'))
-        except mysql.connector.Error as err:
-            return f"Error: {err}"
-
-    return render_template('register_user.html')
-"""
 
 @app.route('/dashboard')
 def dashboard():
@@ -81,13 +56,17 @@ def dashboard():
         return response
     else:
         return redirect(url_for('login'))
+    
+@app.route('/application')
+def application():
+    return render_template('application.html')
 
 @app.route('/logout')
 def logout():
     # Remove user from session
     session.pop('username', None)
     session.pop('user_role', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('front_page'))
 
 @app.route('/forgot_password')
 def forgot_password():

@@ -15,26 +15,26 @@
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
         }
-
+    
         .text-login {
             font-size: 3rem;
             margin-bottom: 100px !important;
         }
-
+    
         .form-text-login, .forgot-password {
             font-size: 1.4rem;
         }
-
+    
         .btn-login-page-login {
             font-size: 1.6rem;
         }
-
+    
         .login-wrapper {
             display: flex;
             height: 100vh;
             width: 100%;
         }
-        
+    
         .login-container {
             flex: 0 0 60%;
             display: flex;
@@ -44,35 +44,35 @@
             background-color: var(--primary-color);
             color: var(--text-color-2);
         }
-        
+    
         .register-container {
             flex: 0 0 40%;
             background-color: var(--background-color);
         }
-        
+    
         .login-box {
             width: 40%;
         }
-        
+    
         .login-box * {
             border-radius: 50px !important;
         }
-        
+    
         .login-box-upper * {
             margin-bottom: 40px;
             height: 60px;
         }
-
+    
         .form-control {
             height: 7vh;
         }
-        
+    
         .form-text-login {
             padding-left: 30px !important;
             font-weight: 700 !important;
             color: var(--text-color-2) !important;
         }
-        
+    
         .btn-login-page-login {
             width: 100%;
             height: 7vh;
@@ -80,26 +80,25 @@
             margin-bottom: 10px;
             background-color: var(--secondary-color) !important;
             border-color: transparent !important;
-            transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+            transition: background-color 0.3s, color 0.3s;
         }
-        
-        
+    
         .btn-login-page-login:hover {
             background-color: var(--background-color) !important;
             color: var(--text-color-2) !important;
             cursor: pointer;
         }
-        
+    
         .forgot-password {
             color: var(--secondary-color);
             text-decoration: none;
         }
-
+    
         .forgot-password:hover {
             color: var(--secondary-color);
             text-decoration: underline;
         }
-
+    
         .btn-back {
             position: absolute;
             display: flex;
@@ -116,20 +115,54 @@
             width: 5%;
             height: 10%;
         }
-
+    
         .btn-back:hover {
             background-color: var(--text-color-2);
             border-color: transparent;
         }
-
+    
         .btn-back:active {
-            background-color: var(--secondary-color) !important; /* Change background color on click */
+            background-color: var(--secondary-color) !important;
             border-color: transparent !important;
-            color: var(--background-color) !important;           /* Change text/icon color on click */
-            transform: scale(0.95) !important;                   /* Slightly shrink the button */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; /* Add shadow effect on click */
+            color: var(--background-color) !important;
+            transform: scale(0.95) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
         }
-    </style>
+    
+        @media (max-width: 768px) {
+            .login-container, .register-container {
+                flex: 0 0 100%;
+            }
+    
+            .login-box {
+                width: 80%;
+            }
+    
+            .text-login {
+                font-size: 2.5rem;
+                margin-bottom: 50px;
+            }
+    
+            .form-text-login, .forgot-password {
+                font-size: 1.2rem;
+            }
+    
+            .btn-login-page-login {
+                font-size: 1.4rem;
+                height: 6vh;
+            }
+    
+            .btn-back {
+                font-size: 2rem;
+                top: 20px;
+                left: 20px;
+            }
+
+            .register-container {
+                display: none;
+            }
+        }
+    </style>    
 </head>
     <body>
         <div class="login-wrapper">

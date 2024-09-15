@@ -204,7 +204,9 @@
       <div class="front-page-content">
         <h1 class="front-page-welcome">WELCOME TO STAY SYNC, A MODERN HOSTEL MANAGEMENT SYSTEM</h1>
 
+        {% if not username %}
         <a href="{{ url_for('application') }}" class="btn btn-apply btn-primary navbar-text">Join Us Now!</a>
+        {% endif %}
       </div>
     </div>
 

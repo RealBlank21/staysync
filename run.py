@@ -57,9 +57,35 @@ def dashboard():
     else:
         return redirect(url_for('login'))
     
-@app.route('/application')
+@app.route('/application', methods=['GET', 'POST'])
 def application():
-    return render_template('application.html')
+    if 'username' in session:
+        return redirect(url_for('dashboard'))
+    
+    if request.method == "POST":
+        portrait = request.form.get('portrait')
+        fullName = request.form.get('fullName')
+        gender = request.form.get('gender')
+        studentId = request.form.get('studentId')
+        studentIc = request.form.get('studentIc')
+        dob = request.form.get('dob')
+        phoneSelf = request.form.get('phoneSelf')
+        phoneGuardian = request.form.get('phoneGuardian')
+        email = request.form.get('email')
+        addressLine1 = request.form.get('addressLine1')
+        addressLine2 = request.form.get('addressLine2')
+        area = request.form.get('area')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        zipCode = request.form.get('zip')
+        medicalCondition1 = request.form.get('medicalCondition1')
+        medicalCondition2 = request.form.get('medicalCondition2')
+        medicalCondition3 = request.form.get('medicalCondition3')
+
+        print(fullName, gender, studentId, studentIc, dob, phoneSelf, phoneGuardian, email, addressLine1, addressLine2, area, city, state, zip, medicalCondition1, medicalCondition2, medicalCondition3)
+        return render_template('application.html')
+    else:
+        return render_template('application.html')
 
 @app.route('/logout')
 def logout():

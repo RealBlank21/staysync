@@ -1,0 +1,34 @@
+Functional Interfaces
+Accessible by All
+    Frontpage
+    Login
+
+Accessible by Admins
+    Accounts
+        1) Admin
+        2) Warden
+        3) Student
+    Application
+        1) Hostel Application
+        2) Outing Application
+    Miscellaneous
+        1) Add User
+        2) Confiscted Items
+
+Accessible by Warden
+    Accounts
+        1) Warden
+        2) Student
+    Miscellaneous
+        1) Confiscated Items
+
+Accessible by Student
+    Admission
+        1) Outing Admission
+
+Accessible by Non-user
+    Register Page
+
+Non-functional Interfaces
+    About Us
+    Contact Us

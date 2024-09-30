@@ -24,19 +24,19 @@ def retrieve_role(username):
     
     return val[3]
 
-def insert_student_admission(id, full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email, address_line_1, address_line_2, area, city, state, zip_code, medical_condition_1, medical_condition_2, medical_condition_3, status):
+def insert_student_admission(full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email, address_line_1, address_line_2, area, city, state, zip_code, medical_condition_1, medical_condition_2, medical_condition_3):
     try: 
         insert_query = """
         INSERT INTO hostel_admissions 
-        (id, full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email, 
+        (full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email, 
         address_line_1, address_line_2, area, city, state, zip_code, 
-        medical_condition_1, medical_condition_2, medical_condition_3, status) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        medical_condition_1, medical_condition_2, medical_condition_3) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
-        cursor.execute(insert_query, (id, full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email,
+        cursor.execute(insert_query, (full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email,
                                     address_line_1, address_line_2, area, city, state, zip_code, 
-                                    medical_condition_1, medical_condition_2, medical_condition_3, status))
+                                    medical_condition_1, medical_condition_2, medical_condition_3))
 
         cursor.commit()
 

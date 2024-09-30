@@ -82,8 +82,8 @@ def application():
         medicalCondition2 = request.form.get('medicalCondition2')
         medicalCondition3 = request.form.get('medicalCondition3')
 
-        print(fullName, gender, studentId, studentIc, dob, phoneSelf, phoneGuardian, email, addressLine1, addressLine2, area, city, state, zip, medicalCondition1, medicalCondition2, medicalCondition3)
-        return render_template('application.html')
+        db.insert_student_admission(fullName, gender, studentId, studentIc, dob, phoneSelf, phoneGuardian, email, addressLine1, addressLine2, area, city, state, zip, medicalCondition1, medicalCondition2, medicalCondition3)
+        return render_template('application.html', success_message="Application has been submitted!")
     else:
         return render_template('application.html')
 
@@ -100,7 +100,7 @@ def forgot_password():
 
 @app.route('/test')
 def test():
-    return render_template('test.html')
+    return render_template('test.html', error_message="Error")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

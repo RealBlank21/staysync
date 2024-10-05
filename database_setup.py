@@ -58,61 +58,86 @@ cursor.executemany("""
 """, users)
 
 create_table_query = """
-CREATE TABLE hostel_admissions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
-    gender ENUM('Male', 'Female') NOT NULL,
-    student_id VARCHAR(50) NOT NULL,
-    student_ic VARCHAR(50) NOT NULL,
-    dob DATE NOT NULL,
-    phone_self VARCHAR(15) NOT NULL,
-    phone_guardian VARCHAR(15) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    address_line_1 VARCHAR(255) NOT NULL,
-    address_line_2 VARCHAR(255),
-    area VARCHAR(100) NOT NULL,
-    city VARCHAR(100) NOT NULL,
-    state VARCHAR(100) NOT NULL,
-    zip_code VARCHAR(10) NOT NULL,
-    medical_condition_1 VARCHAR(255),
-    medical_condition_2 VARCHAR(255),
-    medical_condition_3 VARCHAR(255),
-    status ENUM('Approve', 'Rejected', 'Pending') NOT NULL DEFAULT 'Pending'
-)
+CREATE TABLE IF NOT EXISTS students (
+    studentName VARCHAR(255),
+    studentIc VARCHAR(255),
+    formClass VARCHAR(50),
+    stream VARCHAR(50),
+    race VARCHAR(50),
+    familyMembers INT,
+    familyStudying INT,
+    siblingsSPBT INT,
+    siblingsHostel INT,
+    distance FLOAT,
+    studentStatus VARCHAR(50),
+    guardianStatus VARCHAR(50),
+    healthStatus VARCHAR(255),
+    hostelReason VARCHAR(255),
+    fatherGuardianName VARCHAR(255),
+    fatherGuardianIc VARCHAR(255),
+    fatherCitizenship VARCHAR(50),
+    fatherGuardianAddress VARCHAR(255),
+    fatherPhoneHome VARCHAR(50),
+    fatherPhoneMobile VARCHAR(50),
+    fatherOccupation VARCHAR(100),
+    fatherIncome FLOAT,
+    fatherEmployerAddress VARCHAR(255),
+    motherGuardianName VARCHAR(255),
+    motherGuardianIc VARCHAR(255),
+    motherCitizenship VARCHAR(50),
+    motherGuardianAddress VARCHAR(255),
+    motherPhoneHome VARCHAR(50),
+    motherPhoneMobile VARCHAR(50),
+    motherOccupation VARCHAR(100),
+    motherIncome FLOAT,
+    motherEmployerAddress VARCHAR(255),
+    upsrResults VARCHAR(50),
+    pmrResults VARCHAR(50),
+    spmResults VARCHAR(50),
+    latestExamResults VARCHAR(50),
+    spbt BOOLEAN,
+    scholarship BOOLEAN,
+    kwapm BOOLEAN,
+    uniformedUnit VARCHAR(100),
+    uniformedUnitPosition VARCHAR(100),
+    uniformedUnitRepresenting VARCHAR(255),
+    clubAssociation VARCHAR(100),
+    clubPosition VARCHAR(100),
+    clubRepresenting VARCHAR(255),
+    sportsGames VARCHAR(100),
+    sportsPosition VARCHAR(100),
+    sportsRepresenting VARCHAR(255)
+);
 """
 
 cursor.execute(create_table_query)
 
 # Define the values to be inserted (these are placeholder values)
-full_name = "MUHAMMAD ADLI BIN NAZLI"
-gender = "Male"
-student_id = "32DDT22F1030"
-student_ic = "041121070023"
-dob = "2004-11-21"
-phone_self = "01159568937"
-phone_guardian = "0124067929"
-email = "realblank21@gmail.com"
-address_line_1 = "24 Lorong Bendahara 13"
-address_line_2 = ""
-area = "Bertam Perdana 2"
-city = "Kepala Batas"
-state = "Pulau Pinang"
-zip_code = "13200"
-medical_condition_1 = "Asthma"  
-medical_condition_2 = "None"
-medical_condition_3 = "None"
-status = "Pending"  # Can be 'Approve', 'Rejected', or 'Pending'
+placeholder_values = (
+    "John Doe", "123456789012", "Form 4", "Science", "Malay", 4, 2, 1, 1, 5.0, "Active", "Living with guardian", "Good", 
+    "For better education", "Mr. Doe", "987654321098", "Malaysian", "123 Doe Street", "123-456789", "987-654321", 
+    "Engineer", 5000.00, "Doe Corporation", "Mrs. Doe", "876543210987", "Malaysian", "123 Doe Street", "123-456789", 
+    "987-654321", "Teacher", 3000.00, "School Name", "A", "B", "C", "D", True, False, True, "Scout", "Leader", 
+    "National Level", "Science Club", "President", "International Science Fair", "Football", "Captain", "State Level"
+)
 
-# SQL query to insert values into the table
+# SQL query to insert values into the table (no duplicate columns)
 insert_query = """
-INSERT INTO hostel_admissions (full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email, address_line_1, address_line_2, area, city, state, zip_code, medical_condition_1, medical_condition_2, medical_condition_3, status)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+INSERT INTO students (
+    studentName, studentIc, formClass, stream, race, familyMembers, familyStudying, siblingsSPBT, siblingsHostel, 
+    distance, studentStatus, guardianStatus, healthStatus, hostelReason, fatherGuardianName, fatherGuardianIc, 
+    fatherCitizenship, fatherGuardianAddress, fatherPhoneHome, fatherPhoneMobile, fatherOccupation, fatherIncome, 
+    fatherEmployerAddress, motherGuardianName, motherGuardianIc, motherCitizenship, motherGuardianAddress, 
+    motherPhoneHome, motherPhoneMobile, motherOccupation, motherIncome, motherEmployerAddress, upsrResults, pmrResults, 
+    spmResults, latestExamResults, spbt, scholarship, kwapm, uniformedUnit, uniformedUnitPosition, 
+    uniformedUnitRepresenting, clubAssociation, clubPosition, clubRepresenting, sportsGames, sportsPosition, sportsRepresenting
+) VALUES (
+    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+);
 """
 
 # Execute the query with the placeholder values
-cursor.execute(insert_query, (full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email, 
-                              address_line_1, address_line_2, area, city, state, zip_code, 
-                              medical_condition_1, medical_condition_2, medical_condition_3, status))
+cursor.execute(insert_query, placeholder_values)
 
 # Commit the transaction
 mydb.commit()

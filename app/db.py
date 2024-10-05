@@ -24,21 +24,25 @@ def retrieve_role(username):
     
     return val[3]
 
-def insert_student_admission(full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email, address_line_1, address_line_2, area, city, state, zip_code, medical_condition_1, medical_condition_2, medical_condition_3):
+def insert_student_admission(student_hostel_application_data : dict):
     try: 
         insert_query = """
-        INSERT INTO hostel_admissions 
-        (full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email, 
-        address_line_1, address_line_2, area, city, state, zip_code, 
-        medical_condition_1, medical_condition_2, medical_condition_3) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO students (
+            studentName, studentIc, formClass, stream, race, familyMembers, familyStudying, siblingsSPBT, siblingsHostel, 
+            distance, studentStatus, guardianStatus, healthStatus, hostelReason, fatherGuardianName, fatherGuardianIc, 
+            fatherCitizenship, fatherGuardianAddress, fatherPhoneHome, fatherPhoneMobile, fatherOccupation, fatherIncome, 
+            fatherEmployerAddress, motherGuardianName, motherGuardianIc, motherCitizenship, motherGuardianAddress, 
+            motherPhoneHome, motherPhoneMobile, motherOccupation, motherIncome, motherEmployerAddress, upsrResults, pmrResults, 
+            spmResults, latestExamResults, spbt, scholarship, kwapm, uniformedUnit, uniformedUnitPosition, 
+            uniformedUnitRepresenting, clubAssociation, clubPosition, clubRepresenting, sportsGames, sportsPosition, sportsRepresenting
+        ) VALUES (
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        );
         """
 
-        cursor.execute(insert_query, (full_name, gender, student_id, student_ic, dob, phone_self, phone_guardian, email,
-                                    address_line_1, address_line_2, area, city, state, zip_code, 
-                                    medical_condition_1, medical_condition_2, medical_condition_3))
+        cursor.execute(insert_query, list(student_hostel_application_data.values()))
 
-        cursor.commit()
+        mydb.commit()
 
         return "Student admission record inserted successfully!"
     except Error as e:

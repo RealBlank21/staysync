@@ -63,26 +63,11 @@ def application():
         return redirect(url_for('dashboard'))
     
     if request.method == "POST":
-        portrait = request.form.get('portrait')
-        fullName = request.form.get('fullName')
-        gender = request.form.get('gender')
-        studentId = request.form.get('studentId')
-        studentIc = request.form.get('studentIc')
-        dob = request.form.get('dob')
-        phoneSelf = request.form.get('phoneSelf')
-        phoneGuardian = request.form.get('phoneGuardian')
-        email = request.form.get('email')
-        addressLine1 = request.form.get('addressLine1')
-        addressLine2 = request.form.get('addressLine2')
-        area = request.form.get('area')
-        city = request.form.get('city')
-        state = request.form.get('state')
-        zipCode = request.form.get('zip')
-        medicalCondition1 = request.form.get('medicalCondition1')
-        medicalCondition2 = request.form.get('medicalCondition2')
-        medicalCondition3 = request.form.get('medicalCondition3')
+        student_hostel_application_form_data = request.form
 
-        db.insert_student_admission(fullName, gender, studentId, studentIc, dob, phoneSelf, phoneGuardian, email, addressLine1, addressLine2, area, city, state, zip, medicalCondition1, medicalCondition2, medicalCondition3)
+        db.insert_student_admission(student_hostel_application_form_data)
+        print("success")
+
         return render_template('application.html', success_message="Application has been submitted!")
     else:
         return render_template('application.html')
@@ -93,6 +78,10 @@ def logout():
     session.pop('username', None)
     session.pop('user_role', None)
     return redirect(url_for('front_page'))
+
+@app.route('/hostel_application')
+def hostel_application():
+    return render_template('hostel_application.html')
 
 @app.route('/forgot_password')
 def forgot_password():

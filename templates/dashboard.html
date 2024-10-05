@@ -165,7 +165,7 @@
             {% if session.get('user_role') == 'Admin' %}
             <div class="section">
                 <div class="section-label">Application</div>
-                <button class="text-btn" data-url="{{ url_for('dashboard') }}" onclick="window.location.href=this.getAttribute('data-url');">
+                <button class="text-btn" data-url="{{ url_for('hostel_application') }}" onclick="window.location.href=this.getAttribute('data-url');">
                     <i class="bi bi-journal-text"></i>
                     <span>Hostel Applications</span>
                 </button>

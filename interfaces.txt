@@ -32,3 +32,10 @@ Accessible by Non-user
 Non-functional Interfaces
     About Us
     Contact Us
+
+
+
+Note to self;
+1) Add accept / reject function on hostel_application.html
+2) Add notification for student if appllation is accepted / rejected
+3) Setup email and captha stuff

@@ -59,6 +59,7 @@ cursor.executemany("""
 
 create_table_query = """
 CREATE TABLE IF NOT EXISTS students (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
     studentName VARCHAR(255),
     studentIc VARCHAR(255),
     formClass VARCHAR(50),

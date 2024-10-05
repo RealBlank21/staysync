@@ -9,6 +9,7 @@ mydb = mysql.connector.connect(
 )
 
 cursor = mydb.cursor()
+cursorDict = mydb.cursor(dictionary=True)
 
 def retrieve_credentials(username):
     cursor.execute("SELECT * FROM user_credentials WHERE username=%s", (username,))
@@ -45,5 +46,13 @@ def insert_student_admission(student_hostel_application_data : dict):
         mydb.commit()
 
         return "Student admission record inserted successfully!"
+    except Error as e:
+        return (f"Error: {e}")
+    
+def retrieve_student_admissions():
+    try:
+        cursorDict.execute("SELECT * FROM students")
+        entries = cursorDict.fetchall()
+        return entries
     except Error as e:
         return (f"Error: {e}")

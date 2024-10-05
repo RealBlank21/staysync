@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, make_response
+from flask import Flask, request, render_template, redirect, url_for, session, make_response, flash
 from datetime import timedelta
 import os
 from app import authentication, db
@@ -81,7 +81,12 @@ def logout():
 
 @app.route('/hostel_application')
 def hostel_application():
-    return render_template('hostel_application.html')
+    if session.get('user_role') !='Admin':
+        return redirect(url_for('login'))
+    
+    entries = db.retrieve_student_admissions()
+
+    return render_template('hostel_application.html', entries=entries)
 
 @app.route('/forgot_password')
 def forgot_password():

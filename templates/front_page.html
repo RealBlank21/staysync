@@ -151,24 +151,8 @@
     </style>
   </head>
   <body class="front-page">
-  <!-- Nav Bar -->
-    <nav class="navbar p-1 navbar-expand">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">StaySync DEV</a>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <!-- Nav items -->
-          </ul>
-          <span class="navbar-text">
-            {% if username %}
-            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-login navbar-text">{{ username }}</a>
-            {% else %}
-            <a href="{{ url_for('login') }}" class="btn btn-primary btn-login navbar-text">Login</a>
-            {% endif %}
-          </span>
-        </div>
-      </div>
-    </nav>
+    <!-- Nav Bar -->
+    {% include 'components/navbar.html' %}
     <!-- Nav Bar End -->
 
       <!-- Carousel -->

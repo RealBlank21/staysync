@@ -1,0 +1,366 @@
+<style>
+    form .col-md-6 label:nth-child(2),
+    form .col-md-12 label:nth-child(2) {
+        display: block; /* Make the second label a block element */
+        border: 1px solid black;
+        padding: 5px;
+        margin-top: 5px; /* Optional: Add some space above the second label */
+    }
+
+    .modal-header {
+        background-color: #009879;
+    }
+
+    .section-title {
+        font-weight: bold;
+    }
+
+</style>
+
+<div class="modal modal-xl fade" id="hostelApplicationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-light">
+                <h4>Hostel Application</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="row g-3" method="POST">
+                    <!-- Part A: Student Information -->
+                    <div class="col-12 section-title">Part A: Student Information</div>
+                
+                    <!-- Student Name -->
+                    <div class="col-md-12">
+                        <label for="studentName" class="form-label">Student Name</label>
+                        <label id="studentName" class="form-label">Test</label>
+                    </div>
+                
+                    <!-- Identification Card Number -->
+                    <div class="col-md-6">
+                        <label for="studentIc" class="form-label">Identification Card Number</label>
+                        <label id="studentIc" class="form-label">Test</label>
+                    </div>
+                
+                    <!-- Form (with Class Name) -->
+                    <div class="col-md-6">
+                        <label for="formClass" class="form-label">Form (with Class Name)</label>
+                        <label id="formClass" class="form-label">Test Form</label>
+                    </div>
+                
+                    <!-- Stream -->
+                    <div class="col-md-6">
+                        <label for="stream" class="form-label">Stream</label>
+                        <label id="stream" class="form-label">Test Stream</label>
+                    </div>
+                
+                    <!-- Race -->
+                    <div class="col-md-6">
+                        <label for="race" class="form-label">Race</label>
+                        <label id="race" class="form-label">Test Race</label>
+                    </div>
+                
+                    <!-- Number of Family Members -->
+                    <div class="col-md-6">
+                        <label for="familyMembers" class="form-label">Number of Family Members</label>
+                        <label id="familyMembers" class="form-label">Test Members</label>
+                    </div>
+                
+                    <!-- Number of Family Members Still Studying -->
+                    <div class="col-md-6">
+                        <label for="familyStudying" class="form-label">Number of Family Members Still Studying</label>
+                        <label id="familyStudying" class="form-label">Test Studying Members</label>
+                    </div>
+                
+                    <!-- Number of Siblings Receiving SPBT -->
+                    <div class="col-md-6">
+                        <label for="siblingsSPBT" class="form-label">Number of Siblings Receiving SPBT</label>
+                        <label id="siblingsSPBT" class="form-label">Test SPBT</label>
+                    </div>
+                
+                    <!-- Number of Siblings Staying in Hostel -->
+                    <div class="col-md-6">
+                        <label for="siblingsHostel" class="form-label">Number of Siblings Staying in Hostel</label>
+                        <label id="siblingsHostel" class="form-label">Test Hostel</label>
+                    </div>
+                
+                    <!-- Distance from Home to School -->
+                    <div class="col-md-6">
+                        <label for="distance" class="form-label">Distance from Home to School (in km)</label>
+                        <label id="distance" class="form-label">Test Distance</label>
+                    </div>
+                
+                    <!-- Student Status (Orphan/Non-Orphan) -->
+                    <div class="col-md-6">
+                        <label for="studentStatus" class="form-label">Student Status</label>
+                        <label id="studentStatus" class="form-label">Test Status</label>
+                    </div>
+                
+                    <!-- Student Guardian Status -->
+                    <div class="col-md-6">
+                        <label for="guardianStatus" class="form-label">Student Guardian Status</label>
+                        <label id="guardianStatus" class="form-label">Test Guardian Status</label>
+                    </div>
+                
+                    <!-- Health Status -->
+                    <div class="col-md-6">
+                        <label for="healthStatus" class="form-label">Health Status</label>
+                        <label id="healthStatus" class="form-label">Test Health</label>
+                    </div>
+                
+                    <!-- Reasons for Applying for Hostel -->
+                    <div class="col-md-12">
+                        <label for="hostelReason" class="form-label">Reasons for Applying for Hostel</label>
+                        <label id="hostelReason" class="form-label">Test Reason</label>
+                    </div>
+                
+                    <!-- Part B: Guardian Information (Father / Male Guardian) -->
+                    <div class="col-12 section-title">Part B: Guardian Information (Father / Male Guardian)</div>
+                
+                    <!-- Guardian Name -->
+                    <div class="col-md-6">
+                        <label for="fatherGuardianName" class="form-label">Guardian Name (Father / Male)</label>
+                        <label id="fatherGuardianName" class="form-label">Test Father Name</label>
+                    </div>
+                
+                    <!-- Guardian IC Number -->
+                    <div class="col-md-6">
+                        <label for="fatherGuardianIc" class="form-label">Guardian IC Number</label>
+                        <label id="fatherGuardianIc" class="form-label">Test Father IC</label>
+                    </div>
+                
+                    <!-- Citizenship -->
+                    <div class="col-md-6">
+                        <label for="fatherCitizenship" class="form-label">Citizenship</label>
+                        <label id="fatherCitizenship" class="form-label">Test Citizenship</label>
+                    </div>
+                
+                    <!-- Guardian Address -->
+                    <div class="col-md-12">
+                        <label for="fatherGuardianAddress" class="form-label">Home Address</label>
+                        <label id="fatherGuardianAddress" class="form-label">Test Address</label>
+                    </div>
+                
+                    <!-- Phone Number (Home & Mobile) -->
+                    <div class="col-md-6">
+                        <label for="fatherPhoneHome" class="form-label">Phone Number (Home)</label>
+                        <label id="fatherPhoneHome" class="form-label">Test Home Phone</label>
+                    </div>
+                
+                    <div class="col-md-6">
+                        <label for="fatherPhoneMobile" class="form-label">Phone Number (Mobile)</label>
+                        <label id="fatherPhoneMobile" class="form-label">Test Mobile Phone</label>
+                    </div>
+                
+                    <!-- Guardian Occupation -->
+                    <div class="col-md-6">
+                        <label for="fatherOccupation" class="form-label">Occupation (Position Name)</label>
+                        <label id="fatherOccupation" class="form-label">Test Occupation</label>
+                    </div>
+                
+                    <!-- Guardian Income -->
+                    <div class="col-md-6">
+                        <label for="fatherIncome" class="form-label">Income (Basic Salary + Fixed Allowance)</label>
+                        <label id="fatherIncome" class="form-label">Test Income</label>
+                    </div>
+                
+                    <!-- Employer's Address -->
+                    <div class="col-md-12">
+                        <label for="fatherEmployerAddress" class="form-label">Employer's Address</label>
+                        <label id="fatherEmployerAddress" class="form-label">Test Employer Address</label>
+                    </div>
+                
+                    <!-- Part B: Guardian Information (Mother / Female Guardian) -->
+                    <div class="col-12 section-title">Part B: Guardian Information (Mother / Female Guardian)</div>
+                
+                    <!-- Guardian Name -->
+                    <div class="col-md-6">
+                        <label for="motherGuardianName" class="form-label">Guardian Name (Mother / Female)</label>
+                        <label id="motherGuardianName" class="form-label">Test Mother Name</label>
+                    </div>
+                
+                    <!-- Guardian IC Number -->
+                    <div class="col-md-6">
+                        <label for="motherGuardianIc" class="form-label">Guardian IC Number</label>
+                        <label id="motherGuardianIc" class="form-label">Test Mother IC</label>
+                    </div>
+                
+                    <!-- Citizenship -->
+                    <div class="col-md-6">
+                        <label for="motherCitizenship" class="form-label">Citizenship</label>
+                        <label id="motherCitizenship" class="form-label">Test Mother Citizenship</label>
+                    </div>
+                
+                    <!-- Guardian Address -->
+                    <div class="col-md-12">
+                        <label for="motherGuardianAddress" class="form-label">Home Address</label>
+                        <label id="motherGuardianAddress" class="form-label">Test Mother Address</label>
+                    </div>
+                
+                    <!-- Phone Number (Home & Mobile) -->
+                    <div class="col-md-6">
+                        <label for="motherPhoneHome" class="form-label">Phone Number (Home)</label>
+                        <label id="motherPhoneHome" class="form-label">Test Mother Home Phone</label>
+                    </div>
+                
+                    <div class="col-md-6">
+                        <label for="motherPhoneMobile" class="form-label">Phone Number (Mobile)</label>
+                        <label id="motherPhoneMobile" class="form-label">Test Mother Mobile Phone</label>
+                    </div>
+                
+                    <!-- Guardian Occupation -->
+                    <div class="col-md-6">
+                        <label for="motherOccupation" class="form-label">Occupation (Position Name)</label>
+                        <label id="motherOccupation" class="form-label">Test Mother Occupation</label>
+                    </div>
+                
+                    <!-- Guardian Income -->
+                    <div class="col-md-6">
+                        <label for="motherIncome" class="form-label">Income (Basic Salary + Fixed Allowance)</label>
+                        <label id="motherIncome" class="form-label">Test Mother Income</label>
+                    </div>
+                
+                    <!-- Employer's Address -->
+                    <div class="col-md-12">
+                        <label for="motherEmployerAddress" class="form-label">Employer's Address</label>
+                        <label id="motherEmployerAddress" class="form-label">Test Mother Employer Address</label>
+                    </div>
+                
+                    <!-- Part C: Academic Information -->
+                    <div class="col-12 section-title">Part C: Academic Information</div>
+                
+                    <!-- UPSR Result -->
+                    <div class="col-md-12">
+                        <label for="UPSRResult" class="form-label">UPSR Result (Number of A's)</label>
+                        <label id="UPSRResult" class="form-label">Test UPSR</label>
+                    </div>
+                
+                    <!-- PT3 Result -->
+                    <div class="col-md-12">
+                        <label for="PT3Result" class="form-label">PT3 Result (Number of A's)</label>
+                        <label id="PT3Result" class="form-label">Test PT3</label>
+                    </div>
+                
+                    <!-- SPM Trial Result -->
+                    <div class="col-md-12">
+                        <label for="SPMTrialResult" class="form-label">SPM Trial Result (Number of A's)</label>
+                        <label id="SPMTrialResult" class="form-label">Test SPM Trial</label>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="latestExamResults" class="form-label">Latest Exam Results (Term 1 / Term 2)</label>
+                        <label id="latestExamResults" class="form-label">Test Latest Exam Results</label>
+                    </div>
+
+                    <!-- Financial Aid Information -->
+                    <div class="col-md-6">
+                        <label for="spbt" class="form-label">SPBT</label>
+                        <label id="SPBT" class="form-label">Test SPBT</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="scholarship" class="form-label">Scholarship (Type & Amount)</label>
+                        <label id="scholarship" class="form-label">Test Scholarship</label>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="kwapm" class="form-label">KWAPM</label>
+                        <label id="kwapm" class="form-label">Test KWAPM</label>
+                    </div>
+                    
+                    <!-- Part D: Service / Co-curricular Information -->
+                    <div class="col-12 section-title">Part D: Service / Co-curricular Information</div>
+                    
+                    <!-- Uniformed Unit Section -->
+                    <div class="col-md-6">
+                        <label for="uniformedUnit" class="form-label">Uniformed Unit</label>
+                        <label id="uniformedUnit" class="form-label">Test Uniformed Unit</label>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="uniformedUnitPosition" class="form-label">Uniformed Unit Position</label>
+                        <label id="uniformedUnitPosition" class="form-label">Test Uniformed Unit Position</label>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="uniformedUnitRepresenting" class="form-label">Representing (School/District/Zone/State/National)</label>
+                        <label id="uniformedUnitRepresenting" class="form-label">Test Representing</label>
+                    </div>
+                    
+                    <hr> <!-- Separator -->
+                    
+                    <!-- Club/Association Section -->
+                    <div class="col-md-6">
+                        <label for="clubAssociation" class="form-label">Club/Association</label>
+                        <label id="clubAssociation" class="form-label">Test Club/Association</label>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="clubPosition" class="form-label">Club/Association Position</label>
+                        <label id="clubPosition" class="form-label">Test Club Position</label>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="clubRepresenting" class="form-label">Representing (School/District/Zone/State/National)</label>
+                        <label id="clubRepresenting" class="form-label">Test Representing</label>
+                    </div>
+                    
+                    <hr> <!-- Separator -->
+                    
+                    <!-- Sports/Games Section -->
+                    <div class="col-md-6">
+                        <label for="sportsGames" class="form-label">Sports/Games</label>
+                        <label id="sportsGames" class="form-label">Test Sports/Games</label>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="sportsPosition" class="form-label">Sports/Games Position</label>
+                        <label id="sportsPosition" class="form-label">Test Sports Position</label>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="sportsRepresenting" class="form-label">Representing (School/District/Zone/State/National)</label>
+                        <label id="sportsRepresenting" class="form-label">Test Representing</label>
+                    </div>                    
+                </form>                
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex w-100">
+                    <div>
+                        <button type="button" class="btn btn-success" id="acceptButton">Accept</button>
+                        <button type="button" class="btn btn-danger" id="rejectButton">Reject</button>
+                    </div>
+                    <div class="ms-auto">
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('acceptButton').addEventListener('click', function() {
+        fetch('/hostel_application_action', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action: 'Accepted', entry: selectedEntry['ID'] }),
+        })
+        .then(response => response.json())
+        .then(data => console.log(data));
+        location.reload();
+    });
+
+    document.getElementById('rejectButton').addEventListener('click', function() {
+        fetch('/hostel_application_action', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ action: 'Rejected', entry: selectedEntry['ID'] }),
+        })
+        .then(response => response.json())
+        .then(data => console.log(data));
+        location.reload();
+    });
+</script>

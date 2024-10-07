@@ -36,6 +36,4 @@ Non-functional Interfaces
 
 
 Note to self;
-1) Add accept / reject function on hostel_application.html
-2) Add notification for student if appllation is accepted / rejected
-3) Setup email and captha stuff
+1) Incomplete hostel application modal and page

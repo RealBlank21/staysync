@@ -28,7 +28,7 @@ def retrieve_role(username):
 def insert_student_admission(student_hostel_application_data : dict):
     try: 
         insert_query = """
-        INSERT INTO students (
+        INSERT INTO hostel_applications (
             studentName, studentIc, formClass, stream, race, familyMembers, familyStudying, siblingsSPBT, siblingsHostel, 
             distance, studentStatus, guardianStatus, healthStatus, hostelReason, fatherGuardianName, fatherGuardianIc, 
             fatherCitizenship, fatherGuardianAddress, fatherPhoneHome, fatherPhoneMobile, fatherOccupation, fatherIncome, 
@@ -51,8 +51,17 @@ def insert_student_admission(student_hostel_application_data : dict):
     
 def retrieve_student_admissions():
     try:
-        cursorDict.execute("SELECT * FROM students")
+        cursorDict.execute("SELECT * FROM hostel_applications")
         entries = cursorDict.fetchall()
         return entries
+    except Error as e:
+        return (f"Error: {e}")
+    
+def hostel_application_action(action, entryIndex):
+    try:
+        query = "UPDATE hostel_applications SET applicationStatus = %s WHERE ID = %s"
+
+        cursor.execute(query, (action, entryIndex))
+        mydb.commit()
     except Error as e:
         return (f"Error: {e}")

@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, session, make_response, flash
+from flask import Flask, request, render_template, redirect, url_for, session, make_response, flash, jsonify
 from datetime import timedelta
 import os
 from app import authentication, db
@@ -84,9 +84,43 @@ def hostel_application():
     if session.get('user_role') !='Admin':
         return redirect(url_for('login'))
     
+    username = session.get('username')
+    user_role = session.get('user_role')
+
     entries = db.retrieve_student_admissions()
 
-    return render_template('hostel_application.html', entries=entries)
+    return render_template('hostel_application.html', entries=entries, username=username, user_role=user_role)
+
+@app.route('/hostel_application_action', methods=['POST'])
+def handle_action():
+    action = request.json.get('action')
+    entryIndex = request.json.get('entry')
+
+    print(action)
+    
+    db.hostel_application_action(action, entryIndex)
+    
+    return render_template('hostel_application.html')
+
+@app.route('/outing_application')
+def outing_application():
+    if session.get('user_role') !='Student':
+        return redirect(url_for('login'))
+    
+    username = session.get('username')
+    user_role = session.get('user_role')
+
+    return render_template('outing_application.html', username=username, user_role=user_role)
+
+@app.route('/confiscated_item_log')
+def confiscated_item_log():
+    if session.get('user_role') not in ['Warden', 'Admin']:
+        return redirect(url_for('login'))
+    
+    username = session.get('username')
+    user_role = session.get('user_role')
+
+    return render_template('confiscated_item_log.html', username=username, user_role=user_role)
 
 @app.route('/forgot_password')
 def forgot_password():

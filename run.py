@@ -120,7 +120,9 @@ def confiscated_item_log():
     username = session.get('username')
     user_role = session.get('user_role')
 
-    entries = db.retrieve_table_dict("confiscated_items")
+    entries = db.retrived_table_joined()
+
+    print(entries)
 
     return render_template('confiscated_item_log.html', username=username, user_role=user_role, entries=entries)
 

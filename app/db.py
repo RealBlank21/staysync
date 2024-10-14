@@ -66,3 +66,17 @@ def retrieve_table_dict(tableName):
         return entries
     except mysql.connector.Error as e:
         return f"Error: {e}"
+    
+def retrived_table_joined():
+    try:
+        fetch_confiscated_items_query = """
+        SELECT ci.*, s.studentName 
+        FROM confiscated_items ci
+        JOIN students s ON ci.studentID = s.studentID
+        """
+        cursorDict.execute(fetch_confiscated_items_query)
+
+        entries = cursorDict.fetchall()
+        return entries
+    except mysql.connector.Error as e:
+        return f"Error: {e}"

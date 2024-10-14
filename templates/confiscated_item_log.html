@@ -103,14 +103,16 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Form</th>
-                <th>Item</th>
+                <th>Item Name</th>
+                <th>Item Description</th>
+                <th>Confiscation Date</th>
                 <th></th>
             </tr>
             {% if entries %}
                 {% for entry in entries %}
                 <tr>
                     <td>{{ entry.confiscatedItemID }}</td>
+                    <td>{{ entry.studentName }}</td>
                     <td>{{ entry.itemName }}</td>
                     <td>{{ entry.itemDescription }}</td>
                     <td>{{ entry.confiscationDate }}</td>
@@ -201,6 +203,32 @@
             </div>
         </div>
     </div>
+
+    <script>
+        let selectedEntry = 0;
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('confiscatedItemManageModal');
+
+            const entries = JSON.parse('{{ entries | tojson }}'); 
+    
+            modal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const index = button.getAttribute('data-index');
+                
+                const entry = entries[index - 1];
+                selectedEntry = entry;
+                document.getElementById('studentName').innerText = entry["studentName"];
+                document.getElementById('itemName').innerText = entry["itemName"];
+                document.getElementById('itemDescription').innerText = entry["itemDescription"];
+                document.getElementById('confiscationDate').innerText = entry["confiscationDate"];
+                document.getElementById('confiscatedBy').innerText = entry["confiscatedBy"];
+                document.getElementById('itemStatus').innerText = entry["itemStatus"];
+                document.getElementById('confiscationReason').innerText = entry["confiscationReason"];
+                document.getElementById('returnDate').innerText = entry["returnDate"];
+                document.getElementById('notes').innerText = entry["notes"];
+            });
+        });
+    </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

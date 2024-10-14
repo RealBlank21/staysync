@@ -325,8 +325,7 @@ CREATE TABLE IF NOT EXISTS warden (
     address TEXT,
     date_of_birth DATE,
     date_of_joining DATE,
-    gender ENUM('Male', 'Female', 'Other'),
-    password VARCHAR(255) NOT NULL
+    gender ENUM('Male', 'Female', 'Other')
 );
 """
 
@@ -340,8 +339,7 @@ CREATE TABLE IF NOT EXISTS admin (
     address TEXT,
     date_of_birth DATE,
     date_of_joining DATE,
-    gender ENUM('Male', 'Female', 'Other'),
-    password VARCHAR(255) NOT NULL
+    gender ENUM('Male', 'Female', 'Other')
 );
 """
 
@@ -349,17 +347,17 @@ cursor.execute(warden_table)
 cursor.execute(admin_table)
 
 warden_data = """
-INSERT INTO warden (name, email, phone_number, address, date_of_birth, date_of_joining, gender, password)
+INSERT INTO warden (name, email, phone_number, address, date_of_birth, date_of_joining, gender)
 VALUES
-    ('Ahmad Firdaus', 'ahmad.firdaus@example.com', '0123456789', 'No. 12, Jalan Tun Razak, Kuala Lumpur', '1987-04-15', '2016-02-10', 'Male', 'hashedpassword1'),
-    ('Nur Aisyah', 'nur.aisyah@example.com', '0198765432', 'No. 34, Taman Desa, Petaling Jaya', '1992-07-22', '2017-11-01', 'Female', 'hashedpassword2'),
-    ('Lee Wei Ming', 'lee.weiming@example.com', '0112345678', 'No. 9, Jalan Bukit Bintang, Kuala Lumpur', '1985-09-10', '2014-09-15', 'Male', 'hashedpassword3');
+    ('Ahmad Firdaus', 'ahmad.firdaus@example.com', '0123456789', 'No. 12, Jalan Tun Razak, Kuala Lumpur', '1987-04-15', '2016-02-10', 'Male'),
+    ('Nur Aisyah', 'nur.aisyah@example.com', '0198765432', 'No. 34, Taman Desa, Petaling Jaya', '1992-07-22', '2017-11-01', 'Female'),
+    ('Lee Wei Ming', 'lee.weiming@example.com', '0112345678', 'No. 9, Jalan Bukit Bintang, Kuala Lumpur', '1985-09-10', '2014-09-15', 'Male');
 """
 
 admin_data = """
-INSERT INTO admin (name, email, phone_number, address, date_of_birth, date_of_joining, gender, password)
+INSERT INTO admin (name, email, phone_number, address, date_of_birth, date_of_joining, gender)
 VALUES
-    ('Siti Zulaikha', 'siti.zulaikha@example.com', '0176543210', 'No. 45, Jalan Sri Hartamas, Kuala Lumpur', '1980-12-05', '2011-03-12', 'Female', 'adminhashedpassword');
+    ('Siti Zulaikha', 'siti.zulaikha@example.com', '0176543210', 'No. 45, Jalan Sri Hartamas, Kuala Lumpur', '1980-12-05', '2011-03-12', 'Female');
 """
 
 cursor.execute(warden_data)

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostel Application</title>
+    <title>Admin</title>
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -70,26 +70,24 @@
     {% include 'components/hostel_application_modal.html' %}
     
     <div class="container">
-        <h3>Hostel Applications</h3>
+        <h3>Admin Information</h3>
         <table border="1">
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>IC</th>
-                <th>Form</th>
-                <th>Status</th>
+                <th>Phone Number</th>
+                <th>Gender</th>
                 <th></th>
             </tr>
             {% if entries %}
                 {% for entry in entries %}
                 <tr>
-                    <td>{{ entry.hostelApplicationID }}</td>
-                    <td>{{ entry.studentName }}</td>
-                    <td>{{ entry.studentIc }}</td>
-                    <td>{{ entry.formClass }}</td>
-                    <td>{{ entry.applicationStatus }}</td>
+                    <td>{{ entry.admin_id }}</td>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.phone_number }}</td>
+                    <td>{{ entry.gender }}</td>
                     <td>
-                        <a class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#hostelApplicationModal" data-index="{{ loop.index }}">
+                        <a class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#studentManageModal" data-index="{{ loop.index }}">
                             <i class="fas fa-cog"></i> Manage
                         </a>
                     </td>
@@ -106,7 +104,7 @@
     <script>
         let selectedEntry = 0;
         document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('hostelApplicationModal');
+            const modal = document.getElementById('studentManageModal');
 
             const entries = JSON.parse('{{ entries | tojson }}'); 
     

@@ -50,7 +50,7 @@ cursor.executemany("""
 
 create_table_query = """
 CREATE TABLE IF NOT EXISTS hostel_applications (
-    ID INT AUTO_INCREMENT PRIMARY KEY,
+    hostelApplicationID INT AUTO_INCREMENT PRIMARY KEY,
     studentName VARCHAR(255),
     studentIc VARCHAR(255),
     formClass VARCHAR(50),
@@ -171,6 +171,199 @@ INSERT INTO hostel_applications (
 """
 
 cursor.executemany(insert_query, placeholder_values)
+
+mydb.commit()
+
+create_students_table_query = """
+CREATE TABLE IF NOT EXISTS students (
+    studentID INT AUTO_INCREMENT PRIMARY KEY,
+    studentName VARCHAR(255),
+    studentIc VARCHAR(255),
+    formClass VARCHAR(50),
+    stream VARCHAR(50),
+    race VARCHAR(50),
+    familyMembers INT,
+    familyStudying INT,
+    siblingsSPBT INT,
+    siblingsHostel INT,
+    distance FLOAT,
+    studentStatus VARCHAR(50),
+    guardianStatus VARCHAR(50),
+    healthStatus VARCHAR(255),
+    fatherGuardianName VARCHAR(255),
+    fatherGuardianIc VARCHAR(255),
+    fatherCitizenship VARCHAR(50),
+    fatherGuardianAddress VARCHAR(255),
+    fatherPhoneHome VARCHAR(50),
+    fatherPhoneMobile VARCHAR(50),
+    fatherOccupation VARCHAR(100),
+    fatherIncome FLOAT,
+    fatherEmployerAddress VARCHAR(255),
+    motherGuardianName VARCHAR(255),
+    motherGuardianIc VARCHAR(255),
+    motherCitizenship VARCHAR(50),
+    motherGuardianAddress VARCHAR(255),
+    motherPhoneHome VARCHAR(50),
+    motherPhoneMobile VARCHAR(50),
+    motherOccupation VARCHAR(100),
+    motherIncome FLOAT,
+    motherEmployerAddress VARCHAR(255),
+    upsrResults VARCHAR(50),
+    pmrResults VARCHAR(50),
+    spmResults VARCHAR(50),
+    latestExamResults VARCHAR(50),
+    spbt BOOLEAN,
+    scholarship BOOLEAN,
+    kwapm BOOLEAN,
+    uniformedUnit VARCHAR(100),
+    uniformedUnitPosition VARCHAR(100),
+    uniformedUnitRepresenting VARCHAR(255),
+    clubAssociation VARCHAR(100),
+    clubPosition VARCHAR(100),
+    clubRepresenting VARCHAR(255),
+    sportsGames VARCHAR(100),
+    sportsPosition VARCHAR(100),
+    sportsRepresenting VARCHAR(255)
+);
+"""
+
+cursor.execute(create_students_table_query)
+
+students_data = [
+    ('Ahmad Firdaus', '990101-14-1234', 'Form 5A', 'Science', 'Malay', 5, 2, 1, 0, 12.5, 'Active', 'Both Parents', 'Healthy', 
+     'Hakim bin Ahmad', '760101-05-1234', 'Malaysian', 'No. 4, Jalan Tun Ismail, Kuala Lumpur', '03-12345678', '012-3456789', 
+     'Engineer', 5000, 'KL Tower, Kuala Lumpur', 'Siti Aminah', '770202-10-9876', 'Malaysian', 'No. 4, Jalan Tun Ismail, Kuala Lumpur', 
+     '03-87654321', '011-2345678', 'Teacher', 3500, 'School A, KL', '5As', '7As', '9As', 'Top 10', True, True, False, 
+     'Scout', 'Leader', 'National', 'Science Club', 'President', 'State', 'Football', 'Captain', 'State'),
+    
+    ('Siti Zulaikha', '970404-12-7890', 'Form 5C', 'Arts', 'Malay', 6, 3, 1, 2, 15.0, 'Active', 'Both Parents', 'Healthy', 
+     'Zul Ariffin', '731212-02-9876', 'Malaysian', 'No. 45, Jalan Sri Hartamas, KL', '03-98765432', '013-1234567', 'Policeman', 
+     4000, 'Police HQ, KL', 'Salmah Ahmad', '741010-04-5432', 'Malaysian', 'No. 45, Jalan Sri Hartamas, KL', '03-76543234', 
+     '011-2345678', 'Businesswoman', 5000, 'Sri Hartamas, KL', '3As', '5As', '7As', 'Improving', True, False, True, 
+     'Girl Guides', 'Vice Leader', 'State', 'Drama Club', 'President', 'National', 'Netball', 'Player', 'District'),
+    
+    ('Aisyah Hasan', '951212-07-1234', 'Form 6B', 'Commerce', 'Malay', 2, 0, 0, 0, 25.3, 'Active', 'Single Parent', 'Asthma', 
+     'Hasan Ali', '701212-09-4321', 'Malaysian', 'No. 90, Jalan Ampang, KL', '03-43210987', '019-1234567', 'Accountant', 
+     6000, 'Ampang, KL', 'Nurul Aida', '721010-08-5432', 'Malaysian', 'No. 90, Jalan Ampang, KL', '03-54321098', '012-3456789', 
+     'Nurse', 4500, 'Hospital Ampang', '7As', '9As', '10As', 'Excellent', True, False, True, 'Brass Band', 'Member', 'National', 
+     'Dance Club', 'Member', 'State', 'Tennis', 'Player', 'District'),
+    
+    ('Muhammad Izzat', '940606-08-7654', 'Form 6A', 'Science', 'Malay', 4, 1, 1, 1, 20.0, 'Active', 'Both Parents', 'Healthy', 
+     'Izzuddin Ahmad', '700101-08-2345', 'Malaysian', 'No. 1, Jalan Gombak, KL', '03-54321098', '014-9876543', 'Lecturer', 
+     8000, 'University A, KL', 'Siti Noraini', '720202-05-6789', 'Malaysian', 'No. 1, Jalan Gombak, KL', '03-87654321', 
+     '011-2345678', 'Housewife', 0, None, '6As', '8As', '10As', 'Top 5', True, True, False, 'Cadet', 'Leader', 'National', 
+     'Debate Club', 'President', 'State', 'Rugby', 'Captain', 'State'),
+    
+    ('Nurul Iman', '980808-10-4321', 'Form 4A', 'Commerce', 'Malay', 3, 1, 0, 1, 22.1, 'Active', 'Both Parents', 'Healthy', 
+     'Zainal Abidin', '740808-07-4321', 'Malaysian', 'No. 2, Jalan Damansara, KL', '03-65432109', '013-2345678', 'Businessman', 
+     7000, 'Damansara, KL', 'Siti Khadijah', '750909-08-7654', 'Malaysian', 'No. 2, Jalan Damansara, KL', '03-54321098', 
+     '012-8765432', 'Homemaker', 0, None, '4As', '6As', '8As', 'Good', True, False, False, 'Band', 'Vice President', 'District', 
+     'Drama Club', 'Secretary', 'State', 'Hockey', 'Player', 'National')
+]
+
+insert_query = """
+INSERT INTO students (
+    studentName, studentIc, formClass, stream, race, familyMembers, familyStudying, siblingsSPBT, siblingsHostel, distance, 
+    studentStatus, guardianStatus, healthStatus, fatherGuardianName, fatherGuardianIc, fatherCitizenship, fatherGuardianAddress, 
+    fatherPhoneHome, fatherPhoneMobile, fatherOccupation, fatherIncome, fatherEmployerAddress, motherGuardianName, motherGuardianIc, 
+    motherCitizenship, motherGuardianAddress, motherPhoneHome, motherPhoneMobile, motherOccupation, motherIncome, motherEmployerAddress, 
+    upsrResults, pmrResults, spmResults, latestExamResults, spbt, scholarship, kwapm, uniformedUnit, uniformedUnitPosition, 
+    uniformedUnitRepresenting, clubAssociation, clubPosition, clubRepresenting, sportsGames, sportsPosition, sportsRepresenting
+) 
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+"""
+
+cursor.executemany(insert_query, students_data)
+
+mydb.commit()
+
+# Create the table for confiscated items
+cursor.execute("""CREATE TABLE IF NOT EXISTS confiscated_items (
+                confiscatedItemID INTEGER PRIMARY KEY AUTO_INCREMENT,
+                itemName TEXT NOT NULL,
+                studentID INTEGER NOT NULL,
+                itemDescription TEXT,
+                confiscationDate TEXT NOT NULL,
+                confiscatedBy TEXT NOT NULL,
+                itemStatus TEXT NOT NULL,
+                confiscationReason TEXT,
+                returnDate TEXT,
+                notes TEXT,
+                FOREIGN KEY (studentID) REFERENCES students(studentID)
+            );""")
+
+# Commit the creation of the table
+mydb.commit()
+
+# Example items to be added
+confiscated_items_data = [
+    ('Handphone', 1, 'Smartphone, brand XYZ', '2024-10-01', 'Warden Ali', 'Confiscated', 'Using during class', None, 'Needs to be returned after 1 month'),
+    ('Sharp Object', 2, 'Scissors', '2024-10-02', 'Warden Zainab', 'Confiscated', 'Possession of dangerous item', None, 'To be returned after review'),
+    ('Wireless Earbuds', 3, 'Bluetooth earbuds', '2024-10-03', 'Warden Ahmad', 'Confiscated', 'Using during exam', None, 'To be returned after exam'),
+    ('Playing Cards', 4, 'Deck of playing cards', '2024-10-04', 'Warden Fatimah', 'Confiscated', 'Playing games in hostel', None, 'To be destroyed'),
+    ('Video Game Console', 5, 'Portable gaming console', '2024-10-05', 'Warden Ismail', 'Confiscated', 'Brought to school without permission', None, 'To be returned after a month')
+]
+
+insert_confiscated_items_query = """
+INSERT INTO confiscated_items (
+    itemName, studentID, itemDescription, confiscationDate, confiscatedBy, itemStatus, confiscationReason, returnDate, notes
+) 
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+"""
+
+cursor.executemany(insert_confiscated_items_query, confiscated_items_data)  
+
+# Commit the insertions
+mydb.commit()
+
+warden_table = """
+CREATE TABLE IF NOT EXISTS warden (
+    warden_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone_number VARCHAR(15) NOT NULL,
+    address TEXT,
+    date_of_birth DATE,
+    date_of_joining DATE,
+    gender ENUM('Male', 'Female', 'Other'),
+    password VARCHAR(255) NOT NULL
+);
+"""
+
+# Create Admin Table
+admin_table = """
+CREATE TABLE IF NOT EXISTS admin (
+    admin_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone_number VARCHAR(15) NOT NULL,
+    address TEXT,
+    date_of_birth DATE,
+    date_of_joining DATE,
+    gender ENUM('Male', 'Female', 'Other'),
+    password VARCHAR(255) NOT NULL
+);
+"""
+
+cursor.execute(warden_table)
+cursor.execute(admin_table)
+
+warden_data = """
+INSERT INTO warden (name, email, phone_number, address, date_of_birth, date_of_joining, gender, password)
+VALUES
+    ('Ahmad Firdaus', 'ahmad.firdaus@example.com', '0123456789', 'No. 12, Jalan Tun Razak, Kuala Lumpur', '1987-04-15', '2016-02-10', 'Male', 'hashedpassword1'),
+    ('Nur Aisyah', 'nur.aisyah@example.com', '0198765432', 'No. 34, Taman Desa, Petaling Jaya', '1992-07-22', '2017-11-01', 'Female', 'hashedpassword2'),
+    ('Lee Wei Ming', 'lee.weiming@example.com', '0112345678', 'No. 9, Jalan Bukit Bintang, Kuala Lumpur', '1985-09-10', '2014-09-15', 'Male', 'hashedpassword3');
+"""
+
+admin_data = """
+INSERT INTO admin (name, email, phone_number, address, date_of_birth, date_of_joining, gender, password)
+VALUES
+    ('Siti Zulaikha', 'siti.zulaikha@example.com', '0176543210', 'No. 45, Jalan Sri Hartamas, Kuala Lumpur', '1980-12-05', '2011-03-12', 'Female', 'adminhashedpassword');
+"""
+
+cursor.execute(warden_data)
+cursor.execute(admin_data)
 
 mydb.commit()
 

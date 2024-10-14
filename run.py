@@ -87,7 +87,7 @@ def hostel_application():
     username = session.get('username')
     user_role = session.get('user_role')
 
-    entries = db.retrieve_student_admissions()
+    entries = db.retrieve_table_dict("hostel_applications")
 
     return render_template('hostel_application.html', entries=entries, username=username, user_role=user_role)
 
@@ -120,7 +120,45 @@ def confiscated_item_log():
     username = session.get('username')
     user_role = session.get('user_role')
 
-    return render_template('confiscated_item_log.html', username=username, user_role=user_role)
+    entries = db.retrieve_table_dict("confiscated_items")
+
+    return render_template('confiscated_item_log.html', username=username, user_role=user_role, entries=entries)
+
+@app.route('/student_information')
+def student_information():
+    if session.get('user_role') not in ['Warden', 'Admin']:
+        return redirect(url_for('login'))
+    
+    username = session.get('username')
+    user_role = session.get('user_role')
+
+    entries = db.retrieve_table_dict("students")
+
+    return render_template('students.html', username=username, user_role=user_role, entries=entries)
+
+@app.route('/warden_information')
+def warden_information():
+    if session.get('user_role') not in ['Warden', 'Admin']:
+        return redirect(url_for('login'))
+    
+    username = session.get('username')
+    user_role = session.get('user_role')
+
+    entries = db.retrieve_table_dict("warden")
+
+    return render_template('warden.html', username=username, user_role=user_role, entries=entries)
+
+@app.route('/admin_information')
+def admin_information():
+    if session.get('user_role') not in ['Admin']:
+        return redirect(url_for('login'))
+    
+    username = session.get('username')
+    user_role = session.get('user_role')
+
+    entries = db.retrieve_table_dict("admin")
+
+    return render_template('admin.html', username=username, user_role=user_role, entries=entries)
 
 @app.route('/forgot_password')
 def forgot_password():

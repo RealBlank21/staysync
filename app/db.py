@@ -49,14 +49,6 @@ def insert_student_admission(student_hostel_application_data : dict):
     except Error as e:
         return (f"Error: {e}")
     
-def retrieve_student_admissions():
-    try:
-        cursorDict.execute("SELECT * FROM hostel_applications")
-        entries = cursorDict.fetchall()
-        return entries
-    except Error as e:
-        return (f"Error: {e}")
-    
 def hostel_application_action(action, entryIndex):
     try:
         query = "UPDATE hostel_applications SET applicationStatus = %s WHERE ID = %s"
@@ -65,3 +57,12 @@ def hostel_application_action(action, entryIndex):
         mydb.commit()
     except Error as e:
         return (f"Error: {e}")
+
+def retrieve_table_dict(tableName):
+    try:
+        query = f"SELECT * FROM {tableName}"
+        cursorDict.execute(query)
+        entries = cursorDict.fetchall()
+        return entries
+    except mysql.connector.Error as e:
+        return f"Error: {e}"

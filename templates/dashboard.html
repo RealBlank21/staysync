@@ -140,21 +140,21 @@
             <div class="section">
                 <div class="section-label">Accounts</div>
                 {% if session.get('user_role') == 'Admin' %}
-                    <button class="text-btn" data-url="{{ url_for('dashboard') }}" onclick="window.location.href=this.getAttribute('data-url');">
+                    <button class="text-btn" data-url="{{ url_for('admin_information') }}" onclick="window.location.href=this.getAttribute('data-url');">
                         <i class="bi bi-person-fill"></i>
                         <span>Admin</span>
                     </button>
                 {% endif %}
                 
                 {% if session.get('user_role') in ['Admin', 'Warden'] %}
-                    <button class="text-btn" data-url="{{ url_for('dashboard') }}" onclick="window.location.href=this.getAttribute('data-url');">
+                    <button class="text-btn" data-url="{{ url_for('warden_information') }}" onclick="window.location.href=this.getAttribute('data-url');">
                         <i class="bi bi-shield-lock-fill"></i>
                         <span>Warden</span>
                     </button>
                 {% endif %}
         
                 {% if session.get('user_role') in ['Admin', 'Warden'] %}
-                    <button class="text-btn" data-url="{{ url_for('dashboard') }}" onclick="window.location.href=this.getAttribute('data-url');">
+                    <button class="text-btn" data-url="{{ url_for('student_information') }}" onclick="window.location.href=this.getAttribute('data-url');">
                         <i class="bi bi-person-lines-fill"></i>
                         <span>Student</span>
                     </button>

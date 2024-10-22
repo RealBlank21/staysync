@@ -29,23 +29,24 @@ cursor.execute("USE stay_sync")
 
 cursor.execute("""
     CREATE TABLE user_credentials (
-        ID INT AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(255) NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        role VARCHAR(100) NOT NULL
-    )
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        username VARCHAR(255) UNIQUE,
+        email VARCHAR(255),
+        password VARCHAR(255),
+        user_role ENUM('Admin', 'Warden', 'Student')
+    );
 """)
 print("Table created successfully.")
 
 users = [
-    ('Admin', hash_password('Admin'), 'Admin'),
-    ('Warden', hash_password('Warden'), 'Warden'),
-    ('Student', hash_password('Student'), 'Student')
+    ('Admin', "realblanket21@gmail.com" ,hash_password('Admin'), 'Admin'),
+    ('Warden', "realblanket21@gmail.com" ,hash_password('Warden'), 'Warden'),
+    ('Student', "realblanket21@gmail.com" ,hash_password('Student'), 'Student')
 ]
 
 cursor.executemany("""
-    INSERT INTO user_credentials (username, password, role)
-    VALUES (%s, %s, %s)
+    INSERT INTO user_credentials (username, email, password, user_role)
+    VALUES (%s, %s, %s, %s)
 """, users)
 
 create_table_query = """

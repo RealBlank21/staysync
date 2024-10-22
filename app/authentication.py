@@ -21,7 +21,7 @@ def validate_password(username, password):
     if not val:
         return False
 
-    hashed_password = val[2]
+    hashed_password = val[3]
 
     try:
         ph.verify(hashed_password, password + PEPPER)

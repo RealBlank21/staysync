@@ -23,7 +23,7 @@ def retrieve_role(username):
 
     val = cursor.fetchone()
     
-    return val[3]
+    return val[4]
 
 def insert_student_admission(student_hostel_application_data : dict):
     try: 

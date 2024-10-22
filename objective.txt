@@ -1,0 +1,15 @@
+Project Scope
+
+Admin (Hostel Management Unit)
+- Admin can login into the system.
+- Admin can view, approve or reject hostel application.
+- Admin can edit, add or remove student entries.
+
+Warden
+- Warden can login into the system
+- Warden can view student entries
+
+Student
+- Students can login into the system.
+- Students can fill in the hostel application form.
+- Student can view the status of the hostel application.

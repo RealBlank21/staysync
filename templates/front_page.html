@@ -99,27 +99,28 @@
       }
 
       .btn-apply {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background-color: white;
-        color: var(--primary-color);
-        border-color: transparent;
-        margin-top: 20px;
-        padding: 10px 20px;
-        font-size: 16px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background-color: white !important;
+          color: #00b5ac !important;
+          border: 1px solid white;
+          margin-top: 20px;
+          padding: 10px 20px;
+          font-size: 16px;
+          transition: background-color 0.3s, color 0.3s;
       }
 
       .btn-apply:hover {
-        background-color: var(--primary-color);
-        color: white;
-        border-color: white;
+          background-color: #00b5ac !important; /* Change background on hover */
+          color: white !important; /* Change text color on hover */
+          border-color: white !important; /* Keep border white on hover */
       }
 
       .btn-apply:active {
-        background-color: white !important;
-        color: var(--primary-color) !important;
-        border-color: transparent !important; 
+          background-color: #00b5ac; /* Change background on active */
+          color: white; /* Change text color on active */
+          border-color: white; /* Keep border white on active */
       }
 
       .front-page-welcome {
@@ -189,7 +190,7 @@
         <h1 class="front-page-welcome">WELCOME TO STAY SYNC, A MODERN HOSTEL MANAGEMENT SYSTEM</h1>
 
         {% if not username %}
-        <a href="{{ url_for('application') }}" class="btn btn-apply btn-primary navbar-text">Join Us Now!</a>
+        <a href="{{ url_for('application') }}" class="btn btn-apply navbar-text">Join Us Now!</a>
         {% endif %}
       </div>
     </div>

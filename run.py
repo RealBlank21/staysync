@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, session, make_response, flash, jsonify
+from flask_mail import Mail, Message
 from datetime import timedelta
 import os
 from app import authentication, db
@@ -9,7 +10,16 @@ with open("SESSION.txt", 'r') as file:
 app = Flask(__name__)
 app.secret_key = SESSION
 
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=3)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'realblank21@gmail.com'
+app.config['MAIL_PASSWORD'] = 'wukf ctml yhol iboj'
+app.config['MAIL_DEFAULT_SENDER'] = 'noreply@gmail.com'
+
+mail = Mail(app)
 
 @app.route('/')
 def front_page():
@@ -122,9 +132,11 @@ def confiscated_item_log():
 
     entries = db.retrived_table_joined()
 
-    print(entries)
+    students = db.retrieve_table_dict("students")
 
-    return render_template('confiscated_item_log.html', username=username, user_role=user_role, entries=entries)
+    studentNames = [student['studentName'] for student in students]
+
+    return render_template('confiscated_item_log.jinja', username=username, user_role=user_role, entries=entries, studentNames=studentNames)
 
 @app.route('/student_information')
 def student_information():
@@ -162,11 +174,22 @@ def admin_information():
 
     return render_template('admin.html', username=username, user_role=user_role, entries=entries)
 
+@app.route('/send_email', methods=['POST'])
+def send_email():
+    try:
+        msg = Message('Hello from Flask!', 
+                      recipients=['realblanket21@gmail.com'])
+        msg.body = 'This is a test email sent from a Flask web application!'
+        mail.send(msg)
+        return 'Email sent!'
+    except Exception as e:
+        return str(e)
+
 @app.route('/forgot_password')
 def forgot_password():
     return render_template('forgot_password.html')
 
-@app.route('/test')
+@app.route('/test', methods=['GET', 'POST'])
 def test():
     return render_template('test.html', error_message="Error")
 

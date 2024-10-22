@@ -1,3 +1,10 @@
+<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
     .navbar {
       background-color: white;
@@ -6,14 +13,15 @@
     .navbar-brand {
         font-family: 'Poppins', sans-serif !important;
         font-weight: 700;
-      }
+    }
 
-      .navbar-text {
+    .navbar-text {
         font-family: 'Poppins', sans-serif !important;
         font-weight: 500;
-      }
+        color: black;
+    }
 
-      .btn-login {
+    .btn-login {
         width: 120px;
         height: 40px;
         background-color: transparent;
@@ -26,39 +34,150 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background-color 0.3s, color 0.3s; /* Added transition */
-        display: inline-flex !important; /* Force display */
+        transition: background-color 0.3s, color 0.3s;
+        display: inline-flex !important;
         visibility: visible !important;
         opacity: 1 !important;
-      }
+    }
 
-      .btn-login:hover {
+    .btn-login:hover {
         background-color: rgb(212, 212, 212);
         border-color: rgb(212, 212, 212);
         color: #097693;
-      }
+    }
 
-      .btn-login:active {
+    .btn-login:active, .btn-login:focus {
         background-color: rgb(212, 212, 212) !important;
         border-color: rgb(212, 212, 212) !important;
-        color: #097693 !important;
-      }
+    }
+
+    .dropdown-menu {
+        width: 230px;
+        border-radius: 5px;
+        padding: 0;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-menu-login {
+      width: inherit !important;
+    }
+
+    .dropdown-item {
+        font-size: 16px;
+        padding-top: 8px;
+        padding-bottom: 10px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .dropdown-item:hover {
+        background-color: rgb(212, 212, 212);
+    }
+
+    .dropdown-divider {
+        margin: 0; /* Remove extra margins from divider */
+    }
 </style>
 
 <nav class="navbar p-1 navbar-expand">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{{ url_for('front_page') }}">StaySync DEV</a>
-      <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <!-- Nav items -->
-        </ul>
-        <span class="navbar-text">
-          {% if username %}
-          <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-login navbar-text">{{ username }}</a>
-          {% else %}
-          <a href="{{ url_for('login') }}" class="btn btn-primary btn-login navbar-text">Login</a>
-          {% endif %}
-        </span>
-      </div>
+        <a class="navbar-brand" href="{{ url_for('front_page') }}">StaySync DEV</a>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if session.get('user_role') in ['Student', 'Warden', 'Admin'] %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link navbar-text dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Menu
+                        </a>
+                        <ul class="dropdown-menu p-3">
+                            {% if session.get('user_role') != 'Student' %}
+                                <div class="section">
+                                    <div class="dropdown-header"><strong>Accounts</strong></div>
+                                    {% if session.get('user_role') == 'Admin' %}
+                                        <a class="dropdown-item" href="{{ url_for('admin_information') }}">
+                                            <i class="bi bi-person-fill"></i> Admin
+                                        </a>
+                                    {% endif %}
+                                    
+                                    {% if session.get('user_role') in ['Admin', 'Warden'] %}
+                                        <a class="dropdown-item" href="{{ url_for('warden_information') }}">
+                                            <i class="bi bi-shield-lock-fill"></i> Warden
+                                        </a>
+                                    {% endif %}
+                                    
+                                    {% if session.get('user_role') in ['Admin', 'Warden'] %}
+                                        <a class="dropdown-item" href="{{ url_for('student_information') }}">
+                                            <i class="bi bi-person-lines-fill"></i> Student
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            
+                            {% if session.get('user_role') == 'Admin' %}
+                                <div class="section">
+                                    <div class="dropdown-header"><strong>Application</strong></div>
+                                    <a class="dropdown-item" href="{{ url_for('hostel_application') }}">
+                                        <i class="bi bi-journal-text"></i> Hostel Applications
+                                    </a>
+                                    <a class="dropdown-item" href="{{ url_for('dashboard') }}">
+                                        <i class="bi bi-journal-text"></i> Outing Applications
+                                    </a>
+                                </div>
+                            {% endif %}
+                            
+                            {% if session.get('user_role') == 'Student' %}
+                                <div class="section">
+                                    <div class="dropdown-header">Admission</div>
+                                    <a class="dropdown-item" href="{{ url_for('outing_application') }}">
+                                        <i class="bi bi-file-earmark-text"></i> Outing Admission
+                                    </a>
+                                </div>
+                            {% endif %}
+                            
+                            {% if session.get('user_role') != 'Student' %}
+                                <div class="section">
+                                    <div class="dropdown-header"><strong>Miscellaneous</strong></div>
+                                    
+                                    {% if session.get('user_role') == 'Admin' %}
+                                        <a class="dropdown-item" href="{{ url_for('dashboard') }}">
+                                            <i class="bi bi-person-plus-fill"></i> Add User
+                                        </a>
+                                    {% endif %}
+                                    
+                                    {% if session.get('user_role') in ['Admin', 'Warden'] %}
+                                        <a class="dropdown-item" href="{{ url_for('confiscated_item_log') }}">
+                                            <i class="bi bi-box-seam"></i> Confiscated Items
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link navbar-text" href="#">Contact Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link navbar-text" href="#">About Us</a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                {% if username %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle btn btn-login" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ username }}
+                        </a>
+                        <ul class="dropdown-menu-login dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-login">Login</a>
+                {% endif %}
+            </span>
+        </div>
     </div>
 </nav>

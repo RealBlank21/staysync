@@ -72,12 +72,233 @@
             background-color: white !important;
             color: #009879 !important; 
         }
+
+        .modal-header {
+            background-color: #009879;
+        }
     </style>
 </head>
 <body>
 
     {% include 'components/navbar.html' %}
-    {% include 'components/hostel_application_modal.html' %}
+
+    <div class="modal modal-xl fade" id="studentManageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-light">
+                    <h4>Hostel Application</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row g-3" method="POST">
+                        <!-- Part A: Student Information -->
+                        <div class="col-12 section-title">Part A: Student Information</div>
+                    
+                        <!-- Student Name -->
+                        <div class="col-md-12">
+                            <label for="studentName">Student Name</label>
+                            <input type="text" id="studentName" class="form-control" value="">
+                        </div>
+                    
+                        <!-- Identification Card Number -->
+                        <div class="col-md-6">
+                            <label for="studentIc">Identification Card Number</label>
+                            <input type="text" id="studentIc" class="form-control" value="Test">
+                        </div>
+                    
+                        <!-- Form (with Class Name) -->
+                        <div class="col-md-6">
+                            <label for="formClass">Form (with Class Name)</label>
+                            <input type="text" id="formClass" class="form-control" value="Test Form">
+                        </div>
+                    
+                        <!-- Stream -->
+                        <div class="col-md-6">
+                            <label for="stream">Stream</label>
+                            <input type="text" id="stream" class="form-control" value="Test Stream">
+                        </div>
+                    
+                        <!-- Race -->
+                        <div class="col-md-6">
+                            <label for="race">Race</label>
+                            <input type="text" id="race" class="form-control" value="Test Race">
+                        </div>
+                    
+                        <!-- Number of Family Members -->
+                        <div class="col-md-6">
+                            <label for="familyMembers">Number of Family Members</label>
+                            <input type="text" id="familyMembers" class="form-control" value="Test Members">
+                        </div>
+                    
+                        <!-- Number of Family Members Still Studying -->
+                        <div class="col-md-6">
+                            <label for="familyStudying">Number of Family Members Still Studying</label>
+                            <input type="text" id="familyStudying" class="form-control" value="Test Studying Members">
+                        </div>
+                    
+                        <!-- Number of Siblings Receiving SPBT -->
+                        <div class="col-md-6">
+                            <label for="siblingsSPBT">Number of Siblings Receiving SPBT</label>
+                            <input type="text" id="siblingsSPBT" class="form-control" value="Test SPBT">
+                        </div>
+                    
+                        <!-- Number of Siblings Staying in Hostel -->
+                        <div class="col-md-6">
+                            <label for="siblingsHostel">Number of Siblings Staying in Hostel</label>
+                            <input type="text" id="siblingsHostel" class="form-control" value="Test Hostel">
+                        </div>
+                    
+                        <!-- Distance from Home to School -->
+                        <div class="col-md-6">
+                            <label for="distance">Distance from Home to School (in km)</label>
+                            <input type="text" id="distance" class="form-control" value="Test Distance">
+                        </div>
+                    
+                        <!-- Student Status (Orphan/Non-Orphan) -->
+                        <div class="col-md-6">
+                            <label for="studentStatus">Student Status</label>
+                            <input type="text" id="studentStatus" class="form-control" value="Test Status">
+                        </div>
+                    
+                        <!-- Student Guardian Status -->
+                        <div class="col-md-6">
+                            <label for="guardianStatus">Student Guardian Status</label>
+                            <input type="text" id="guardianStatus" class="form-control" value="Test Guardian Status">
+                        </div>
+                    
+                        <!-- Health Status -->
+                        <div class="col-md-6">
+                            <label for="healthStatus">Health Status</label>
+                            <input type="text" id="healthStatus" class="form-control" value="Test Health">
+                        </div>
+                    
+                        <!-- Reasons for Applying for Hostel -->
+                        <div class="col-md-12">
+                            <label for="hostelReason">Reasons for Applying for Hostel</label>
+                            <input type="text" id="hostelReason" class="form-control" value="Test Reason">
+                        </div>
+                    
+                        <!-- Part B: Guardian Information (Father / Male Guardian) -->
+                        <div class="col-12 section-title">Part B: Guardian Information (Father / Male Guardian)</div>
+                    
+                        <!-- Guardian Name -->
+                        <div class="col-md-6">
+                            <label for="fatherGuardianName">Guardian Name (Father / Male)</label>
+                            <input type="text" id="fatherGuardianName" class="form-control" value="Test Father Name">
+                        </div>
+                    
+                        <!-- Guardian IC Number -->
+                        <div class="col-md-6">
+                            <label for="fatherGuardianIc">Guardian IC Number</label>
+                            <input type="text" id="fatherGuardianIc" class="form-control" value="Test Father IC">
+                        </div>
+                    
+                        <!-- Citizenship -->
+                        <div class="col-md-6">
+                            <label for="fatherCitizenship">Citizenship</label>
+                            <input type="text" id="fatherCitizenship" class="form-control" value="Test Citizenship">
+                        </div>
+                    
+                        <!-- Guardian Address -->
+                        <div class="col-md-12">
+                            <label for="fatherGuardianAddress">Home Address</label>
+                            <input type="text" id="fatherGuardianAddress" class="form-control" value="Test Address">
+                        </div>
+                    
+                        <!-- Phone Number (Home & Mobile) -->
+                        <div class="col-md-6">
+                            <label for="fatherPhoneHome">Phone Number (Home)</label>
+                            <input type="text" id="fatherPhoneHome" class="form-control" value="Test Home Phone">
+                        </div>
+                    
+                        <div class="col-md-6">
+                            <label for="fatherPhoneMobile">Phone Number (Mobile)</label>
+                            <input type="text" id="fatherPhoneMobile" class="form-control" value="Test Mobile Phone">
+                        </div>
+                    
+                        <!-- Guardian Occupation -->
+                        <div class="col-md-6">
+                            <label for="fatherOccupation">Occupation (Position Name)</label>
+                            <input type="text" id="fatherOccupation" class="form-control" value="Test Occupation">
+                        </div>
+                    
+                        <!-- Guardian Income -->
+                        <div class="col-md-6">
+                            <label for="fatherIncome">Income (Basic Salary + Fixed Allowance)</label>
+                            <input type="text" id="fatherIncome" class="form-control" value="Test Income">
+                        </div>
+                    
+                        <!-- Employer's Address -->
+                        <div class="col-md-12">
+                            <label for="fatherEmployerAddress">Employer's Address</label>
+                            <input type="text" id="fatherEmployerAddress" class="form-control" value="Test Employer Address">
+                        </div>
+                    
+                        <!-- Part B: Guardian Information (Mother / Female Guardian) -->
+                        <div class="col-12 section-title">Part B: Guardian Information (Mother / Female Guardian)</div>
+                    
+                        <!-- Guardian Name -->
+                        <div class="col-md-6">
+                            <label for="motherGuardianName">Guardian Name (Mother / Female)</label>
+                            <input type="text" id="motherGuardianName" class="form-control" value="Test Mother Name">
+                        </div>
+                    
+                        <!-- Guardian IC Number -->
+                        <div class="col-md-6">
+                            <label for="motherGuardianIc">Guardian IC Number</label>
+                            <input type="text" id="motherGuardianIc" class="form-control" value="Test Mother IC">
+                        </div>
+                    
+                        <!-- Citizenship -->
+                        <div class="col-md-6">
+                            <label for="motherCitizenship">Citizenship</label>
+                            <input type="text" id="motherCitizenship" class="form-control" value="Test Mother Citizenship">
+                        </div>
+                    
+                        <!-- Guardian Address -->
+                        <div class="col-md-12">
+                            <label for="motherGuardianAddress">Home Address</label>
+                            <input type="text" id="motherGuardianAddress" class="form-control" value="Test Mother Address">
+                        </div>
+                    
+                        <!-- Phone Number (Home & Mobile) -->
+                        <div class="col-md-6">
+                            <label for="motherPhoneHome">Phone Number (Home)</label>
+                            <input type="text" id="motherPhoneHome" class="form-control" value="Test Home Phone">
+                        </div>
+                    
+                        <div class="col-md-6">
+                            <label for="motherPhoneMobile">Phone Number (Mobile)</label>
+                            <input type="text" id="motherPhoneMobile" class="form-control" value="Test Mobile Phone">
+                        </div>
+                    
+                        <!-- Guardian Occupation -->
+                        <div class="col-md-6">
+                            <label for="motherOccupation">Occupation (Position Name)</label>
+                            <input type="text" id="motherOccupation" class="form-control" value="Test Mother Occupation">
+                        </div>
+                    
+                        <!-- Guardian Income -->
+                        <div class="col-md-6">
+                            <label for="motherIncome">Income (Basic Salary + Fixed Allowance)</label>
+                            <input type="text" id="motherIncome" class="form-control" value="Test Mother Income">
+                        </div>
+                    
+                        <!-- Employer's Address -->
+                        <div class="col-md-12">
+                            <label for="motherEmployerAddress">Employer's Address</label>
+                            <input type="text" id="motherEmployerAddress" class="form-control" value="Test Mother Employer Address">
+                        </div>
+                    
+                        <!-- Submit Button -->
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div class="container">
 
@@ -113,65 +334,71 @@
         </table>
     </div>
 
+
+
+
+
     <script>
-        let selectedEntry = 0;
         document.addEventListener('DOMContentLoaded', function() {
             const modal = document.getElementById('studentManageModal');
 
             const entries = JSON.parse('{{ entries | tojson }}'); 
+
+            console.log(entries);
     
             modal.addEventListener('show.bs.modal', function(event) {
                 const button = event.relatedTarget;
                 const index = button.getAttribute('data-index');
                 
                 const entry = entries[index - 1];
-                selectedEntry = entry;
-                document.getElementById('studentName').innerText = entry["studentName"];
-                document.getElementById('studentIc').innerText = entry["studentIc"];
-                document.getElementById('formClass').innerText = entry["formClass"];
-                document.getElementById('stream').innerText = entry["stream"];
-                document.getElementById('race').innerText = entry["race"];
-                document.getElementById('familyMembers').innerText = entry["familyMembers"];
-                document.getElementById('familyStudying').innerText = entry["familyStudying"];
-                document.getElementById('siblingsSPBT').innerText = entry["siblingsSPBT"];
-                document.getElementById('siblingsHostel').innerText = entry["siblingsHostel"];
-                document.getElementById('distance').innerText = entry["distance"];
-                document.getElementById('studentStatus').innerText = entry["studentStatus"];
-                document.getElementById('guardianStatus').innerText = entry["guardianStatus"];
-                document.getElementById('healthStatus').innerText = entry["healthStatus"];
-                document.getElementById('hostelReason').innerText = entry["hostelReason"];
-                document.getElementById('fatherGuardianName').innerText = entry["fatherGuardianName"];
-                document.getElementById('fatherGuardianIc').innerText = entry["fatherGuardianIc"];
-                document.getElementById('fatherCitizenship').innerText = entry["fatherCitizenship"];
-                document.getElementById('fatherGuardianAddress').innerText = entry["fatherGuardianAddress"];
-                document.getElementById('fatherPhoneHome').innerText = entry["fatherPhoneHome"];
-                document.getElementById('fatherPhoneMobile').innerText = entry["fatherPhoneMobile"];
-                document.getElementById('fatherOccupation').innerText = entry["fatherOccupation"];
-                document.getElementById('fatherIncome').innerText = entry["fatherIncome"];
-                document.getElementById('fatherEmployerAddress').innerText = entry["fatherEmployerAddress"];
-                document.getElementById('motherGuardianName').innerText = entry["motherGuardianName"];
-                document.getElementById('motherGuardianIc').innerText = entry["motherGuardianIc"];
-                document.getElementById('motherCitizenship').innerText = entry["motherCitizenship"];
-                document.getElementById('motherGuardianAddress').innerText = entry["motherGuardianAddress"];
-                document.getElementById('motherPhoneHome').innerText = entry["motherPhoneHome"];
-                document.getElementById('motherPhoneMobile').innerText = entry["motherPhoneMobile"];
-                document.getElementById('motherOccupation').innerText = entry["motherOccupation"];
-                document.getElementById('motherIncome').innerText = entry["motherIncome"];
-                document.getElementById('motherEmployerAddress').innerText = entry["motherEmployerAddress"];
-                document.getElementById('UPSRResult').innerText = entry["upsrResults"];
-                document.getElementById('PT3Result').innerText = entry["pmrResults"];
-                document.getElementById('SPMTrialResult').innerText = entry["spmResults"];
-                document.getElementById('scholarship').innerText = entry["scholarship"];
-                document.getElementById('kwapm').innerText = entry["kwapm"];
-                document.getElementById('uniformedUnit').innerText = entry["uniformedUnit"];
-                document.getElementById('uniformedUnitPosition').innerText = entry["uniformedUnitPosition"];
-                document.getElementById('uniformedUnitRepresenting').innerText = entry["uniformedUnitRepresenting"];
-                document.getElementById('clubAssociation').innerText = entry["clubAssociation"];
-                document.getElementById('clubPosition').innerText = entry["clubPosition"];
-                document.getElementById('clubRepresenting').innerText = entry["clubRepresenting"];
-                document.getElementById('sportsGames').innerText = entry["sportsGames"];
-                document.getElementById('sportsPosition').innerText = entry["sportsPosition"];
-                document.getElementById('sportsRepresenting').innerText = entry["sportsRepresenting"];
+
+                console.log('Selected Entry:', entry);
+                document.getElementById('studentName').value = entry["studentName"];
+                document.getElementById('studentIc').value = entry["studentIc"];
+                document.getElementById('formClass').value = entry["formClass"];
+                document.getElementById('stream').value = entry["stream"];
+                document.getElementById('race').value = entry["race"];
+                document.getElementById('familyMembers').value = entry["familyMembers"];
+                document.getElementById('familyStudying').value = entry["familyStudying"];
+                document.getElementById('siblingsSPBT').value = entry["siblingsSPBT"];
+                document.getElementById('siblingsHostel').value = entry["siblingsHostel"];
+                document.getElementById('distance').value = entry["distance"];
+                document.getElementById('studentStatus').value = entry["studentStatus"];
+                document.getElementById('guardianStatus').value = entry["guardianStatus"];
+                document.getElementById('healthStatus').value = entry["healthStatus"];
+                document.getElementById('hostelReason').value = entry["hostelReason"];
+                document.getElementById('fatherGuardianName').value = entry["fatherGuardianName"];
+                document.getElementById('fatherGuardianIc').value = entry["fatherGuardianIc"];
+                document.getElementById('fatherCitizenship').value = entry["fatherCitizenship"];
+                document.getElementById('fatherGuardianAddress').value = entry["fatherGuardianAddress"];
+                document.getElementById('fatherPhoneHome').value = entry["fatherPhoneHome"];
+                document.getElementById('fatherPhoneMobile').value = entry["fatherPhoneMobile"];
+                document.getElementById('fatherOccupation').value = entry["fatherOccupation"];
+                document.getElementById('fatherIncome').value = entry["fatherIncome"];
+                document.getElementById('fatherEmployerAddress').value = entry["fatherEmployerAddress"];
+                document.getElementById('motherGuardianName').value = entry["motherGuardianName"];
+                document.getElementById('motherGuardianIc').value = entry["motherGuardianIc"];
+                document.getElementById('motherCitizenship').value = entry["motherCitizenship"];
+                document.getElementById('motherGuardianAddress').value = entry["motherGuardianAddress"];
+                document.getElementById('motherPhoneHome').value = entry["motherPhoneHome"];
+                document.getElementById('motherPhoneMobile').value = entry["motherPhoneMobile"];
+                document.getElementById('motherOccupation').value = entry["motherOccupation"];
+                document.getElementById('motherIncome').value = entry["motherIncome"];
+                document.getElementById('motherEmployerAddress').value = entry["motherEmployerAddress"];
+                document.getElementById('UPSRResult').value = entry["upsrResults"];
+                document.getElementById('PT3Result').value = entry["pmrResults"];
+                document.getElementById('SPMTrialResult').value = entry["spmResults"];
+                document.getElementById('scholarship').value = entry["scholarship"];
+                document.getElementById('kwapm').value = entry["kwapm"];
+                document.getElementById('uniformedUnit').value = entry["uniformedUnit"];
+                document.getElementById('uniformedUnitPosition').value = entry["uniformedUnitPosition"];
+                document.getElementById('uniformedUnitRepresenting').value = entry["uniformedUnitRepresenting"];
+                document.getElementById('clubAssociation').value = entry["clubAssociation"];
+                document.getElementById('clubPosition').value = entry["clubPosition"];
+                document.getElementById('clubRepresenting').value = entry["clubRepresenting"];
+                document.getElementById('sportsGames').value = entry["sportsGames"];
+                document.getElementById('sportsPosition').value = entry["sportsPosition"];
+                document.getElementById('sportsRepresenting').value = entry["sportsRepresenting"];
             });
         });
     </script>

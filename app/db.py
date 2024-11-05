@@ -1,8 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 
-mysql_url = "${{ MySQL.MYSQL_URL }}"
-print(mysql_url)
+mysql_url = "mysql://root:EAnDoELmcbiofXxjkVmUZoOsklrbBIno@junction.proxy.rlwy.net:30982/railway"
 
 try:
     db_config = mysql_url.split("://")[1].split("@")

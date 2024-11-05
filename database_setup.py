@@ -17,7 +17,7 @@ try:
     db_config = mysql_url.split("://")[1].split("@")
     user_pass = db_config[0].split(":")
     host_port_db = db_config[1].split("/")
-    host_port = host_port_db[0].split(":")
+    host_port = host_port_db[0].split(":")  
 
     # Establish connection to the Railway MySQL database
     mydb = mysql.connector.connect(

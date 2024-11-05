@@ -80,3 +80,12 @@ def retrived_table_joined():
         return entries
     except mysql.connector.Error as e:
         return f"Error: {e}"
+    
+
+def update_ban_period(student_id, outing_datetime):
+    cursor.execute('''
+        UPDATE student_outing_placeholder
+        SET banPeriod = %s
+        WHERE studentID = %s
+    ''', (outing_datetime, student_id))
+    mydb.commit()

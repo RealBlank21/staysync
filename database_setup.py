@@ -175,6 +175,37 @@ cursor.executemany(insert_query, placeholder_values)
 
 mydb.commit()
 
+
+create_table_query = '''
+CREATE TABLE IF NOT EXISTS student_outing_placeholder (
+    studentID INTEGER PRIMARY KEY AUTO_INCREMENT,
+    studentName TEXT NOT NULL,
+    studentIC TEXT NOT NULL,
+    formClass TEXT NOT NULL,
+    banPeriod TEXT  -- You can use TEXT to store date ranges or specific dates, or use DATE type if available
+);
+'''
+
+cursor.execute(create_table_query)
+
+students = [
+    ('Ahmad Firdaus', '990101-14-1234', 'Form 5A', ''),
+    ('Siti Zulaikha', '970404-12-7890', 'Form 5C', ''),
+    ('Aisyah Hasan', '951212-07-1234', 'Form 6B', ''),
+    ('Muhammad Izzat', '940606-08-7654', 'Form 6A', ''),
+    ('Nurul Iman', '980808-10-4321', 'Form 4A', '')
+]
+
+# Insert the data into the table
+insert_query = '''
+INSERT INTO student_outing_placeholder (studentName, studentIC, formClass, banPeriod)
+VALUES (%s, %s, %s, %s);
+'''
+
+cursor.executemany(insert_query, students)
+
+mydb.commit()
+
 create_students_table_query = """
 CREATE TABLE IF NOT EXISTS students (
     studentID INT AUTO_INCREMENT PRIMARY KEY,

@@ -3,6 +3,7 @@ from flask_mail import Mail, Message
 from datetime import timedelta
 import os
 from app import authentication, db
+from datetime import datetime
 
 with open("SESSION.txt", 'r') as file:
     SESSION = file.read().strip()
@@ -173,6 +174,45 @@ def admin_information():
     entries = db.retrieve_table_dict("admin")
 
     return render_template('admin.html', username=username, user_role=user_role, entries=entries)
+
+@app.route('/outing_manager')
+def outing_manager():
+    students = db.retrieve_table_dict("student_outing_placeholder")
+    return render_template('outing_manager.html', entries=students)
+
+@app.route('/outing_check')
+def outing_check():
+    students = db.retrieve_table_dict("student_outing_placeholder")
+    return render_template('outing_check.html', entries=students)
+
+@app.route('/student_outing', methods=['POST'])
+def student_outing():
+    outing_student_id = request.form.get('outing_student_id')
+
+    students = db.retrieve_table_dict("student_outing_placeholder")
+
+    banPeriod = students[int(outing_student_id) - 1]["banPeriod"]
+
+    current_time = datetime.now()
+
+    if not banPeriod or current_time > datetime.fromisoformat(banPeriod):
+        print("You can go outing.")
+        return redirect(url_for('outing_check'))
+
+    print("You are still in the ban period.")
+
+    return redirect(url_for('outing_check', error='Invalid student ID'))
+
+@app.route('/save_outing_ban', methods=['POST'])
+def save_outing_ban():
+    for field_name, outing_datetime in request.form.items():
+        if field_name.startswith("outingDateTime_"):
+            student_id = field_name.split("_")[1]
+            if outing_datetime:
+                db.update_ban_period(student_id, outing_datetime)
+                print(outing_datetime)
+
+    return redirect(url_for('outing_manager'))
 
 @app.route('/send_email', methods=['POST'])
 def send_email():

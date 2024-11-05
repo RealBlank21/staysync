@@ -1,1 +1,1 @@
-web: gunicorn run:staysync
+web: gunicorn run:app

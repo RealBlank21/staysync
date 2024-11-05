@@ -1,1 +1,1 @@
-web: gunicorn run:staysync
+web: python app.py

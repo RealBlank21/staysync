@@ -35,13 +35,23 @@ except Exception as e:
 
 cursor = mydb.cursor()
 
-cursor.execute("DROP DATABASE IF EXISTS stay_sync")
-print("Database dropped successfully.")
 
-cursor.execute("CREATE DATABASE stay_sync")
+
+####################################################### Removing table and data #######################################################
+cursor.execute("SHOW TABLES")
+tables = cursor.fetchall()
+
+for table in tables:
+    table_name = table[0]
+    try:
+        cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+        print(f"[✔] Successfully dropped {table_name}.")
+    except Exception as e:
+        print(f"[✗] Error dropping {table_name}: {e}")
+print("")
+####################################################### End of Removing table and data #######################################################
+
 print("Database created successfully.")
-
-cursor.execute("USE stay_sync")
 
 cursor.execute("""
     CREATE TABLE user_credentials (

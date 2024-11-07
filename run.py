@@ -232,3 +232,6 @@ def forgot_password():
 @app.route('/test', methods=['GET', 'POST'])
 def test():
     return render_template('test.html', error_message="Error")
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)

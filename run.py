@@ -241,6 +241,10 @@ def save_outing_ban():
 
     return redirect(url_for('outing_manager'))
 
+@app.route("/fingerprint_test")
+def index():
+    return render_template("fingerprint_test.html")
+
 @app.route('/send_email', methods=['POST'])
 def send_email():
     try:

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fingerprint Verification with WebAuthn</title>
+</head>
+<body>
+    <h1>Fingerprint Verification</h1>
+    <button id="fingerprintButton">Verify with Fingerprint</button>
+    <p id="status"></p>
+
+    <script>
+        const fingerprintButton = document.getElementById("fingerprintButton");
+        const status = document.getElementById("status");
+
+        fingerprintButton.addEventListener("click", async () => {
+            if (!window.PublicKeyCredential) {
+                status.textContent = "WebAuthn is not supported on this browser.";
+                return;
+            }
+
+            try {
+                const challenge = new Uint8Array(32);
+                window.crypto.getRandomValues(challenge);
+
+                const publicKey = {
+                    challenge: challenge,
+                    rpId: window.location.hostname,
+                    userVerification: "required"
+                };
+
+                const credential = await navigator.credentials.get({ publicKey });
+
+                if (credential) {
+                    status.textContent = "Fingerprint verification successful!";
+                } else {
+                    status.textContent = "Fingerprint verification failed.";
+                }
+            } catch (error) {
+                console.error("Error during fingerprint verification:", error);
+                status.textContent = "Fingerprint verification failed: " + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -6,12 +6,16 @@ with open("PEPPER.txt", 'r') as file:
     PEPPER = file.read().strip()
 
 def hash_password(password):
-    salt = os.urandom(16)
-    ph = argon2.PasswordHasher()
-    hashed_password = ph.hash(password + PEPPER)
-    return hashed_password
+    try:
+        salt = os.urandom(16)
+        ph = argon2.PasswordHasher()
+        hashed_password = ph.hash(password + PEPPER)
+        return hashed_password
+    except Exception as e:
+        print(f"Error hashing password: {e}")
+        return None
 
-mysql_url = "mysql://root:EAnDoELmcbiofXxjkVmUZoOsklrbBIno@junction.proxy.rlwy.net:30982/railway"
+mysql_url = "mysql://root:cldWscwfzqrsQIsVFeEFSIvOPjwhWhfd@junction.proxy.rlwy.net:20548/railway"
 
 try:
     db_config = mysql_url.split("://")[1].split("@")
@@ -19,415 +23,264 @@ try:
     host_port_db = db_config[1].split("/")
     host_port = host_port_db[0].split(":")  
 
-    # Establish connection to the Railway MySQL database
     mydb = mysql.connector.connect(
         host=host_port[0],
         user=user_pass[0],
         password=user_pass[1],
-        port=host_port[1],
+        port=int(host_port[1]),
         database=host_port_db[1]
     )
 
-    print("Database connection successful!")
+    print("[✔] Database connection successful!")
 
-except Exception as e:
-    print(f"Error connecting to the database: {e}")
+    cursor = mydb.cursor(dictionary=True)
+    print("[✔] Database cursor created")
+    print("")
+    
+    ####################################################### Removing table and data #######################################################
+    cursor.execute("SHOW TABLES")
+    tables = cursor.fetchall()
 
-cursor = mydb.cursor()
+    for table in tables:
+        table_name = table["Tables_in_railway"]
+        try:
+            cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+            print(f"[✔] Successfully dropped {table_name}.")
+        except Exception as e:
+            print(f"[✗] Error dropping {table_name}: {e}")
+    print("")
+    ####################################################### End of Removing table and data #######################################################
 
-
-
-####################################################### Removing table and data #######################################################
-cursor.execute("SHOW TABLES")
-tables = cursor.fetchall()
-
-for table in tables:
-    table_name = table[0]
-    try:
-        cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
-        print(f"[✔] Successfully dropped {table_name}.")
-    except Exception as e:
-        print(f"[✗] Error dropping {table_name}: {e}")
-print("")
-####################################################### End of Removing table and data #######################################################
-
-print("Database created successfully.")
-
-cursor.execute("""
-    CREATE TABLE user_credentials (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        username VARCHAR(255) UNIQUE,
-        email VARCHAR(255),
-        password VARCHAR(255),
-        user_role ENUM('Admin', 'Warden', 'Student')
+    ####################################################### Creating table and data for admin #######################################################
+    create_table_query = """
+    CREATE TABLE admin (
+        admin_ic VARCHAR(12) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        phone_number VARCHAR(20),
+        address TEXT,
+        date_of_joining DATE,
+        gender ENUM('Male', 'Female'),
+        password VARCHAR(255) NOT NULL
     );
-""")
-print("Table created successfully.")
+    """
+    cursor.execute(create_table_query)
+    print("[✔] Admin table created successfully!")
 
-users = [
-    ('Admin', "realblanket21@gmail.com" ,hash_password('Admin'), 'Admin'),
-    ('Warden', "realblanket21@gmail.com" ,hash_password('Warden'), 'Warden'),
-    ('Student', "realblanket21@gmail.com" ,hash_password('Student'), 'Student')
-]
+    password = 'Admin'  # The raw password
+    hashed_password = hash_password(password)
 
-cursor.executemany("""
-    INSERT INTO user_credentials (username, email, password, user_role)
-    VALUES (%s, %s, %s, %s)
-""", users)
+    if hashed_password:
+        insert_query = """
+        INSERT INTO admin (admin_ic, name, email, phone_number, address, date_of_joining, gender, password)
+        VALUES
+        ('900101145678', 'ZAINAB ISMAIL', 'zainab.ismail@gmail.com', '012-3456789', '45 Jalan Tanjung, George Town, Penang', '2022-11-10', 'Female', %s);
+        """
+        
+        cursor.execute(insert_query, (hashed_password,))
+        
+        mydb.commit()
+        print("[✔] Record inserted successfully with hashed password!")
+        print("")
 
-cursor.execute("SELECT * FROM user_credentials")  # Replace with your actual table name
-result = cursor.fetchall()
-print(str(result))
+    ####################################################### End of Creating table and data for admin #######################################################
 
-create_table_query = """
-CREATE TABLE IF NOT EXISTS hostel_applications (
-    hostelApplicationID INT AUTO_INCREMENT PRIMARY KEY,
-    studentName VARCHAR(255),
-    studentIc VARCHAR(255),
-    formClass VARCHAR(50),
-    stream VARCHAR(50),
-    race VARCHAR(50),
-    familyMembers INT,
-    familyStudying INT,
-    siblingsSPBT INT,
-    siblingsHostel INT,
-    distance FLOAT,
-    studentStatus VARCHAR(50),
-    guardianStatus VARCHAR(50),
-    healthStatus VARCHAR(255),
-    hostelReason VARCHAR(255),
-    fatherGuardianName VARCHAR(255),
-    fatherGuardianIc VARCHAR(255),
-    fatherCitizenship VARCHAR(50),
-    fatherGuardianAddress VARCHAR(255),
-    fatherPhoneHome VARCHAR(50),
-    fatherPhoneMobile VARCHAR(50),
-    fatherOccupation VARCHAR(100),
-    fatherIncome FLOAT,
-    fatherEmployerAddress VARCHAR(255),
-    motherGuardianName VARCHAR(255),
-    motherGuardianIc VARCHAR(255),
-    motherCitizenship VARCHAR(50),
-    motherGuardianAddress VARCHAR(255),
-    motherPhoneHome VARCHAR(50),
-    motherPhoneMobile VARCHAR(50),
-    motherOccupation VARCHAR(100),
-    motherIncome FLOAT,
-    motherEmployerAddress VARCHAR(255),
-    upsrResults VARCHAR(50),
-    pmrResults VARCHAR(50),
-    spmResults VARCHAR(50),
-    latestExamResults VARCHAR(50),
-    spbt BOOLEAN,
-    scholarship BOOLEAN,
-    kwapm BOOLEAN,
-    uniformedUnit VARCHAR(100),
-    uniformedUnitPosition VARCHAR(100),
-    uniformedUnitRepresenting VARCHAR(255),
-    clubAssociation VARCHAR(100),
-    clubPosition VARCHAR(100),
-    clubRepresenting VARCHAR(255),
-    sportsGames VARCHAR(100),
-    sportsPosition VARCHAR(100),
-    sportsRepresenting VARCHAR(255),
-    applicationStatus VARCHAR(50) DEFAULT 'Pending'
-);
-"""
+    ####################################################### Creating table and data for warden #######################################################
+    create_table_query = """
+    CREATE TABLE warden (
+        warden_ic VARCHAR(12) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        phone_number VARCHAR(20),
+        address TEXT,
+        date_of_joining DATE,
+        gender ENUM('Male', 'Female'),
+        password VARCHAR(255) NOT NULL
+    );
+    """
+    cursor.execute(create_table_query)
+    print("[✔] Warden table created successfully!")
 
-cursor.execute(create_table_query)
+    hashed_password = [hash_password('Warden1'), hash_password('Warden2')]
 
-placeholder_values = [(
-    "MUHAMMAD ADLI BIN NAZLI", "041121070023", "4 Alhaitham", "Science", "Malay", 4, 2, 1, 1, 5.0, "Active", "Living with guardian", "Good", 
-    "For better education", "Mr. Kaveh", "987654321098", "Malaysian", "123 Akademiya Street", "123-456789", "987-654321", 
-    "Engineer", 5000.00, "Akademiya Corporation", "Mrs. Chiori", "876543210987", "Malaysian", "123 Akademiya Street", "123-456789", 
-    "987-654321", "Teacher", 3000.00, "SMKA Sumeru", "A", "B", "C", "D", True, False, True, "Scout", "Leader", 
-    "National Level", "Science Club", "President", "International Science Fair", "Football", "Captain", "State Level"
-),
-(
-    "NUR AIN BINTI ABDULLAH", "041121070045", "3 Tighnari", "Commerce", "Malay", 3, 3, 2, 1, 4.8, "Active", "Living with parents", "Excellent", 
-    "Scholarship opportunity", "Mr. Tighnari", "987654321199", "Malaysian", "456 Mawar Avenue", "111-222333", "999-888777", 
-    "Doctor", 8000.00, "Mawar Clinic", "Mrs. Layla", "876543210888", "Malaysian", "456 Mawar Avenue", "111-222333", 
-    "999-888777", "Nurse", 3500.00, "Mawar Clinic", "A", "A", "B", "C", True, True, False, "Debate", "Member", 
-    "State Level", "Drama Club", "Vice President", "State Drama Competition", "Badminton", "Player", "District Level"
-),
-(
-    "AHMAD BIN SULAIMAN", "041121070067", "2 Cyno", "Arts", "Malay", 2, 2, 1, 2, 4.2, "Active", "Living with guardian", "Fair", 
-    "Better facilities", "Mr. Alhaitham", "987654321222", "Malaysian", "789 Sakura Road", "333-444555", "111-222333", 
-    "Architect", 6500.00, "Sakura Designs", "Mrs. Nilou", "876543210666", "Malaysian", "789 Sakura Road", "333-444555", 
-    "111-222333", "Interior Designer", 4000.00, "Sakura Designs", "B", "B", "C", "D", False, True, True, "Art", "Secretary", 
-    "National Level", "Music Club", "Member", "National Art Exhibition", "Basketball", "Player", "National Level"
-),
-(
-    "SITI FATIMAH BINTI HARIS", "041121070089", "1 Dehya", "Humanities", "Malay", 1, 1, 1, 1, 4.9, "Active", "Living with parents", "Good", 
-    "Closer to home", "Mr. Nahida", "987654321333", "Malaysian", "111 Jasmine Lane", "777-888999", "444-555666", 
-    "Lawyer", 9000.00, "Jasmine Law Firm", "Mrs. Niloufar", "876543210555", "Malaysian", "111 Jasmine Lane", "777-888999", 
-    "444-555666", "Lecturer", 6000.00, "National University", "A", "B", "A", "B", True, False, False, "Chess", "Member", 
-    "International Level", "Philosophy Club", "President", "National Debate Championship", "Tennis", "Player", "National Level"
-),
-(
-    "FAIZ BIN RAZAK", "041121070121", "5 Collei", "Science", "Malay", 5, 3, 2, 1, 4.7, "Active", "Living with guardian", "Excellent", 
-    "Better science labs", "Mr. Cyno", "987654321444", "Malaysian", "321 Moonlight Drive", "999-111222", "888-777666", 
-    "Engineer", 7000.00, "Moonlight Engineering", "Mrs. Rosaria", "876543210444", "Malaysian", "321 Moonlight Drive", "999-111222", 
-    "888-777666", "Accountant", 3500.00, "Moonlight Engineering", "B", "C", "B", "A", False, True, True, "Robotics", "Member", 
-    "State Level", "Science Club", "President", "National Robotics Championship", "Swimming", "Captain", "State Level"
-),
-(
-    "AISHA BINTI HAMZAH", "041121070143", "3 Yae", "Commerce", "Malay", 3, 2, 1, 2, 4.5, "Active", "Living with parents", "Fair", 
-    "School reputation", "Mr. Ayato", "987654321555", "Malaysian", "654 Rose Garden", "222-333444", "555-666777", 
-    "Businessman", 8000.00, "Rose Enterprises", "Mrs. Ei", "876543210333", "Malaysian", "654 Rose Garden", "222-333444", 
-    "555-666777", "Bank Manager", 4500.00, "Rose Bank", "A", "A", "C", "B", True, False, True, "Business", "Member", 
-    "National Level", "Economics Club", "Vice President", "National Business Competition", "Netball", "Player", "State Level"
-),
-(
-    "ZAIN BIN FARHAN", "041121070165", "4 Tighnari", "Arts", "Malay", 4, 3, 2, 1, 4.3, "Active", "Living with guardian", "Good", 
-    "Improved arts program", "Mr. Kaveh", "987654321666", "Malaysian", "987 Pine Street", "444-555666", "777-888999", 
-    "Artist", 5000.00, "Pine Arts Studio", "Mrs. Collei", "876543210222", "Malaysian", "987 Pine Street", "444-555666", 
-    "777-888999", "Art Teacher", 3000.00, "Pine Arts School", "C", "C", "A", "B", True, True, False, "Painting", "Leader", 
-    "National Level", "Art Club", "Member", "National Art Festival", "Tennis", "Player", "District Level"
-)]
+    data = [
+        ('880212123456', 'ADAM RAHMAN', 'adam.rahman@gmail.com', '019-8765432', '56 Jalan Bayan Lepas, Penang', '2021-04-20', 'Male', hashed_password[0]),
+        ('910305089876', 'SITI MARIAM', 'siti.mariam@gmail.com', '017-2345678', '21 Jalan Perak, George Town, Penang', '2022-06-15', 'Female', hashed_password[1])
+    ]
 
+    insert_query = """
+    INSERT INTO warden (warden_ic, name, email, phone_number, address, date_of_joining, gender, password)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+    """
 
-insert_query = """
-INSERT INTO hostel_applications (
-    studentName, studentIc, formClass, stream, race, familyMembers, familyStudying, siblingsSPBT, siblingsHostel, 
-    distance, studentStatus, guardianStatus, healthStatus, hostelReason, fatherGuardianName, fatherGuardianIc, 
-    fatherCitizenship, fatherGuardianAddress, fatherPhoneHome, fatherPhoneMobile, fatherOccupation, fatherIncome, 
-    fatherEmployerAddress, motherGuardianName, motherGuardianIc, motherCitizenship, motherGuardianAddress, 
-    motherPhoneHome, motherPhoneMobile, motherOccupation, motherIncome, motherEmployerAddress, upsrResults, pmrResults, 
-    spmResults, latestExamResults, spbt, scholarship, kwapm, uniformedUnit, uniformedUnitPosition, 
-    uniformedUnitRepresenting, clubAssociation, clubPosition, clubRepresenting, sportsGames, sportsPosition, sportsRepresenting
-) VALUES (
-    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-);
-"""
-
-cursor.executemany(insert_query, placeholder_values)
-
-mydb.commit()
-
-
-create_table_query = '''
-CREATE TABLE IF NOT EXISTS student_outing_placeholder (
-    studentID INTEGER PRIMARY KEY AUTO_INCREMENT,
-    studentName TEXT NOT NULL,
-    studentIC TEXT NOT NULL,
-    formClass TEXT NOT NULL,
-    banPeriod TEXT  -- You can use TEXT to store date ranges or specific dates, or use DATE type if available
-);
-'''
-
-cursor.execute(create_table_query)
-
-students = [
-    ('Ahmad Firdaus', '990101-14-1234', 'Form 5A', ''),
-    ('Siti Zulaikha', '970404-12-7890', 'Form 5C', ''),
-    ('Aisyah Hasan', '951212-07-1234', 'Form 6B', ''),
-    ('Muhammad Izzat', '940606-08-7654', 'Form 6A', ''),
-    ('Nurul Iman', '980808-10-4321', 'Form 4A', '')
-]
-
-# Insert the data into the table
-insert_query = '''
-INSERT INTO student_outing_placeholder (studentName, studentIC, formClass, banPeriod)
-VALUES (%s, %s, %s, %s);
-'''
-
-cursor.executemany(insert_query, students)
-
-mydb.commit()
-
-create_students_table_query = """
-CREATE TABLE IF NOT EXISTS students (
-    studentID INT AUTO_INCREMENT PRIMARY KEY,
-    studentName VARCHAR(255),
-    studentIc VARCHAR(255),
-    formClass VARCHAR(50),
-    stream VARCHAR(50),
-    race VARCHAR(50),
-    familyMembers INT,
-    familyStudying INT,
-    siblingsSPBT INT,
-    siblingsHostel INT,
-    distance FLOAT,
-    studentStatus VARCHAR(50),
-    guardianStatus VARCHAR(50),
-    healthStatus VARCHAR(255),
-    fatherGuardianName VARCHAR(255),
-    fatherGuardianIc VARCHAR(255),
-    fatherCitizenship VARCHAR(50),
-    fatherGuardianAddress VARCHAR(255),
-    fatherPhoneHome VARCHAR(50),
-    fatherPhoneMobile VARCHAR(50),
-    fatherOccupation VARCHAR(100),
-    fatherIncome FLOAT,
-    fatherEmployerAddress VARCHAR(255),
-    motherGuardianName VARCHAR(255),
-    motherGuardianIc VARCHAR(255),
-    motherCitizenship VARCHAR(50),
-    motherGuardianAddress VARCHAR(255),
-    motherPhoneHome VARCHAR(50),
-    motherPhoneMobile VARCHAR(50),
-    motherOccupation VARCHAR(100),
-    motherIncome FLOAT,
-    motherEmployerAddress VARCHAR(255),
-    upsrResults VARCHAR(50),
-    pmrResults VARCHAR(50),
-    spmResults VARCHAR(50),
-    latestExamResults VARCHAR(50),
-    spbt BOOLEAN,
-    scholarship BOOLEAN,
-    kwapm BOOLEAN,
-    uniformedUnit VARCHAR(100),
-    uniformedUnitPosition VARCHAR(100),
-    uniformedUnitRepresenting VARCHAR(255),
-    clubAssociation VARCHAR(100),
-    clubPosition VARCHAR(100),
-    clubRepresenting VARCHAR(255),
-    sportsGames VARCHAR(100),
-    sportsPosition VARCHAR(100),
-    sportsRepresenting VARCHAR(255)
-);
-"""
-
-cursor.execute(create_students_table_query)
-
-students_data = [
-    ('Ahmad Firdaus', '990101-14-1234', 'Form 5A', 'Science', 'Malay', 5, 2, 1, 0, 12.5, 'Active', 'Both Parents', 'Healthy', 
-     'Hakim bin Ahmad', '760101-05-1234', 'Malaysian', 'No. 4, Jalan Tun Ismail, Kuala Lumpur', '03-12345678', '012-3456789', 
-     'Engineer', 5000, 'KL Tower, Kuala Lumpur', 'Siti Aminah', '770202-10-9876', 'Malaysian', 'No. 4, Jalan Tun Ismail, Kuala Lumpur', 
-     '03-87654321', '011-2345678', 'Teacher', 3500, 'School A, KL', '5As', '7As', '9As', 'Top 10', True, True, False, 
-     'Scout', 'Leader', 'National', 'Science Club', 'President', 'State', 'Football', 'Captain', 'State'),
+    cursor.executemany(insert_query, data)
     
-    ('Siti Zulaikha', '970404-12-7890', 'Form 5C', 'Arts', 'Malay', 6, 3, 1, 2, 15.0, 'Active', 'Both Parents', 'Healthy', 
-     'Zul Ariffin', '731212-02-9876', 'Malaysian', 'No. 45, Jalan Sri Hartamas, KL', '03-98765432', '013-1234567', 'Policeman', 
-     4000, 'Police HQ, KL', 'Salmah Ahmad', '741010-04-5432', 'Malaysian', 'No. 45, Jalan Sri Hartamas, KL', '03-76543234', 
-     '011-2345678', 'Businesswoman', 5000, 'Sri Hartamas, KL', '3As', '5As', '7As', 'Improving', True, False, True, 
-     'Girl Guides', 'Vice Leader', 'State', 'Drama Club', 'President', 'National', 'Netball', 'Player', 'District'),
+    mydb.commit()
+    print("[✔] Warden records inserted successfully with hashed passwords!")
+    print("")
+    ####################################################### End of Creating table and data for warden #######################################################
+
+    ####################################################### Creating table and data for student #######################################################
+    create_table_query = """
+    CREATE TABLE student (
+        student_ic VARCHAR(12) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        form_class VARCHAR(20),
+        race VARCHAR(50),
+        gender ENUM('Male', 'Female'),
+        citizenship VARCHAR(40),
+        family_members INT,
+        address TEXT,
+        home_distance INT,
+        guardian_status ENUM('Father', 'Mother', 'Others'),
+        guardian_contact VARCHAR(20),
+        outing_ban_period DATE DEFAULT NULL
+    );
+    """
+    cursor.execute(create_table_query)
+    print("[✔] Student table created successfully!")
+
+    data = [
+        ('010101123456', 'AMIRUL ZULKIFLI', 'amirul@gmail.com', '4A', 'Malay', 'Male', 'Malaysian', 4, '123 Jalan Merdeka, Penang', '15', 'Father', '012-3456789', None),
+        ('020202225678', 'AISYAH BINTI ZAIN', 'aisyah@gmail.com', '3B', 'Malay', 'Female', 'Malaysian', 4, '45 Taman Impian, Bukit Mertajam, Penang', '20', 'Mother', '013-8765432', '2024-11-15'),
+        ('030303337890', 'DANIEL LIM', 'daniel@gmail.com', '5C', 'Chinese', 'Male', 'Malaysian', 2, '78 Jalan Sungai, George Town, Penang', '10', 'Father', '014-2345678', None),
+        ('040404442345', 'NURUL HIDAYAH', 'hidayah@gmail.com', '2D', 'Malay', 'Female', 'Malaysian', 3, '56 Jalan Kampung, Bukit Jambul, Penang', '18', 'Mother', '019-1234567', None),
+        ('050505556789', 'KAMARUL AKMAL', 'akmal@gmail.com', '6E', 'Malay', 'Male', 'Malaysian', 6, '12 Taman Sejahtera, Penang', '12', 'Father', '016-9876543', None)
+    ]
+
+    insert_query = """
+    INSERT INTO student (student_ic, name, email, form_class, race, gender, citizenship, family_members, address, home_distance, guardian_status, guardian_contact, outing_ban_period)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+    """
+
+    cursor.executemany(insert_query, data)
+
+    mydb.commit()
+    print("[✔] Students records inserted successfully!")
+    print("")
+    ####################################################### End of Creating table and data for student #######################################################
     
-    ('Aisyah Hasan', '951212-07-1234', 'Form 6B', 'Commerce', 'Malay', 2, 0, 0, 0, 25.3, 'Active', 'Single Parent', 'Asthma', 
-     'Hasan Ali', '701212-09-4321', 'Malaysian', 'No. 90, Jalan Ampang, KL', '03-43210987', '019-1234567', 'Accountant', 
-     6000, 'Ampang, KL', 'Nurul Aida', '721010-08-5432', 'Malaysian', 'No. 90, Jalan Ampang, KL', '03-54321098', '012-3456789', 
-     'Nurse', 4500, 'Hospital Ampang', '7As', '9As', '10As', 'Excellent', True, False, True, 'Brass Band', 'Member', 'National', 
-     'Dance Club', 'Member', 'State', 'Tennis', 'Player', 'District'),
+    ####################################################### Creating table and data for hostel_application #######################################################
+    create_table_query = """
+    CREATE TABLE hostel_application (
+        student_ic VARCHAR(12) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        form_class VARCHAR(50) NOT NULL,
+        race VARCHAR(50),
+        citizenship VARCHAR(50),
+        family_members INT,
+        address TEXT,
+        home_distance DECIMAL(10, 2),
+        guardian_status ENUM('Father', 'Mother', 'Others'),
+        guardian_contact VARCHAR(20),
+        status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending'
+    );
+    """
+
+    cursor.execute(create_table_query)
+    print("[✔] Hostel Application table created successfully!")
+
+    data = [
+        ('011205135678', 'ADAM TAN', 'adamtan@gmail.com', '4C', 'Chinese', 'Malaysian', 4, 
+        '45 Jalan Bukit, Penang', '20', 'Father', '012-3344556', 'Pending'),
+        
+        ('021305227890', 'NURUL FARHANA', 'farhana@gmail.com', '3B', 'Malay', 'Malaysian', 3, 
+        '67 Taman Sejahtera, Bayan Lepas, Penang', '15', 'Mother', '013-6677889', 'Pending'),
+        
+        ('031406322345', 'RAJESH KUMAR', 'kumar@gmail.com', '5A', 'Indian', 'Malaysian', 5, 
+        '123 Jalan Dato, George Town, Penang', '18', 'Father', '016-2233445', 'Pending'),
+        
+        # Additional Entries
+        ('041507432198', 'CHONG MEI LING', 'meiling@gmail.com', '2A', 'Chinese', 'Malaysian', 2, 
+        '89 Lorong Melur, Butterworth, Penang', '14', 'Mother', '017-8899001', 'Pending'),
+        
+        ('051608542187', 'ALI HASSAN', 'alihassan@gmail.com', '5B', 'Malay', 'Malaysian', 5, 
+        '22 Jalan Merdeka, Sungai Petani, Kedah', '18', 'Father', '018-1122334', 'Pending'),
+        
+        ('061709652376', 'SITI AISHAH', 'sitiaishah@gmail.com', '4D', 'Malay', 'Malaysian', 4, 
+        '31 Jalan Tunku Abdul Rahman, Alor Setar, Kedah', '17', 'Mother', '019-3344556', 'Pending'),
+        
+        ('071810762465', 'BALAKRISHNAN', 'bala@gmail.com', '3C', 'Indian', 'Malaysian', 3, 
+        '76 Jalan Hang Tuah, Ipoh, Perak', '16', 'Father', '012-5566778', 'Pending'),
+        
+        ('081911872554', 'ANGELINA TAN', 'angelina@gmail.com', '1B', 'Chinese', 'Malaysian', 1, 
+        '34 Jalan Utama, Seberang Perai, Penang', '13', 'Mother', '014-9988776', 'Pending'),
+        
+        ('091012982643', 'FAIZAL HAKIM', 'faizalhakim@gmail.com', '2D', 'Malay', 'Malaysian', 2, 
+        '11 Jalan Bukit Mertajam, Bukit Mertajam, Penang', '14', 'Father', '011-2244668', 'Pending'),
+        
+        ('101113093732', 'TAN YI XUAN', 'yixuan@gmail.com', '4A', 'Chinese', 'Malaysian', 4, 
+        '98 Jalan Masjid, Sungai Petani, Kedah', '17', 'Mother', '013-6677880', 'Pending')
+    ]
+
+
+    insert_query = """
+    INSERT INTO hostel_application (
+        student_ic, name, email, form_class, race, citizenship, family_members, 
+        address, home_distance, guardian_status, guardian_contact, status
+    )
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+    """
+
+    cursor.executemany(insert_query, data)
+
+    mydb.commit()
+    print("[✔] Hostel Application records inserted successfully!")
+    print("")
+    ####################################################### End of Creating table and data for hostel_application #######################################################
+
+    ####################################################### Creating table and data for confiscated_item #######################################################
+    create_table_query = """
+    CREATE TABLE confiscated_items (
+        confiscated_item_id INT AUTO_INCREMENT PRIMARY KEY,
+        item_name VARCHAR(255) NOT NULL,
+        student_ic VARCHAR(20) NOT NULL,
+        item_description TEXT,
+        confiscation_date DATE NOT NULL,
+        confiscater_warden_ic VARCHAR(20) NOT NULL,
+        item_status ENUM('Confiscated', 'Returned', 'Disposed') NOT NULL DEFAULT 'Confiscated',
+        confiscation_reason TEXT,
+        return_date DATE,
+        notes TEXT,
+        FOREIGN KEY (student_ic) REFERENCES student(student_ic)
+    );
+    """
+
+    cursor.execute(create_table_query)
+    print("[✔] Confiscated Item table created successfully!")
+
+    data = [
+    ('Smartphone', '020202225678', 'Black iPhone 12', '2024-08-15', 
+     '880212-12-3456', 'Confiscated', 'Usage during class', '2024-10-01', 'Item is still in good condition.'),
     
-    ('Muhammad Izzat', '940606-08-7654', 'Form 6A', 'Science', 'Malay', 4, 1, 1, 1, 20.0, 'Active', 'Both Parents', 'Healthy', 
-     'Izzuddin Ahmad', '700101-08-2345', 'Malaysian', 'No. 1, Jalan Gombak, KL', '03-54321098', '014-9876543', 'Lecturer', 
-     8000, 'University A, KL', 'Siti Noraini', '720202-05-6789', 'Malaysian', 'No. 1, Jalan Gombak, KL', '03-87654321', 
-     '011-2345678', 'Housewife', 0, None, '6As', '8As', '10As', 'Top 5', True, True, False, 'Cadet', 'Leader', 'National', 
-     'Debate Club', 'President', 'State', 'Rugby', 'Captain', 'State'),
+    ('Headphones', '030303337890', 'Wireless Bluetooth Headphones', '2024-09-05', 
+     '880212-12-3456', 'Confiscated', 'Used during study hour', '2024-11-10', 'Has charging cable included.'),
     
-    ('Nurul Iman', '980808-10-4321', 'Form 4A', 'Commerce', 'Malay', 3, 1, 0, 1, 22.1, 'Active', 'Both Parents', 'Healthy', 
-     'Zainal Abidin', '740808-07-4321', 'Malaysian', 'No. 2, Jalan Damansara, KL', '03-65432109', '013-2345678', 'Businessman', 
-     7000, 'Damansara, KL', 'Siti Khadijah', '750909-08-7654', 'Malaysian', 'No. 2, Jalan Damansara, KL', '03-54321098', 
-     '012-8765432', 'Homemaker', 0, None, '4As', '6As', '8As', 'Good', True, False, False, 'Band', 'Vice President', 'District', 
-     'Drama Club', 'Secretary', 'State', 'Hockey', 'Player', 'National')
-]
+    ('Power Bank', '040404442345', '10,000mAh Portable Charger', '2024-07-30', 
+     '910305-08-9876', 'Confiscated', 'Unpermitted item in hostel', '2024-09-15', 'Slight damage to casing.')
+    ]
 
-insert_query = """
-INSERT INTO students (
-    studentName, studentIc, formClass, stream, race, familyMembers, familyStudying, siblingsSPBT, siblingsHostel, distance, 
-    studentStatus, guardianStatus, healthStatus, fatherGuardianName, fatherGuardianIc, fatherCitizenship, fatherGuardianAddress, 
-    fatherPhoneHome, fatherPhoneMobile, fatherOccupation, fatherIncome, fatherEmployerAddress, motherGuardianName, motherGuardianIc, 
-    motherCitizenship, motherGuardianAddress, motherPhoneHome, motherPhoneMobile, motherOccupation, motherIncome, motherEmployerAddress, 
-    upsrResults, pmrResults, spmResults, latestExamResults, spbt, scholarship, kwapm, uniformedUnit, uniformedUnitPosition, 
-    uniformedUnitRepresenting, clubAssociation, clubPosition, clubRepresenting, sportsGames, sportsPosition, sportsRepresenting
-) 
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-"""
+    insert_query = """
+    INSERT INTO confiscated_items (
+        item_name, student_ic, item_description, confiscation_date, 
+        confiscater_warden_ic, item_status, confiscation_reason, return_date, notes
+    )
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+    """
 
-cursor.executemany(insert_query, students_data)
+    cursor.executemany(insert_query, data)
 
-mydb.commit()
+    mydb.commit()
+    print("[✔] Confiscated Item records inserted successfully!")
+    print("")
+    ####################################################### End of Creating table and data for confiscated_item #######################################################
 
-# Create the table for confiscated items
-cursor.execute("""CREATE TABLE IF NOT EXISTS confiscated_items (
-                confiscatedItemID INTEGER PRIMARY KEY AUTO_INCREMENT,
-                itemName TEXT NOT NULL,
-                studentID INTEGER NOT NULL,
-                itemDescription TEXT,
-                confiscationDate TEXT NOT NULL,
-                confiscatedBy TEXT NOT NULL,
-                itemStatus TEXT NOT NULL,
-                confiscationReason TEXT,
-                returnDate TEXT,
-                notes TEXT,
-                FOREIGN KEY (studentID) REFERENCES students(studentID)
-            );""")
-
-# Commit the creation of the table
-mydb.commit()
-
-# Example items to be added
-confiscated_items_data = [
-    ('Handphone', 1, 'Smartphone, brand XYZ', '2024-10-01', 'Warden Ali', 'Confiscated', 'Using during class', None, 'Needs to be returned after 1 month'),
-    ('Sharp Object', 2, 'Scissors', '2024-10-02', 'Warden Zainab', 'Confiscated', 'Possession of dangerous item', None, 'To be returned after review'),
-    ('Wireless Earbuds', 3, 'Bluetooth earbuds', '2024-10-03', 'Warden Ahmad', 'Confiscated', 'Using during exam', None, 'To be returned after exam'),
-    ('Playing Cards', 4, 'Deck of playing cards', '2024-10-04', 'Warden Fatimah', 'Confiscated', 'Playing games in hostel', None, 'To be destroyed'),
-    ('Video Game Console', 5, 'Portable gaming console', '2024-10-05', 'Warden Ismail', 'Confiscated', 'Brought to school without permission', None, 'To be returned after a month')
-]
-
-insert_confiscated_items_query = """
-INSERT INTO confiscated_items (
-    itemName, studentID, itemDescription, confiscationDate, confiscatedBy, itemStatus, confiscationReason, returnDate, notes
-) 
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-"""
-
-cursor.executemany(insert_confiscated_items_query, confiscated_items_data)  
-
-# Commit the insertions
-mydb.commit()
-
-warden_table = """
-CREATE TABLE IF NOT EXISTS warden (
-    warden_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    phone_number VARCHAR(15) NOT NULL,
-    address TEXT,
-    date_of_birth DATE,
-    date_of_joining DATE,
-    gender ENUM('Male', 'Female', 'Other')
-);
-"""
-
-# Create Admin Table
-admin_table = """
-CREATE TABLE IF NOT EXISTS admin (
-    admin_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    phone_number VARCHAR(15) NOT NULL,
-    address TEXT,
-    date_of_birth DATE,
-    date_of_joining DATE,
-    gender ENUM('Male', 'Female', 'Other')
-);
-"""
-
-cursor.execute(warden_table)
-cursor.execute(admin_table)
-
-warden_data = """
-INSERT INTO warden (name, email, phone_number, address, date_of_birth, date_of_joining, gender)
-VALUES
-    ('Ahmad Firdaus', 'ahmad.firdaus@example.com', '0123456789', 'No. 12, Jalan Tun Razak, Kuala Lumpur', '1987-04-15', '2016-02-10', 'Male'),
-    ('Nur Aisyah', 'nur.aisyah@example.com', '0198765432', 'No. 34, Taman Desa, Petaling Jaya', '1992-07-22', '2017-11-01', 'Female'),
-    ('Lee Wei Ming', 'lee.weiming@example.com', '0112345678', 'No. 9, Jalan Bukit Bintang, Kuala Lumpur', '1985-09-10', '2014-09-15', 'Male');
-"""
-
-admin_data = """
-INSERT INTO admin (name, email, phone_number, address, date_of_birth, date_of_joining, gender)
-VALUES
-    ('Siti Zulaikha', 'siti.zulaikha@example.com', '0176543210', 'No. 45, Jalan Sri Hartamas, Kuala Lumpur', '1980-12-05', '2011-03-12', 'Female');
-"""
-
-cursor.execute(warden_data)
-cursor.execute(admin_data)
-
-mydb.commit()
-
-cursor.close()
-mydb.close()
-
-print("User credentials inserted and database setup completed successfully.")
+except mysql.connector.Error as e:
+    print(f"[✗] Error connecting to the database: {e}")
+finally:
+    if cursor:
+        cursor.close()
+    if mydb:
+        mydb.close()

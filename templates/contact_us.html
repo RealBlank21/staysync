@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" class="front-page">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stay Sync</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      .front-page-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      .front-page-content {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: rgb(238, 238, 238);
+        height: 100%;
+      }
+
+      .card {
+        margin: 10px;
+      }
+
+      .card-title {
+        font-size: 1.0rem;
+      }
+
+      .card-title-secondary {
+        font-size: 0.9rem;
+      }
+
+      .card-text {
+        margin: 0;
+      }
+
+      .card-img-top {
+        width: 100%;
+        height: 200px; /* Set the desired height */
+        object-fit: cover; /* Ensures the image covers the area */
+        object-position: center; /* Centers the image */
+      }
+
+      .card-img-adli {
+         object-position: 50% 30%;
+      }
+
+      .card-img-gegirl {
+        width: 100% !important;
+        height: 200px !important;
+      }
+    </style>
+  </head>
+  <body class="front-page">
+    <!-- Nav Bar -->
+    {% include 'components/navbar.html' %}
+    <!-- Nav Bar End -->
+
+    <div class="front-page-content">
+      <div>
+      
+          <div class="container my-4">
+            <h2 class="text-center">Contact Us</h2>
+            <br>
+            <div class="row">
+                <!-- Card 1 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="/static/img/Adli.jfif" class="card-img-top card-img-adli" alt="Image 1">
+                        <div class="card-body">
+                            <h5 class="card-title">MUHAMMAD ADLI BIN NAZLI</h5>
+                            <h5><span class="badge bg-success text-bg-secondary">Website Developer</span></h5>
+
+                            <!-- Email Icon and Text -->
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-envelope" style="font-size: 1.5rem; color: #007bff; margin-right: 8px;"></i>
+                                <span>realblank21@gmail.com</span>
+                            </div>
+
+                            <!-- Phone Icon and Text -->
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-telephone" style="font-size: 1.5rem; color: #007bff; margin-right: 8px;"></i>
+                                <span>+60 11-5956 8937</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="/static/img/Mai.png" class="card-img-top card-img-gegirl" alt="Image 2">
+                        <div class="card-body">
+                            <h5 class="card-title">MAISARAH BINTI HAMRIZAL</h5>
+                            <h5><span class="badge bg-success text-bg-secondary">Designer</span></h5>
+
+                            <!-- Email Icon and Text -->
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-envelope" style="font-size: 1.5rem; color: #007bff; margin-right: 8px;"></i>
+                                <span>maisarah196@yahoo.com</span>
+                            </div>
+
+                            <!-- Phone Icon and Text -->
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-telephone" style="font-size: 1.5rem; color: #007bff; margin-right: 8px;"></i>
+                                <span>+60 14-754 0188</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="/static/img/Intan.png" class="card-img-top card-img-gegirl" alt="Image 3">
+                        <div class="card-body">
+                            <h5 class="card-title">INTAN NUR LIYANA</h5>
+                            <h5><span class="badge bg-success text-bg-secondary">System Documentor</span></h5>
+
+                            <!-- Email Icon and Text -->
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-envelope" style="font-size: 1.5rem; color: #007bff; margin-right: 8px;"></i>
+                                <span>intannurliyana13@gmail.com</span>
+                            </div>
+
+                            <!-- Phone Icon and Text -->
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-telephone" style="font-size: 1.5rem; color: #007bff; margin-right: 8px;"></i>
+                                <span>+60 10-387 4158</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      </div>
+    <div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

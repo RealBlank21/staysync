@@ -125,303 +125,83 @@
                 <h2 class="text-center">Hostel Application Form</h2>
                 <form class="row g-3" method="POST">
                     <!-- Part A: Student Information -->
-                    <div class="col-12 section-title">Part A: Student Information</div>
+                    <div class="col-12 section-title">Student Information</div>
         
-                    <!-- Student Name -->
-                    <div class="col-md-12">
-                        <label for="studentName" class="form-label">Student Name</label>
-                        <input type="text" class="form-control" id="studentName" name="studentName" required>
-                    </div>
-        
-                    <!-- Identification Card Number -->
-                    <div class="col-md-6">
-                        <label for="studentIc" class="form-label">Identification Card Number</label>
-                        <input type="text" class="form-control" id="studentIc" name="studentIc" required>
-                    </div>
-        
-                    <!-- Form (with Class Name) -->
-                    <div class="col-md-6">
-                        <label for="formClass" class="form-label">Form (with Class Name)</label>
-                        <input type="text" class="form-control" id="formClass" name="formClass" required>
-                    </div>
-        
-                    <!-- Stream -->
-                    <div class="col-md-6">
-                        <label for="stream" class="form-label">Stream</label>
-                        <input type="text" class="form-control" id="stream" name="stream" required>
-                    </div>
-        
-                    <!-- Race -->
-                    <div class="col-md-6">
-                        <label for="race" class="form-label">Race</label>
-                        <input type="text" class="form-control" id="race" name="race" required>
-                    </div>
-        
-                    <!-- Number of Family Members -->
-                    <div class="col-md-6">
-                        <label for="familyMembers" class="form-label">Number of Family Members</label>
-                        <input type="number" class="form-control" id="familyMembers" name="familyMembers" required>
-                    </div>
-        
-                    <!-- Number of Family Members Still Studying -->
-                    <div class="col-md-6">
-                        <label for="familyStudying" class="form-label">Number of Family Members Still Studying</label>
-                        <input type="number" class="form-control" id="familyStudying" name="familyStudying" required>
-                    </div>
-        
-                    <!-- Number of Siblings Receiving SPBT -->
-                    <div class="col-md-6">
-                        <label for="siblingsSPBT" class="form-label">Number of Siblings Receiving SPBT</label>
-                        <input type="number" class="form-control" id="siblingsSPBT" name="siblingsSPBT" required>
-                    </div>
-        
-                    <!-- Number of Siblings Staying in Hostel -->
-                    <div class="col-md-6">
-                        <label for="siblingsHostel" class="form-label">Number of Siblings Staying in Hostel</label>
-                        <input type="number" class="form-control" id="siblingsHostel" name="siblingsHostel" required>
-                    </div>
-        
-                    <!-- Distance from Home to School -->
-                    <div class="col-md-6">
-                        <label for="distance" class="form-label">Distance from Home to School (in km)</label>
-                        <input type="number" class="form-control" id="distance" name="distance" required>
-                    </div>
-        
-                    <!-- Student Status (Orphan/Non-Orphan) -->
-                    <div class="col-md-6">
-                        <label for="studentStatus" class="form-label">Student Status</label>
-                        <select class="form-select" id="studentStatus" name="studentStatus" required>
-                            <option selected disabled value="">Choose...</option>
-                            <option value="orphan">Orphan</option>
-                            <option value="non-orphan">Non-Orphan</option>
-                        </select>
-                    </div>
-        
-                    <!-- Student Guardian Status -->
-                    <div class="col-md-6">
-                        <label for="guardianStatus" class="form-label">Student Guardian Status</label>
-                        <input type="text" class="form-control" id="guardianStatus" name="guardianStatus" required>
-                    </div>
-        
-                    <!-- Health Status -->
-                    <div class="col-md-6">
-                        <label for="healthStatus" class="form-label">Health Status</label>
-                        <input type="text" class="form-control" id="healthStatus" name="healthStatus" required>
-                    </div>
-        
-                    <!-- Reasons for Applying for Hostel -->
-                    <div class="col-md-12">
-                        <label for="hostelReason" class="form-label">Reasons for Applying for Hostel</label>
-                        <textarea class="form-control" id="hostelReason" name="hostelReason" rows="3" required></textarea>
-                    </div>
-        
-                    <!-- Part B: Guardian Information (Father / Male Guardian) -->
-                    <div class="col-12 section-title">Part B: Guardian Information (Father / Male Guardian)</div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
 
-                    <!-- Guardian Name -->
-                    <div class="col-md-6">
-                        <label for="fatherGuardianName" class="form-label">Guardian Name (Father / Male)</label>
-                        <input type="text" class="form-control" id="fatherGuardianName" name="fatherGuardianName" required>
-                    </div>
+                        <div class="col-md-6">
+                            <label for="studentIc" class="form-label">No. IC</label>
+                            <input type="text" class="form-control" id="studentIc" name="student_ic" placeholder="XXXXXXXXXXXX" required>
+                        </div>
 
-                    <!-- Guardian IC Number -->
-                    <div class="col-md-6">
-                        <label for="fatherGuardianIc" class="form-label">Guardian IC Number</label>
-                        <input type="text" class="form-control" id="fatherGuardianIc" name="fatherGuardianIc" required>
-                    </div>
-
-                    <!-- Citizenship -->
-                    <div class="col-md-6">
-                        <label for="fatherCitizenship" class="form-label">Citizenship</label>
-                        <input type="text" class="form-control" id="fatherCitizenship" name="fatherCitizenship" required>
-                    </div>
-
-                    <!-- Guardian Address -->
-                    <div class="col-md-12">
-                        <label for="fatherGuardianAddress" class="form-label">Home Address</label>
-                        <input type="text" class="form-control" id="fatherGuardianAddress" name="fatherGuardianAddress" required>
-                    </div>
-
-                    <!-- Phone Number (Home & Mobile) -->
-                    <div class="col-md-6">
-                        <label for="fatherPhoneHome" class="form-label">Phone Number (Home)</label>
-                        <input type="tel" class="form-control" id="fatherPhoneHome" name="fatherPhoneHome" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="fatherPhoneMobile" class="form-label">Phone Number (Mobile)</label>
-                        <input type="tel" class="form-control" id="fatherPhoneMobile" name="fatherPhoneMobile" required>
-                    </div>
-
-                    <!-- Guardian Occupation -->
-                    <div class="col-md-6">
-                        <label for="fatherOccupation" class="form-label">Occupation (Position Name)</label>
-                        <input type="text" class="form-control" id="fatherOccupation" name="fatherOccupation" required>
-                    </div>
-
-                    <!-- Guardian Income -->
-                    <div class="col-md-6">
-                        <label for="fatherIncome" class="form-label">Income (Basic Salary + Fixed Allowance)</label>
-                        <input type="number" class="form-control" id="fatherIncome" name="fatherIncome" required>
-                    </div>
-
-                    <!-- Employer's Address -->
-                    <div class="col-md-12">
-                        <label for="fatherEmployerAddress" class="form-label">Employer's Address</label>
-                        <input type="text" class="form-control" id="fatherEmployerAddress" name="fatherEmployerAddress" required>
-                    </div>
-
-                    <!-- Part B: Guardian Information (Mother / Female Guardian) -->
-                    <div class="col-12 section-title">Part B: Guardian Information (Mother / Female Guardian)</div>
-
-                    <!-- Guardian Name -->
-                    <div class="col-md-6">
-                        <label for="motherGuardianName" class="form-label">Guardian Name (Mother / Female)</label>
-                        <input type="text" class="form-control" id="motherGuardianName" name="motherGuardianName" required>
-                    </div>
-
-                    <!-- Guardian IC Number -->
-                    <div class="col-md-6">
-                        <label for="motherGuardianIc" class="form-label">Guardian IC Number</label>
-                        <input type="text" class="form-control" id="motherGuardianIc" name="motherGuardianIc" required>
-                    </div>
-
-                    <!-- Citizenship -->
-                    <div class="col-md-6">
-                        <label for="motherCitizenship" class="form-label">Citizenship</label>
-                        <input type="text" class="form-control" id="motherCitizenship" name="motherCitizenship" required>
-                    </div>
-
-                    <!-- Guardian Address -->
-                    <div class="col-md-12">
-                        <label for="motherGuardianAddress" class="form-label">Home Address</label>
-                        <input type="text" class="form-control" id="motherGuardianAddress" name="motherGuardianAddress" required>
-                    </div>
-
-                    <!-- Phone Number (Home & Mobile) -->
-                    <div class="col-md-6">
-                        <label for="motherPhoneHome" class="form-label">Phone Number (Home)</label>
-                        <input type="tel" class="form-control" id="motherPhoneHome" name="motherPhoneHome" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="motherPhoneMobile" class="form-label">Phone Number (Mobile)</label>
-                        <input type="tel" class="form-control" id="motherPhoneMobile" name="motherPhoneMobile" required>
-                    </div>
-
-                    <!-- Guardian Occupation -->
-                    <div class="col-md-6">
-                        <label for="motherOccupation" class="form-label">Occupation (Position Name)</label>
-                        <input type="text" class="form-control" id="motherOccupation" name="motherOccupation" required>
-                    </div>
-
-                    <!-- Guardian Income -->
-                    <div class="col-md-6">
-                        <label for="motherIncome" class="form-label">Income (Basic Salary + Fixed Allowance)</label>
-                        <input type="number" class="form-control" id="motherIncome" name="motherIncome" required>
-                    </div>
-
-                    <!-- Employer's Address -->
-                    <div class="col-md-12">
-                        <label for="motherEmployerAddress" class="form-label">Employer's Address</label>
-                        <input type="text" class="form-control" id="motherEmployerAddress" name="motherEmployerAddress" required>
-                    </div>
-        
-                    <!-- Part C: Academic / Financial Aid Information -->
-                    <div class="col-12 section-title">Part C: Academic / Financial Aid Information</div>
-
-                    <!-- Public Exam Results -->
-                    <div class="col-md-6">
-                        <label for="upsrResults" class="form-label">UPSR / PBD Results</label>
-                        <input type="text" class="form-control" id="upsrResults" name="upsrResults">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="pmrResults" class="form-label">PMR Results</label>
-                        <input type="text" class="form-control" id="pmrResults" name="pmrResults">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="spmResults" class="form-label">SPM Results</label>
-                        <input type="text" class="form-control" id="spmResults" name="spmResults">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="latestExamResults" class="form-label">Latest Exam Results (Term 1 / Term 2)</label>
-                        <input type="text" class="form-control" id="latestExamResults" name="latestExamResults">
-                    </div>
-
-                    <!-- Financial Aid Information -->
-                    <div class="col-md-6">
-                        <label for="spbt" class="form-label">SPBT</label>
-                        <input type="text" class="form-control" id="spbt" name="spbt">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="scholarship" class="form-label">Scholarship (Type & Amount)</label>
-                        <input type="text" class="form-control" id="scholarship" name="scholarship">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="kwapm" class="form-label">KWAPM</label>
-                        <input type="text" class="form-control" id="kwapm" name="kwapm">
-                    </div>
-        
-                    <!-- Part D: Service / Co-curricular Information -->
-                    <div class="col-12 section-title">Part D: Service / Co-curricular Information</div>
-
-                    <!-- Uniformed Unit Section -->
-                    <div class="col-md-6">
-                        <label for="uniformedUnit" class="form-label">Uniformed Unit</label>
-                        <input type="text" class="form-control" id="uniformedUnit" name="uniformedUnit" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="uniformedUnitPosition" class="form-label">Uniformed Unit Position</label>
-                        <input type="text" class="form-control" id="uniformedUnitPosition" name="uniformedUnitPosition" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="uniformedUnitRepresenting" class="form-label">Representing (School/District/Zone/State/National)</label>
-                        <input type="text" class="form-control" id="uniformedUnitRepresenting" name="uniformedUnitRepresenting" required>
-                    </div>
-
-                    <hr> <!-- Separator -->
-
-                    <!-- Club/Association Section -->
-                    <div class="col-md-6">
-                        <label for="clubAssociation" class="form-label">Club/Association</label>
-                        <input type="text" class="form-control" id="clubAssociation" name="clubAssociation" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="clubPosition" class="form-label">Club/Association Position</label>
-                        <input type="text" class="form-control" id="clubPosition" name="clubPosition" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="clubRepresenting" class="form-label">Representing (School/District/Zone/State/National)</label>
-                        <input type="text" class="form-control" id="clubRepresenting" name="clubRepresenting" required>
-                    </div>
-
-                    <hr> <!-- Separator -->
-
-                    <!-- Sports/Games Section -->
-                    <div class="col-md-6">
-                        <label for="sportsGames" class="form-label">Sports/Games</label>
-                        <input type="text" class="form-control" id="sportsGames" name="sportsGames" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="sportsPosition" class="form-label">Sports/Games Position</label>
-                        <input type="text" class="form-control" id="sportsPosition" name="sportsPosition" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="sportsRepresenting" class="form-label">Representing (School/District/Zone/State/National)</label>
-                        <input type="text" class="form-control" id="sportsRepresenting" name="sportsRepresenting" required>
+                        <div class="col-md-6">
+                            <label for="studentEmail" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="studentEmail" name="student_email" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="formClass" class="form-label">Form Class</label>
+                            <input type="text" class="form-control" id="formClass" name="form_class" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="race" class="form-label">Race</label>
+                            <select class="form-control" id="race" name="race" required>
+                                <option value="">Select Race</option>
+                                <option value="Malay">Malay</option>
+                                <option value="Indian">Indian</option>
+                                <option value="Chinese">Chinese</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="citizenship" class="form-label">Citizenship</label>
+                            <select class="form-control" id="citizenship" name="citizenship" required>
+                                <option value="">Select Citizenship</option>
+                                <option value="Malaysian">Malaysian</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="familyMembers" class="form-label">Family Members</label>
+                            <input type="number" class="form-control" id="familyMembers" name="family_members" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="homeDistance" class="form-label">Home Distance (km)</label>
+                            <input type="number" class="form-control" id="homeDistance" name="home_distance" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="guardianStatus" class="form-label">Guardian</label>
+                            <select class="form-control" id="guardianStatus" name="guardian_status" required>
+                                <option value="">Select Guardian</option>
+                                <option value="Father">Father</option>
+                                <option value="Mother">Mother</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="guardianContact" class="form-label">Guardian Contact</label>
+                            <input type="tel" class="form-control" id="guardianContact" name="guardian_contact" required>
+                        </div>
                     </div>
         
                     <!-- Submit Button -->
                     <div class="col-md-12">
-                        <button type="submit" class="btn btn-primary w-100">Submit Application</button>
+                        <button type="submit" class="btn btn-success w-100">Submit Application</button>
                     </div>
                 </form>
             </div>
@@ -452,7 +232,39 @@
                 }
             };
         </script>
-        {% endif %}   
+        {% endif %}
+
+        {% if error_message %}
+            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                <i class="bi bi-exclamation-triangle-fill"></i> Something Went Wrong!
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{ error_message }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <script>
+                window.onload = function() {
+                    var errorMessage = "{{ error_message }}";
+                    var myModal = new bootstrap.Modal(document.getElementById('myModal'));
+        
+                    if (errorMessage) {
+                        myModal.show();
+                    }
+                };
+            </script>
+        {% endif %}     
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>

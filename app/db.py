@@ -1,7 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 
-mysql_url = "mysql://root:EAnDoELmcbiofXxjkVmUZoOsklrbBIno@junction.proxy.rlwy.net:30982/railway"
+mysql_url = "mysql://root:cldWscwfzqrsQIsVFeEFSIvOPjwhWhfd@junction.proxy.rlwy.net:20548/railway"
 
 try:
     db_config = mysql_url.split("://")[1].split("@")
@@ -26,49 +26,92 @@ except Exception as e:
 cursor = mydb.cursor()
 cursorDict = mydb.cursor(dictionary=True)
 
-def retrieve_credentials(username):
-    cursor.execute("SELECT * FROM user_credentials WHERE username=%s", (username,))
+def retrieve_credentials(ic):
+    cursorDict.execute("SELECT * FROM admin WHERE admin_ic=%s", (ic,))
+    val = cursorDict.fetchone()
 
-    val = cursor.fetchone()
+    if not val:
+        cursorDict.execute("SELECT * FROM warden WHERE warden_ic=%s", (ic,))
+        val = cursorDict.fetchone()
     
     return val
 
-def retrieve_role(username):
-    cursor.execute("SELECT * FROM user_credentials WHERE username=%s", (username,))
+def retrieve_role(ic):
+    query = """
+    SELECT 'admin' AS table_name FROM admin WHERE admin_ic = %s
+    UNION
+    SELECT 'warden' AS table_name FROM warden WHERE warden_ic = %s
+    LIMIT 1;
+    """
 
-    val = cursor.fetchone()
+    cursor.execute(query, (ic, ic))
+
+    result = cursor.fetchone()
     
-    return val[4]
+    if result:
+        return result[0].capitalize()  # Returns 'Admin' or 'Warden'
+    else:
+        return None
+    
+def retrieve_name(ic):
+    query = """
+    SELECT name AS table_name FROM admin WHERE admin_ic = %s
+    UNION
+    SELECT name AS table_name FROM warden WHERE warden_ic = %s
+    LIMIT 1;
+    """
+
+    cursor.execute(query, (ic, ic))
+
+    result = cursor.fetchone()
+    
+    if result:
+        return result[0]
+    else:
+        return None
+    
+def ic_check(IC):
+    query = """
+    SELECT EXISTS(
+        SELECT 1 FROM hostel_application WHERE student_ic = %s
+        UNION
+        SELECT 1 FROM student WHERE student_ic = %s
+    ) AS ic_exists;
+    """
+
+    cursor.execute(query, (IC, IC))
+    result = cursor.fetchone()
+
+    ic_exists = result[0] == 1
+
+    return ic_exists
 
 def insert_student_admission(student_hostel_application_data : dict):
     try: 
         insert_query = """
-        INSERT INTO hostel_applications (
-            studentName, studentIc, formClass, stream, race, familyMembers, familyStudying, siblingsSPBT, siblingsHostel, 
-            distance, studentStatus, guardianStatus, healthStatus, hostelReason, fatherGuardianName, fatherGuardianIc, 
-            fatherCitizenship, fatherGuardianAddress, fatherPhoneHome, fatherPhoneMobile, fatherOccupation, fatherIncome, 
-            fatherEmployerAddress, motherGuardianName, motherGuardianIc, motherCitizenship, motherGuardianAddress, 
-            motherPhoneHome, motherPhoneMobile, motherOccupation, motherIncome, motherEmployerAddress, upsrResults, pmrResults, 
-            spmResults, latestExamResults, spbt, scholarship, kwapm, uniformedUnit, uniformedUnitPosition, 
-            uniformedUnitRepresenting, clubAssociation, clubPosition, clubRepresenting, sportsGames, sportsPosition, sportsRepresenting
-        ) VALUES (
-            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-        );
+        INSERT INTO hostel_application (
+            name, student_ic, email, form_class, race, citizenship, family_members, 
+            address, home_distance, guardian_status, guardian_contact
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
+
+        print(list(student_hostel_application_data.values()))
 
         cursor.execute(insert_query, list(student_hostel_application_data.values()))
 
         mydb.commit()
 
-        return "Student admission record inserted successfully!"
+        return "[✔] Hostel Application records inserted successfully!"
     except Error as e:
         return (f"Error: {e}")
     
-def hostel_application_action(action, entryIndex):
+def update_hostel_application_status(action, ic):
     try:
-        query = "UPDATE hostel_applications SET applicationStatus = %s WHERE ID = %s"
+        query = "UPDATE hostel_application SET status = %s WHERE student_ic = %s"
 
-        cursor.execute(query, (action, entryIndex))
+        print("Changing status...")
+        cursor.execute(query, (action, ic))
         mydb.commit()
     except Error as e:
         return (f"Error: {e}")
@@ -104,3 +147,9 @@ def update_ban_period(student_id, outing_datetime):
         WHERE studentID = %s
     ''', (outing_datetime, student_id))
     mydb.commit()
+
+def retrieve_hostel_application_record(IC):
+    query = "SELECT * FROM hostel_application WHERE student_ic = %s"
+    cursor.execute(query, (IC,))
+    record = cursor.fetchone()
+    return record

@@ -1,6 +1,4 @@
 import mysql.connector
-import argon2
-import os
 
 mysql_url = "mysql://root:EAnDoELmcbiofXxjkVmUZoOsklrbBIno@junction.proxy.rlwy.net:30982/railway"
 
@@ -20,6 +18,14 @@ try:
     )
 
     print("Database connection successful!")
+
+    cursor = mydb.cursor(dictionary=True)
+
+    ic = "900101145678"
+
+    cursor.execute("SELECT * FROM admin WHERE admin_ic=%s", (ic,))
+    testval = cursor.fetchone()
+    print(testval)
 
 except Exception as e:
     print(f"Error connecting to the database: {e}")

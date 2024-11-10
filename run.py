@@ -29,21 +29,35 @@ def front_page():
     
     return render_template('front_page.html', username=username, user_role=user_role)
 
+@app.route('/contact_us')
+def contact_us():
+    username = session.get('username')
+    user_role = session.get('user_role')
+    
+    return render_template('contact_us.html', username=username, user_role=user_role)
+
+@app.route('/about_us')
+def about_us():
+    username = session.get('username')
+    user_role = session.get('user_role')
+    
+    return render_template('about_us.html', username=username, user_role=user_role)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error_message = None
 
     if request.method == 'POST':
-        username = request.form.get('username')
+        ic = request.form.get('ic')
         password = request.form.get('password')
 
-        if not username or not password:
+        if not ic or not password:
             error_message = "Please fill in all fields."
         else:
-            authentication_status = authentication.validate_password(username, password)
+            authentication_status = authentication.validate_password(ic, password)
             if authentication_status:
-                user_role = db.retrieve_role(username)
-                session['username'] = username
+                user_role = db.retrieve_role(ic)
+                session['username'] = db.retrieve_name(ic)
                 session['user_role'] = user_role
 
                 # Mark the session as permanent
@@ -70,14 +84,22 @@ def dashboard():
     
 @app.route('/application', methods=['GET', 'POST'])
 def application():
+    error_message = None
+
     if 'username' in session:
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('front_page'))
     
     if request.method == "POST":
         student_hostel_application_form_data = request.form
 
+        student_hostel_application_form_data.get('name', '').strip().upper()
+
+        check_invalid = authentication.validate_form_data(student_hostel_application_form_data)
+
+        if check_invalid:
+            return render_template('application.html', error_message=check_invalid)
+        
         db.insert_student_admission(student_hostel_application_form_data)
-        print("success")
 
         return render_template('application.html', success_message="Application has been submitted!")
     else:
@@ -98,20 +120,25 @@ def hostel_application():
     username = session.get('username')
     user_role = session.get('user_role')
 
-    entries = db.retrieve_table_dict("hostel_applications")
+    entries = db.retrieve_table_dict("hostel_application")
 
-    return render_template('hostel_application.html', entries=entries, username=username, user_role=user_role)
+    return render_template('hostel_application.html', students=entries, username=username, user_role=user_role)
 
 @app.route('/hostel_application_action', methods=['POST'])
-def handle_action():
-    action = request.json.get('action')
-    entryIndex = request.json.get('entry')
+def hostel_application_action():
+    data = request.get_json()
+    student_ic = data.get('student_ic')
+    action = data.get('action')
 
-    print(action)
+    print("Action:", action, "IC:", student_ic)
+
+    db.update_hostel_application_status(action, student_ic)
     
-    db.hostel_application_action(action, entryIndex)
-    
-    return render_template('hostel_application.html')
+    if action == "Approved":
+        # Retrieve data and send to hostel application
+        print("Status updated to Approved")
+
+    return jsonify({'message': 'Action completed successfully'})
 
 @app.route('/outing_application')
 def outing_application():
@@ -234,4 +261,4 @@ def test():
     return render_template('test.html', error_message="Error")
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True)

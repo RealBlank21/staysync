@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, session, m
 from flask_mail import Mail, Message
 from datetime import timedelta
 import os
-from app import authentication, db
+from app import authentication, db, mail
 from datetime import datetime
 
 with open("SESSION.txt", 'r') as file:
@@ -101,7 +101,7 @@ def application():
         
         db.insert_student_admission(student_hostel_application_form_data)
 
-        return render_template('application.html', success_message="Application has been submitted!")
+        return render_template('application.html', success_message="Your hostel application has been successfully submitted! Please check your email within 1-3 business days for updates as our team reviews your application.")
     else:
         return render_template('application.html')
 
@@ -248,11 +248,12 @@ def index():
 @app.route('/send_email', methods=['POST'])
 def send_email():
     try:
-        msg = Message('Hello from Flask!', 
-                      recipients=['realblanket21@gmail.com'])
-        msg.body = 'This is a test email sent from a Flask web application!'
-        mail.send(msg)
-        return 'Email sent!'
+        mail.send_email(
+            to="realblanket21@gmail.com",
+            subject="Hostel Application Submitted",
+            body="Your hostel application has been successfully submitted! "
+                "Please check your email within 1-3 business days for updates as our team reviews your application."
+        )
     except Exception as e:
         return str(e)
 

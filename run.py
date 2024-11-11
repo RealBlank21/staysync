@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, session, m
 from flask_mail import Mail, Message
 from datetime import timedelta
 import os
-from app import authentication, db, mail
+from app import authentication, db
 from datetime import datetime
 
 with open("SESSION.txt", 'r') as file:
@@ -248,7 +248,7 @@ def index():
 @app.route('/send_email', methods=['POST'])
 def send_email():
     try:
-        mail.send_email(
+        send_mail(
             to="realblanket21@gmail.com",
             subject="Hostel Application Submitted",
             body="Your hostel application has been successfully submitted! "
@@ -260,6 +260,11 @@ def send_email():
 @app.route('/forgot_password')
 def forgot_password():
     return render_template('forgot_password.html')
+
+def send_mail(to, subject, body):
+    msg = Message(subject, recipients=[to])
+    msg.body = body
+    mail.send(msg)
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():

@@ -264,5 +264,5 @@ def forgot_password():
 def test():
     return render_template('test.html', error_message="Error")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+#    app.run(debug=True)

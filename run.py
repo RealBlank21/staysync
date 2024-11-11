@@ -254,6 +254,7 @@ def send_email():
             body="Your hostel application has been successfully submitted! "
                 "Please check your email within 1-3 business days for updates as our team reviews your application."
         )
+        return "Mail Sent!"
     except Exception as e:
         return str(e)
 

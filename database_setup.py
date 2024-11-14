@@ -67,18 +67,22 @@ try:
     cursor.execute(create_table_query)
     print("[✔] Admin table created successfully!")
 
-    password = 'Admin'  # The raw password
-    hashed_password = hash_password(password)
+    hashed_password = [hash_password('root'), hash_password('Admin')]
 
     if hashed_password:
+
+        data = [
+            ('000000000000', 'ROOT ADMIN', 'realblank21@gmail.com', '01159568937', 'Redacted', '2024-11-14', 'Male', hashed_password[0]),
+            ('900101145678', 'ZAINAB ISMAIL', 'zainab.ismail@gmail.com', '0123456789', '45 Jalan Tanjung, George Town, Penang', '2022-11-10', 'Female', hashed_password[1])
+        ]
+
         insert_query = """
         INSERT INTO admin (admin_ic, name, email, phone_number, address, date_of_joining, gender, password)
-        VALUES
-        ('900101145678', 'ZAINAB ISMAIL', 'zainab.ismail@gmail.com', '0123456789', '45 Jalan Tanjung, George Town, Penang', '2022-11-10', 'Female', %s);
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
-        
-        cursor.execute(insert_query, (hashed_password,))
-        
+
+        cursor.executemany(insert_query, data)
+
         mydb.commit()
         print("[✔] Record inserted successfully with hashed password!")
         print("")

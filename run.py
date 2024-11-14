@@ -72,6 +72,7 @@ def verify_email(token):
 
         return "Verification successful! You are now logged in."
     except:
+        print(f"Token verification error: {e}")  # Log the error for debugging
         abort(404)  # Invalid or expired token
 
 @app.errorhandler(404)

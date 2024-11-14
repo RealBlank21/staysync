@@ -71,7 +71,7 @@ def verify_email(token):
         session['ic'] = user.ic
 
         return "Verification successful! You are now logged in."
-    except:
+    except Exception as e:
         print(f"Token verification error: {e}")  # Log the error for debugging
         abort(404)  # Invalid or expired token
 

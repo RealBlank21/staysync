@@ -1,10 +1,11 @@
-from flask import Flask, request, render_template, redirect, url_for, session, make_response, flash, jsonify
+from flask import Flask, request, render_template, redirect, url_for, session, make_response, flash, jsonify, abort
 import requests
 from flask_mail import Mail, Message
 from datetime import timedelta
 import os
 from app import authentication, db, pdf
 from datetime import datetime
+from itsdangerous import URLSafeTimedSerializer
 
 with open("SESSION.txt", 'r') as file:
     SESSION = file.read().strip()
@@ -22,6 +23,8 @@ app.config['MAIL_PASSWORD'] = 'wukf ctml yhol iboj'
 app.config['MAIL_DEFAULT_SENDER'] = 'noreply@gmail.com'
 
 mail = Mail(app)
+
+serializer = URLSafeTimedSerializer(app.secret_key)
 
 def send_mail(to, subject, body):
     msg = Message(subject, recipients=[to])
@@ -46,6 +49,34 @@ def send_mail_with_attachment(to, subject, body, student_ic):
         print(f"Email sent successfully to {to} with attachment.")
     except FileNotFoundError:
         print(f"Error: PDF file {pdf_filename} not found.")
+
+def send_verification_email(user_email):
+    token = serializer.dumps(user_email, salt='email-verify')
+    verification_url = url_for('verify_email', token=token, _external=True)
+    
+    msg = Message('Email Verification', recipients=[user_email])
+    msg.body = f"Please click on the following link to verify your email and access the system: {verification_url}"
+    mail.send(msg)
+
+@app.route('/verify_email/<token>')
+def verify_email(token):
+    try:
+        user_email = serializer.loads(token, salt='email-verify', max_age=3600)  # Token valid for 1 hour
+        # Retrieve user information based on the email
+        user = db.get_user_by_email(user_email)  # Function to retrieve user details from the database
+
+        # Set up session data after verification
+        session['role'] = user.role
+        session['name'] = user.name
+        session['ic'] = user.ic
+
+        return "Verification successful! You are now logged in."
+    except:
+        abort(404)  # Invalid or expired token
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return "The verification link is invalid or expired. Please request a new one.", 404
 
 @app.route('/')
 def front_page():
@@ -95,13 +126,14 @@ def login():
         else:
             authentication_status = authentication.validate_password(ic, password)
             if authentication_status:
-                user_role = db.retrieve_role(ic)
-                session['username'] = db.retrieve_name(ic)
-                session['user_role'] = user_role
+                # user_role = db.retrieve_role(ic)
+                # session['username'] = db.retrieve_name(ic)
+                # session['user_role'] = user_role
+                # session['user_ic'] = ic
 
-                # Mark the session as permanent
-                session.permanent = True
+                user_email = db.retrieve_mail(ic)
 
+                send_verification_email(user_email)
                 return redirect(url_for('front_page'))
             else:
                 error_message = "Incorrect username or password."
@@ -279,7 +311,36 @@ def confiscated_item_log():
 
     entries = db.retrieve_confiscated_item_log()
 
-    return render_template('confiscated_item_log.html', username=username, user_role=user_role, confiscated_item=entries)
+    student_data = db.retrieve_table_dict('student')
+
+    student_ics_and_names = [
+        {'student_ic': student['student_ic'], 'name': student['name']} for student in student_data
+    ]
+
+    return render_template('confiscated_item_log.html', username=username, user_role=user_role, confiscated_item=entries, student_ics_and_names=student_ics_and_names)
+
+@app.route('/submit_confiscation', methods=['POST'])
+def submit_confiscation():
+    form_data = request.get_json()
+    
+    print(db.insert_confiscated_item(form_data))
+
+    return jsonify({'success': True, 'message': 'Confiscation item submitted successfully!'})
+
+@app.route('/confiscated_item_action', methods=['POST'])
+def confiscated_item_action():
+    try:
+        data = request.get_json()
+        confiscated_item_id = data['confiscated_item_id']
+        action = data['action']
+        
+        db.update_confiscated_item_status(action, confiscated_item_id)
+
+        return jsonify({"message": "Action processed successfully"}), 200
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 @app.route('/student_information')
 def student_information():

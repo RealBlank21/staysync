@@ -107,17 +107,14 @@
                                     <a class="dropdown-item" href="{{ url_for('hostel_application') }}">
                                         <i class="bi bi-journal-text"></i> Hostel Applications
                                     </a>
-                                    <a class="dropdown-item" href="{{ url_for('outing_manager') }}">
-                                        <i class="bi bi-journal-text"></i> Outing Applications
-                                    </a>
                                 </div>
                             {% endif %}
                             
-                            {% if session.get('user_role') == 'Student' %}
+                            {% if session.get('user_role') == 'Warden' %}
                                 <div class="section">
-                                    <div class="dropdown-header">Admission</div>
-                                    <a class="dropdown-item" href="{{ url_for('outing_application') }}">
-                                        <i class="bi bi-file-earmark-text"></i> Outing Admission
+                                    <div class="dropdown-header"><strong>Outing</strong></div>
+                                    <a class="dropdown-item" href="{{ url_for('outing_manager') }}">
+                                        <i class="bi bi-journal-text"></i> Outing Manager
                                     </a>
                                 </div>
                             {% endif %}

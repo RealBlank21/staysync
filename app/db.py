@@ -36,6 +36,37 @@ def retrieve_credentials(ic):
     
     return val
 
+def retrieve_mail(ic):
+    # Query to search for email in the warden table
+    query_warden = "SELECT email FROM warden WHERE warden_ic = %s"
+    cursor.execute(query_warden, (ic,))
+    result = cursor.fetchone()
+
+    if result:
+        return result[0]  # Return the email if found in warden
+
+    # Query to search for email in the admin table if not found in warden
+    query_admin = "SELECT email FROM admin WHERE admin_ic = %s"
+    cursor.execute(query_admin, (ic,))
+    result = cursor.fetchone()
+
+    if result:
+        return result[0]  # Return the email if found in admin
+
+    return None  # Return None if email not found in either table
+
+def get_user_by_email(user_email):
+    query = """
+    SELECT 'warden' AS role, name, warden_ic FROM warden WHERE email = %s
+    UNION
+    SELECT 'admin' AS role, name, admin_ic FROM admin WHERE email = %s
+    """
+    
+    cursorDict.execute(query, (user_email, user_email))
+    user = cursorDict.fetchone()  # Fetch one result (None if not found)
+    
+    return user
+
 def retrieve_admin(ic):
     cursorDict.execute("SELECT * FROM admin WHERE admin_ic = %s", (ic,))
     val = cursorDict.fetchone()
@@ -264,6 +295,39 @@ def retrieve_confiscated_item_log():
     except mysql.connector.Error as e:
         return f"Error: {e}"
     
+def insert_confiscated_item(data):
+    insert_query = """
+    INSERT INTO confiscated_items (
+        item_name, student_ic, item_description, confiscation_date, 
+        confiscater_warden_ic, item_status, confiscation_reason, return_date, notes
+    ) VALUES (%s, %s, %s, CURDATE(), %s, 'Confiscated', %s, NULL, %s);
+    """
+
+    # Values to insert (order should match the placeholders in the query)
+    values = (
+        data['item_name'],
+        data['student_ic'],
+        data['item_description'],
+        data['confiscater_warden_ic'],
+        data['confiscation_reason'],
+        data['note']
+    )
+
+    # Execute the query and commit the changes
+    cursor.execute(insert_query, values)
+    mydb.commit()
+
+    return "[✔] Confiscated item inserted successfully!"
+
+def update_confiscated_item_status(action, id):
+    try:
+        query = "UPDATE confiscated_items SET item_status = %s WHERE confiscated_item_id = %s"
+
+        print("Changing status...")
+        cursor.execute(query, (action, id))
+        mydb.commit()
+    except Error as e:
+        return (f"Error: {e}")
 
 def update_ban_period(student_id, outing_datetime):
     cursor.execute('''

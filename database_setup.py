@@ -241,7 +241,7 @@ try:
         item_name VARCHAR(255) NOT NULL,
         student_ic VARCHAR(20) NOT NULL,
         item_description TEXT,
-        confiscation_date DATE NOT NULL,
+        confiscation_date DATE NOT NULL DEFAULT CURRENT_DATE,
         confiscater_warden_ic VARCHAR(20) NOT NULL,
         item_status ENUM('Confiscated', 'Returned', 'Disposed') NOT NULL DEFAULT 'Confiscated',
         confiscation_reason TEXT,
@@ -255,14 +255,14 @@ try:
     print("[✔] Confiscated Item table created successfully!")
 
     data = [
-    ('Smartphone', '020202225678', 'Black iPhone 12', '2024-08-15', 
-     '880212123456', 'Confiscated', 'Usage during class', '2024-10-01', 'Item is still in good condition.'),
-    
-    ('Headphones', '030303337890', 'Wireless Bluetooth Headphones', '2024-09-05', 
-     '880212123456', 'Confiscated', 'Used during study hour', '2024-11-10', 'Has charging cable included.'),
-    
-    ('Power Bank', '040404442345', '10,000mAh Portable Charger', '2024-07-30', 
-     '910305089876', 'Confiscated', 'Unpermitted item in hostel', '2024-09-15', 'Slight damage to casing.')
+        ('Smartphone', '020202225678', 'Black iPhone 12', '2024-08-15', 
+        '880212123456', 'Confiscated', 'Usage during class', None, 'Item is still in good condition.'),
+
+        ('Headphones', '030303337890', 'Wireless Bluetooth Headphones', '2024-09-05', 
+        '880212123456', 'Confiscated', 'Used during study hour', None, 'Has charging cable included.'),
+
+        ('Power Bank', '040404442345', '10,000mAh Portable Charger', '2024-07-30', 
+        '910305089876', 'Confiscated', 'Unpermitted item in hostel', None, 'Slight damage to casing.')
     ]
 
     insert_query = """

@@ -121,6 +121,33 @@
             overflow: hidden; /* Hides overflowing content */
             text-overflow: ellipsis; /* Adds "..." for truncated text */
         }
+
+        .add-button {
+            color: white;
+            border: none;
+            padding: 12px 14px;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 5px;
+            border-radius: 4px;
+        }
+
+        /* Modal Styles */
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -130,7 +157,10 @@
     <div class="container">
         <div class="header-container">
             <h1>Confiscated Items</h1>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search by Name" oninput="searchTable()"/>
+            <div>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by Name" oninput="searchTable()"/>
+                <button class="add-button btn btn-success" onclick="addItem()"><i class="bi bi-file-earmark-plus"></i></button>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -161,6 +191,120 @@
                 </thead>
                 <tbody id="confiscatedItemsBody"></tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Modal Add Item -->
+    <div class="modal fade" id="confiscatedItemModal" tabindex="-1" aria-labelledby="confiscatedItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confiscatedItemModalLabel">Add Confiscated Item Entry</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="confiscationForm">
+                        <div class="mb-3">
+                            <label for="item_name" class="form-label">Item Name</label>
+                            <input type="text" class="form-control" id="item_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="student_ic" class="form-label">Student IC</label>
+                            <select class="form-control" id="student_ic" required>
+                                <option value="" disabled selected>Select a Student IC</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="student_name" class="form-label">Student Name</label>
+                            <input type="text" class="form-control" id="student_name" readonly required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="item_description" class="form-label">Item Description</label>
+                            <textarea class="form-control" id="item_description" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confiscation_reason" class="form-label">Confiscation Reason</label>
+                            <input type="text" class="form-control" id="confiscation_reason" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="note" class="form-label">Note</label>
+                            <textarea class="form-control" id="note" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="save-entry-btn">Save Entry</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-lg fade" id="confiscationModal" tabindex="-1" aria-labelledby="confiscationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confiscationModalLabel">Confiscation Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                    <tr>
+                        <th>Confiscated Item ID</th>
+                        <td id="modal_confiscated_item_id"></td>
+                    </tr>
+                    <tr>
+                        <th>Confiscater Warden IC</th>
+                        <td id="modal_confiscater_warden_ic"></td>
+                    </tr>
+                    <tr>
+                        <th>Confiscation Date</th>
+                        <td id="modal_confiscation_date"></td>
+                    </tr>
+                    <tr>
+                        <th>Confiscation Reason</th>
+                        <td id="modal_confiscation_reason"></td>
+                    </tr>
+                    <tr>
+                        <th>Item Description</th>
+                        <td id="modal_item_description"></td>
+                    </tr>
+                    <tr>
+                        <th>Item Name</th>
+                        <td id="modal_item_name"></td>
+                    </tr>
+                    <tr>
+                        <th>Item Status</th>
+                        <td id="modal_item_status"></td>
+                    </tr>
+                    <tr>
+                        <th>Notes</th>
+                        <td id="modal_notes"></td>
+                    </tr>
+                    <tr>
+                        <th>Return Date</th>
+                        <td id="modal_return_date"></td>
+                    </tr>
+                    <tr>
+                        <th>Student IC</th>
+                        <td id="modal_student_ic"></td>
+                    </tr>
+                    <tr>
+                        <th>Student Name</th>
+                        <td id="modal_student_name"></td>
+                    </tr>
+                    <tr>
+                        <th>Warden Name</th>
+                        <td id="modal_warden_name"></td>
+                    </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="returnButton">Returned</button>
+                    <button type="button" class="btn btn-danger" id="disposedButton">Disposed</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -252,12 +396,31 @@
             });
         }
 
+        function openModal(confiscated_item) {
+            document.getElementById('modal_confiscated_item_id').textContent = confiscated_item.confiscated_item_id;
+            document.getElementById('modal_student_name').textContent = confiscated_item.student_name;
+            document.getElementById('modal_student_ic').textContent = confiscated_item.student_ic;
+            document.getElementById('modal_warden_name').textContent = confiscated_item.warden_name;
+            document.getElementById('modal_confiscater_warden_ic').textContent = confiscated_item.confiscater_warden_ic;
+            document.getElementById('modal_confiscation_date').textContent = confiscated_item.confiscation_date;
+            document.getElementById('modal_confiscation_reason').textContent = confiscated_item.confiscation_reason;
+            document.getElementById('modal_item_description').textContent = confiscated_item.item_description;
+            document.getElementById('modal_item_name').textContent = confiscated_item.item_name;
+            document.getElementById('modal_item_status').textContent = confiscated_item.item_status;
+            document.getElementById('modal_notes').textContent = confiscated_item.notes;
+            document.getElementById('modal_return_date').textContent = confiscated_item.return_date ? confiscated_item.return_date : "Not returned";
+
+            // Use Bootstrap to show the modal
+            var modal = new bootstrap.Modal(document.getElementById('confiscationModal'));
+            modal.show();
+        }
+
         // Search the table
         function searchTable() {
             const query = document.getElementById("searchInput").value.toLowerCase();
             const filteredData = confiscated_items.filter(confiscated_item =>
                 Object.values(confiscated_item).some(value => 
-                    value.toString().toLowerCase().includes(query)
+                    (value ? value.toString().toLowerCase() : '').includes(query) // Ensure value is not null/undefined before calling toString
                 )
             );
             displayTable(filteredData);
@@ -272,6 +435,132 @@
         }
 
         displayTable(confiscated_items);
+
+        function addItem() {
+            // Trigger the modal to open
+            const myModal = new bootstrap.Modal(document.getElementById('confiscatedItemModal'));
+            myModal.show();
+        }
+
+        // Assuming the student_ics_and_names is already passed as JSON from the server
+        const student_ics_and_names = {{ student_ics_and_names | tojson }};
+        const studentICs = student_ics_and_names.map(student => student.student_ic);
+
+        // Populate the dropdown with ICs
+        const select = document.getElementById('student_ic');
+        studentICs.forEach(ic => {
+            const option = document.createElement('option');
+            option.value = ic;
+            option.textContent = ic;
+            select.appendChild(option);
+        });
+
+        // Add event listener for when the IC is selected
+        select.addEventListener('change', function() {
+            const selectedIC = this.value;
+            
+            // Find the student name based on the selected IC
+            const selectedStudent = student_ics_and_names.find(student => student.student_ic === selectedIC);
+            
+            // Set the student name in the student_name field
+            const studentNameField = document.getElementById('student_name');
+            if (selectedStudent) {
+                studentNameField.value = selectedStudent.name;
+            } else {
+                studentNameField.value = ''; // Clear the name if no match
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('confiscationForm');
+            const saveButton = document.getElementById('save-entry-btn');
+
+            // Handle form submission via AJAX
+            saveButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent form submission and page refresh
+
+                // Retrieve form values
+                const itemName = document.getElementById('item_name').value;
+                const studentIc = document.getElementById('student_ic').value;
+                const itemDescription = document.getElementById('item_description').value;
+                const confiscaterWardenIc = "{{ session['user_ic'] }}"; // Assuming you're using Jinja2 for session data
+                const confiscationReason = document.getElementById('confiscation_reason').value;
+                const note = document.getElementById('note').value;
+
+                // Create the data object to send to the server
+                const formData = {
+                    item_name: itemName,
+                    student_ic: studentIc,
+                    item_description: itemDescription,
+                    confiscater_warden_ic: confiscaterWardenIc,
+                    confiscation_reason: confiscationReason,
+                    note: note
+                };
+
+                // Send the form data to the server using AJAX (fetch)
+                fetch('/submit_confiscation', {  // Ensure this matches your Flask route
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log("Form submitted successfully!");
+                        // Optionally reset the form or provide user feedback
+                        form.reset(); // Reset form fields
+                        const modal = new bootstrap.Modal(document.getElementById('confiscatedItemModal'));
+                        modal.hide(); // Close modal
+                        location.reload();
+                    } else {
+                        console.error("Error:", data.message);
+                        alert("Error submitting form: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("There was an error submitting the form.");
+                });
+            });
+        });
+
+        document.getElementById('returnButton').addEventListener('click', function() {
+            const confiscatedItemID = document.getElementById('modal_confiscated_item_id').textContent;
+            const action = 'Returned';
+            // Add logic for when "Return" is clicked
+            sendConfiscatedItemActionToBackend(confiscatedItemID, action);
+            // Close modal after action
+        });
+
+        document.getElementById('disposedButton').addEventListener('click', function() {
+            const confiscatedItemID = document.getElementById('modal_confiscated_item_id').textContent;
+            const action = 'Disposed';
+            // Add logic for when "Disposed" is clicked
+            sendConfiscatedItemActionToBackend(confiscatedItemID, action);
+            // Close modal after action
+        });
+
+        function sendConfiscatedItemActionToBackend(confiscatedItemID, action) {
+            fetch('/confiscated_item_action', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ confiscated_item_id: confiscatedItemID, action: action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+
+                // Refresh the page after action is successful
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

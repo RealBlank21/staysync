@@ -65,12 +65,22 @@ def verify_email(token):
         # Retrieve user information based on the email
         user = db.get_user_by_email(user_email)  # Function to retrieve user details from the database
 
-        # Set up session data after verification
-        session['role'] = user.role
-        session['name'] = user.name
-        session['ic'] = user.ic
+        print(user)
 
-        return "Verification successful! You are now logged in."
+        # Set up session data after verification
+        session['user_role'] = user['role'].capitalize()
+        session['username'] = user['name']
+        session['user_ic'] = user['ic']
+
+        print(session)
+
+        # Make the session permanent
+        session.permanent = True  # Set session to be permanent
+
+        # Mark session as modified to ensure it's saved
+        session.modified = True
+
+        return redirect(url_for('front_page'))
     except Exception as e:
         print(f"Token verification error: {e}")  # Log the error for debugging
         abort(404)  # Invalid or expired token
@@ -83,6 +93,8 @@ def page_not_found(error):
 def front_page():
     username = session.get('username')
     user_role = session.get('user_role')
+
+    print(user_role)
     
     return render_template('front_page.html', username=username, user_role=user_role)
 

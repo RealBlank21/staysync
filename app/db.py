@@ -57,9 +57,9 @@ def retrieve_mail(ic):
 
 def get_user_by_email(user_email):
     query = """
-    SELECT 'warden' AS role, name, warden_ic FROM warden WHERE email = %s
+    SELECT 'warden' AS role, name, warden_ic AS ic FROM warden WHERE email = %s
     UNION
-    SELECT 'admin' AS role, name, admin_ic FROM admin WHERE email = %s
+    SELECT 'admin' AS role, name, admin_ic AS ic FROM admin WHERE email = %s
     """
     
     cursorDict.execute(query, (user_email, user_email))

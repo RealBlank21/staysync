@@ -74,7 +74,7 @@ try:
         insert_query = """
         INSERT INTO admin (admin_ic, name, email, phone_number, address, date_of_joining, gender, password)
         VALUES
-        ('900101145678', 'ZAINAB ISMAIL', 'zainab.ismail@gmail.com', '012-3456789', '45 Jalan Tanjung, George Town, Penang', '2022-11-10', 'Female', %s);
+        ('900101145678', 'ZAINAB ISMAIL', 'zainab.ismail@gmail.com', '0123456789', '45 Jalan Tanjung, George Town, Penang', '2022-11-10', 'Female', %s);
         """
         
         cursor.execute(insert_query, (hashed_password,))
@@ -104,8 +104,8 @@ try:
     hashed_password = [hash_password('Warden1'), hash_password('Warden2')]
 
     data = [
-        ('880212123456', 'ADAM RAHMAN', 'adam.rahman@gmail.com', '019-8765432', '56 Jalan Bayan Lepas, Penang', '2021-04-20', 'Male', hashed_password[0]),
-        ('910305089876', 'SITI MARIAM', 'siti.mariam@gmail.com', '017-2345678', '21 Jalan Perak, George Town, Penang', '2022-06-15', 'Female', hashed_password[1])
+        ('880212123456', 'ADAM RAHMAN', 'adam.rahman@gmail.com', '0198765432', '56 Jalan Bayan Lepas, Penang', '2021-04-20', 'Male', hashed_password[0]),
+        ('910305089876', 'SITI MARIAM', 'siti.mariam@gmail.com', '0172345678', '21 Jalan Perak, George Town, Penang', '2022-06-15', 'Female', hashed_password[1])
     ]
 
     insert_query = """
@@ -142,11 +142,11 @@ try:
     print("[✔] Student table created successfully!")
 
     data = [
-        ('010101123456', 'AMIRUL ZULKIFLI', 'amirul@gmail.com', '4A', 'Malay', 'Male', 'Malaysian', 4, '123 Jalan Merdeka, Penang', '15', 'Father', '012-3456789', None),
-        ('020202225678', 'AISYAH BINTI ZAIN', 'aisyah@gmail.com', '3B', 'Malay', 'Female', 'Malaysian', 4, '45 Taman Impian, Bukit Mertajam, Penang', '20', 'Mother', '013-8765432', '2024-11-15'),
-        ('030303337890', 'DANIEL LIM', 'daniel@gmail.com', '5C', 'Chinese', 'Male', 'Malaysian', 2, '78 Jalan Sungai, George Town, Penang', '10', 'Father', '014-2345678', None),
-        ('040404442345', 'NURUL HIDAYAH', 'hidayah@gmail.com', '2D', 'Malay', 'Female', 'Malaysian', 3, '56 Jalan Kampung, Bukit Jambul, Penang', '18', 'Mother', '019-1234567', None),
-        ('050505556789', 'KAMARUL AKMAL', 'akmal@gmail.com', '6E', 'Malay', 'Male', 'Malaysian', 6, '12 Taman Sejahtera, Penang', '12', 'Father', '016-9876543', None)
+        ('010101123456', 'AMIRUL ZULKIFLI', 'amirul@gmail.com', '4A', 'Malay', 'Male', 'Malaysian', 4, '123 Jalan Merdeka, Penang', '15', 'Father', '0123456789', None),
+        ('020202225678', 'AISYAH BINTI ZAIN', 'aisyah@gmail.com', '3B', 'Malay', 'Female', 'Malaysian', 4, '45 Taman Impian, Bukit Mertajam, Penang', '20', 'Mother', '0138765432', '2024-11-15'),
+        ('030303337890', 'DANIEL LIM', 'daniel@gmail.com', '5C', 'Chinese', 'Male', 'Malaysian', 2, '78 Jalan Sungai, George Town, Penang', '10', 'Father', '0142345678', None),
+        ('040404442345', 'NURUL HIDAYAH', 'hidayah@gmail.com', '2D', 'Malay', 'Female', 'Malaysian', 3, '56 Jalan Kampung, Bukit Jambul, Penang', '18', 'Mother', '0191234567', None),
+        ('050505556789', 'KAMARUL AKMAL', 'akmal@gmail.com', '6E', 'Malay', 'Male', 'Malaysian', 6, '12 Taman Sejahtera, Penang', '12', 'Father', '0169876543', None)
     ]
 
     insert_query = """
@@ -167,6 +167,7 @@ try:
         student_ic VARCHAR(12) PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
+        gender ENUM('Male', 'Female'),
         form_class VARCHAR(50) NOT NULL,
         race VARCHAR(50),
         citizenship VARCHAR(50),
@@ -183,49 +184,47 @@ try:
     print("[✔] Hostel Application table created successfully!")
 
     data = [
-        ('011205135678', 'ADAM TAN', 'adamtan@gmail.com', '4C', 'Chinese', 'Malaysian', 4, 
-        '45 Jalan Bukit, Penang', '20', 'Father', '012-3344556', 'Pending'),
+        ('011205135678', 'ADAM TAN', 'adamtan@gmail.com', 'Male', '4C', 'Chinese', 'Malaysian', 4, 
+        '45 Jalan Bukit, Penang', 20.00, 'Father', '0123344556', 'Pending'),
         
-        ('021305227890', 'NURUL FARHANA', 'farhana@gmail.com', '3B', 'Malay', 'Malaysian', 3, 
-        '67 Taman Sejahtera, Bayan Lepas, Penang', '15', 'Mother', '013-6677889', 'Pending'),
+        ('021305227890', 'NURUL FARHANA', 'farhana@gmail.com', 'Female', '3B', 'Malay', 'Malaysian', 3, 
+        '67 Taman Sejahtera, Bayan Lepas, Penang', 15.00, 'Mother', '0136677889', 'Pending'),
         
-        ('031406322345', 'RAJESH KUMAR', 'kumar@gmail.com', '5A', 'Indian', 'Malaysian', 5, 
-        '123 Jalan Dato, George Town, Penang', '18', 'Father', '016-2233445', 'Pending'),
+        ('031406322345', 'RAJESH KUMAR', 'kumar@gmail.com', 'Male', '5A', 'Indian', 'Malaysian', 5, 
+        '123 Jalan Dato, George Town, Penang', 18.00, 'Father', '0162233445', 'Pending'),
         
-        # Additional Entries
-        ('041507432198', 'CHONG MEI LING', 'meiling@gmail.com', '2A', 'Chinese', 'Malaysian', 2, 
-        '89 Lorong Melur, Butterworth, Penang', '14', 'Mother', '017-8899001', 'Pending'),
+        ('041507432198', 'CHONG MEI LING', 'meiling@gmail.com', 'Female', '2A', 'Chinese', 'Malaysian', 2, 
+        '89 Lorong Melur, Butterworth, Penang', 14.00, 'Mother', '0178899001', 'Pending'),
         
-        ('051608542187', 'ALI HASSAN', 'alihassan@gmail.com', '5B', 'Malay', 'Malaysian', 5, 
-        '22 Jalan Merdeka, Sungai Petani, Kedah', '18', 'Father', '018-1122334', 'Pending'),
+        ('051608542187', 'ALI HASSAN', 'alihassan@gmail.com', 'Male', '5B', 'Malay', 'Malaysian', 5, 
+        '22 Jalan Merdeka, Sungai Petani, Kedah', 18.00, 'Father', '0181122334', 'Pending'),
         
-        ('061709652376', 'SITI AISHAH', 'sitiaishah@gmail.com', '4D', 'Malay', 'Malaysian', 4, 
-        '31 Jalan Tunku Abdul Rahman, Alor Setar, Kedah', '17', 'Mother', '019-3344556', 'Pending'),
+        ('061709652376', 'SITI AISHAH', 'sitiaishah@gmail.com', 'Female', '4D', 'Malay', 'Malaysian', 4, 
+        '31 Jalan Tunku Abdul Rahman, Alor Setar, Kedah', 17.00, 'Mother', '0193344556', 'Pending'),
         
-        ('071810762465', 'BALAKRISHNAN', 'bala@gmail.com', '3C', 'Indian', 'Malaysian', 3, 
-        '76 Jalan Hang Tuah, Ipoh, Perak', '16', 'Father', '012-5566778', 'Pending'),
+        ('071810762465', 'BALAKRISHNAN', 'bala@gmail.com', 'Male', '3C', 'Indian', 'Malaysian', 3, 
+        '76 Jalan Hang Tuah, Ipoh, Perak', 16.00, 'Father', '0125566778', 'Pending'),
         
-        ('081911872554', 'ANGELINA TAN', 'angelina@gmail.com', '1B', 'Chinese', 'Malaysian', 1, 
-        '34 Jalan Utama, Seberang Perai, Penang', '13', 'Mother', '014-9988776', 'Pending'),
+        ('081911872554', 'ANGELINA TAN', 'angelina@gmail.com', 'Female', '1B', 'Chinese', 'Malaysian', 1, 
+        '34 Jalan Utama, Seberang Perai, Penang', 13.00, 'Mother', '0149988776', 'Pending'),
         
-        ('091012982643', 'FAIZAL HAKIM', 'faizalhakim@gmail.com', '2D', 'Malay', 'Malaysian', 2, 
-        '11 Jalan Bukit Mertajam, Bukit Mertajam, Penang', '14', 'Father', '011-2244668', 'Pending'),
+        ('091012982643', 'FAIZAL HAKIM', 'faizalhakim@gmail.com', 'Male', '2D', 'Malay', 'Malaysian', 2, 
+        '11 Jalan Bukit Mertajam, Bukit Mertajam, Penang', 14.00, 'Father', '0112244668', 'Pending'),
         
-        ('101113093732', 'TAN YI XUAN', 'yixuan@gmail.com', '4A', 'Chinese', 'Malaysian', 4, 
-        '98 Jalan Masjid, Sungai Petani, Kedah', '17', 'Mother', '013-6677880', 'Pending')
+        ('101113093732', 'TAN YI XUAN', 'yixuan@gmail.com', 'Female', '4A', 'Chinese', 'Malaysian', 4, 
+        '98 Jalan Masjid, Sungai Petani, Kedah', 17.00, 'Mother', '0136677880', 'Pending')
     ]
-
 
     insert_query = """
     INSERT INTO hostel_application (
-        student_ic, name, email, form_class, race, citizenship, family_members, 
+        student_ic, name, email, gender, form_class, race, citizenship, family_members, 
         address, home_distance, guardian_status, guardian_contact, status
     )
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
     """
 
+    # Execute the insert query for all records
     cursor.executemany(insert_query, data)
-
     mydb.commit()
     print("[✔] Hostel Application records inserted successfully!")
     print("")
@@ -253,13 +252,13 @@ try:
 
     data = [
     ('Smartphone', '020202225678', 'Black iPhone 12', '2024-08-15', 
-     '880212-12-3456', 'Confiscated', 'Usage during class', '2024-10-01', 'Item is still in good condition.'),
+     '880212123456', 'Confiscated', 'Usage during class', '2024-10-01', 'Item is still in good condition.'),
     
     ('Headphones', '030303337890', 'Wireless Bluetooth Headphones', '2024-09-05', 
-     '880212-12-3456', 'Confiscated', 'Used during study hour', '2024-11-10', 'Has charging cable included.'),
+     '880212123456', 'Confiscated', 'Used during study hour', '2024-11-10', 'Has charging cable included.'),
     
     ('Power Bank', '040404442345', '10,000mAh Portable Charger', '2024-07-30', 
-     '910305-08-9876', 'Confiscated', 'Unpermitted item in hostel', '2024-09-15', 'Slight damage to casing.')
+     '910305089876', 'Confiscated', 'Unpermitted item in hostel', '2024-09-15', 'Slight damage to casing.')
     ]
 
     insert_query = """

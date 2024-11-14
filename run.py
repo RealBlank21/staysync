@@ -1,8 +1,9 @@
 from flask import Flask, request, render_template, redirect, url_for, session, make_response, flash, jsonify
+import requests
 from flask_mail import Mail, Message
 from datetime import timedelta
 import os
-from app import authentication, db
+from app import authentication, db, pdf
 from datetime import datetime
 
 with open("SESSION.txt", 'r') as file:
@@ -21,6 +22,30 @@ app.config['MAIL_PASSWORD'] = 'wukf ctml yhol iboj'
 app.config['MAIL_DEFAULT_SENDER'] = 'noreply@gmail.com'
 
 mail = Mail(app)
+
+def send_mail(to, subject, body):
+    msg = Message(subject, recipients=[to])
+    msg.body = body
+    mail.send(msg)
+
+def send_mail_with_attachment(to, subject, body, student_ic):
+    # Construct the file path using the student IC
+    pdf_filename = f"{student_ic}.pdf"
+    attachment_path = f"./pdf/applications/{pdf_filename}"
+    
+    msg = Message(subject=subject, recipients=[to])
+    msg.body = body
+    
+    # Attach the PDF file
+    try:
+        with open(attachment_path, 'rb') as f:
+            msg.attach(pdf_filename, "application/pdf", f.read())
+        
+        # Send the email
+        mail.send(msg)
+        print(f"Email sent successfully to {to} with attachment.")
+    except FileNotFoundError:
+        print(f"Error: PDF file {pdf_filename} not found.")
 
 @app.route('/')
 def front_page():
@@ -50,6 +75,20 @@ def login():
     if request.method == 'POST':
         ic = request.form.get('ic')
         password = request.form.get('password')
+        recaptcha_token = request.form['g-recaptcha-response']
+
+        # Verify the reCAPTCHA response with Google's API
+        recaptcha_payload = {
+            'secret': "6LfmansqAAAAAA9guboxt1Q4cRid6G_b2TXyF4od",
+            'response': recaptcha_token
+        }
+
+        recaptcha_result = requests.post('https://www.google.com/recaptcha/api/siteverify', data=recaptcha_payload)
+        recaptcha_json = recaptcha_result.json()
+
+        if not recaptcha_json.get('score') >= 0.5:
+            error_message = "reCAPTCHA verification failed. Please try again."
+            return render_template('login.html', error_message=error_message)
 
         if not ic or not password:
             error_message = "Please fill in all fields."
@@ -90,7 +129,23 @@ def application():
         return redirect(url_for('front_page'))
     
     if request.method == "POST":
-        student_hostel_application_form_data = request.form
+        # Get reCAPTCHA response from the form
+        recaptcha_response = request.form['g-recaptcha-response']
+
+        # Verify the response
+        payload = {
+            'secret': "6LfycnsqAAAAAItT7R-K4xmxmOHhIWJet7LGp-kj",
+            'response': recaptcha_response
+        }
+        verify_url = 'https://www.google.com/recaptcha/api/siteverify'
+        response = requests.post(verify_url, data=payload)
+        result = response.json()
+
+        if not result['success']:
+            return render_template('application.html', error_message="reCAPTCHA verification failed.")
+        
+        student_hostel_application_form_data = request.form.to_dict()
+        student_hostel_application_form_data.pop('g-recaptcha-response', None)
 
         student_hostel_application_form_data.get('name', '').strip().upper()
 
@@ -98,8 +153,26 @@ def application():
 
         if check_invalid:
             return render_template('application.html', error_message=check_invalid)
-        
-        db.insert_student_admission(student_hostel_application_form_data)
+
+        # Now insert the data without the reCAPTCHA response
+        print(db.insert_student_admission(student_hostel_application_form_data))
+
+        pdf.create_application_pdf(student_hostel_application_form_data, student_hostel_application_form_data['student_ic']+".pdf")
+
+        student_email = student_hostel_application_form_data['student_email']
+
+        # Format the body to include all the data for verification
+        body = "Your hostel application has been successfully submitted! Please check your details below:\n\n"
+
+        body += "\nPlease review the details below. If any information is incorrect, contact our team as soon as possible."
+
+        # Send the email
+        send_mail_with_attachment(
+            to=student_email,
+            subject="Hostel Application Submitted",
+            body=body,
+            student_ic=student_hostel_application_form_data['student_ic']
+        )
 
         return render_template('application.html', success_message="Your hostel application has been successfully submitted! Please check your email within 1-3 business days for updates as our team reviews your application.")
     else:
@@ -133,10 +206,29 @@ def hostel_application_action():
     print("Action:", action, "IC:", student_ic)
 
     db.update_hostel_application_status(action, student_ic)
+
+    student_email = db.retrieve_hostel_application(student_ic)["email"]
     
     if action == "Approved":
         # Retrieve data and send to hostel application
         print("Status updated to Approved")
+
+        body = "Your application has been approved! Welcome to the hostel."
+
+        student_data = db.retrieve_hostel_application(student_ic)
+        print(db.insert_student_data(student_data))
+
+    if action == "Rejected":
+        print("Status updated to Rejected")
+
+        body = "Your application has been rejected."
+
+
+    send_mail(
+        to=student_email,
+        subject="Hostel Application",
+        body=body,
+    )
 
     return jsonify({'message': 'Action completed successfully'})
 
@@ -150,6 +242,33 @@ def outing_application():
 
     return render_template('outing_application.html', username=username, user_role=user_role)
 
+@app.route('/update-admin', methods=['POST'])
+def update_admin():
+    # Extract form data
+    form_data = request.form.to_dict()
+
+    db.update_admin_data(form_data)
+
+    return jsonify(success=True)
+
+@app.route('/update-warden', methods=['POST'])
+def update_warden():
+    # Extract form data
+    form_data = request.form.to_dict()
+
+    db.update_warden_data(form_data)
+
+    return jsonify(success=True)
+
+@app.route('/update-student', methods=['POST'])
+def update_student():
+    # Extract form data
+    form_data = request.form.to_dict()
+
+    db.update_student_data(form_data)
+
+    return jsonify(success=True)
+
 @app.route('/confiscated_item_log')
 def confiscated_item_log():
     if session.get('user_role') not in ['Warden', 'Admin']:
@@ -158,13 +277,9 @@ def confiscated_item_log():
     username = session.get('username')
     user_role = session.get('user_role')
 
-    entries = db.retrived_table_joined()
+    entries = db.retrieve_confiscated_item_log()
 
-    students = db.retrieve_table_dict("students")
-
-    studentNames = [student['studentName'] for student in students]
-
-    return render_template('confiscated_item_log.jinja', username=username, user_role=user_role, entries=entries, studentNames=studentNames)
+    return render_template('confiscated_item_log.html', username=username, user_role=user_role, confiscated_item=entries)
 
 @app.route('/student_information')
 def student_information():
@@ -174,9 +289,9 @@ def student_information():
     username = session.get('username')
     user_role = session.get('user_role')
 
-    entries = db.retrieve_table_dict("students")
+    entries = db.retrieve_table_dict("student")
 
-    return render_template('students.html', username=username, user_role=user_role, entries=entries)
+    return render_template('students.html', username=username, user_role=user_role, student=entries)
 
 @app.route('/warden_information')
 def warden_information():
@@ -188,7 +303,7 @@ def warden_information():
 
     entries = db.retrieve_table_dict("warden")
 
-    return render_template('warden.html', username=username, user_role=user_role, entries=entries)
+    return render_template('warden.html', username=username, user_role=user_role, warden=entries)
 
 @app.route('/admin_information')
 def admin_information():
@@ -200,7 +315,7 @@ def admin_information():
 
     entries = db.retrieve_table_dict("admin")
 
-    return render_template('admin.html', username=username, user_role=user_role, entries=entries)
+    return render_template('admin.html', username=username, user_role=user_role, admin=entries)
 
 @app.route('/outing_manager')
 def outing_manager():
@@ -262,14 +377,9 @@ def send_email():
 def forgot_password():
     return render_template('forgot_password.html')
 
-def send_mail(to, subject, body):
-    msg = Message(subject, recipients=[to])
-    msg.body = body
-    mail.send(msg)
-
 @app.route('/test', methods=['GET', 'POST'])
 def test():
     return render_template('test.html', error_message="Error")
 
-#if __name__ == '__main__':
-#    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

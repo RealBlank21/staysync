@@ -36,6 +36,30 @@ def retrieve_credentials(ic):
     
     return val
 
+def retrieve_admin(ic):
+    cursorDict.execute("SELECT * FROM admin WHERE admin_ic = %s", (ic,))
+    val = cursorDict.fetchone()
+
+    return val
+
+def retrieve_warden(ic):
+    cursorDict.execute("SELECT * FROM warden WHERE warden_ic = %s", (ic,))
+    val = cursorDict.fetchone()
+
+    return val
+
+def retrieve_student(ic):
+    cursorDict.execute("SELECT * FROM student WHERE student_ic = %s", (ic,))
+    val = cursorDict.fetchone()
+
+    return val
+
+def retrieve_hostel_application(ic):
+    cursorDict.execute("SELECT * FROM hostel_application WHERE student_ic = %s", (ic,))
+    val = cursorDict.fetchone()
+
+    return val
+
 def retrieve_role(ic):
     query = """
     SELECT 'admin' AS table_name FROM admin WHERE admin_ic = %s
@@ -90,13 +114,11 @@ def insert_student_admission(student_hostel_application_data : dict):
     try: 
         insert_query = """
         INSERT INTO hostel_application (
-            name, student_ic, email, form_class, race, citizenship, family_members, 
+            name, student_ic, email, gender, form_class, race, citizenship, family_members, 
             address, home_distance, guardian_status, guardian_contact
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
-
-        print(list(student_hostel_application_data.values()))
 
         cursor.execute(insert_query, list(student_hostel_application_data.values()))
 
@@ -115,6 +137,93 @@ def update_hostel_application_status(action, ic):
         mydb.commit()
     except Error as e:
         return (f"Error: {e}")
+    
+def save_pdf_to_db(ic, pdf_path):
+    with open(pdf_path, 'rb') as f:
+        pdf_data = f.read()
+
+    # Insert the PDF data into the database
+    query = "INSERT INTO hostel_applications (student_email, pdf_data) VALUES (%s, %s)"
+    cursor.execute(query, (ic, pdf_data))
+
+def insert_student_data(data):
+    # Remove the 'status' field from the data
+    try:
+        if 'status' in data:
+            del data['status']
+
+        columns = ', '.join(data.keys())  # Column names
+        values = ', '.join(['%s'] * len(data))  # Placeholders for values
+
+        insert_query = f"INSERT INTO student ({columns}) VALUES ({values})"
+
+        cursor.execute(insert_query, tuple(data.values()))
+
+        mydb.commit()
+
+        return "Student data inserted successfully."
+
+    except mysql.connector.Error as err:
+        return "Error: {err}"
+    
+def update_admin_data(data):
+    admin_ic = data.get('admin_ic')
+    if not admin_ic:
+        raise ValueError("admin_ic is required to update admin data.")
+
+    update_fields = ", ".join(f"{key} = %s" for key in data.keys() if key != "admin_ic")
+    sql = f"UPDATE admin SET {update_fields} WHERE admin_ic = %s"
+    values = tuple(data[key] for key in data if key != "admin_ic") + (admin_ic,)
+
+    try:
+        # Execute the update query
+        cursor.execute(sql, values)
+        mydb.commit()
+        print("Admin data updated successfully.")
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        mydb.rollback()
+
+    
+def update_warden_data(data):
+    warden_ic = data.get('warden_ic')
+    if not warden_ic:
+        raise ValueError("warden_ic is required to update warden data.")
+
+    update_fields = ", ".join(f"{key} = %s" for key in data.keys() if key != "warden_ic")
+    sql = f"UPDATE warden SET {update_fields} WHERE warden_ic = %s"
+    values = tuple(data[key] for key in data if key != "warden_ic") + (warden_ic,)
+
+    try:
+        # Execute the update query
+        cursor.execute(sql, values)
+        mydb.commit()
+        print("Warden data updated successfully.")
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        mydb.rollback()
+    
+def update_student_data(data):
+    student_ic = data.get('student_ic')
+    if not student_ic:
+        raise ValueError("student_ic is required to update student data.")
+
+    update_fields = ", ".join(f"{key} = %s" for key in data.keys() if key != "student_ic")
+    sql = f"UPDATE student SET {update_fields} WHERE student_ic = %s"
+    values = tuple(data[key] for key in data if key != "student_ic") + (student_ic,)
+
+    try:
+        # Execute the update query
+        cursor.execute(sql, values)
+        mydb.commit()
+        print("Student data updated successfully.")
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        mydb.rollback()
+
 
 def retrieve_table_dict(tableName):
     try:
@@ -125,14 +234,30 @@ def retrieve_table_dict(tableName):
     except mysql.connector.Error as e:
         return f"Error: {e}"
     
-def retrived_table_joined():
+def retrieve_confiscated_item_log():
     try:
-        fetch_confiscated_items_query = """
-        SELECT ci.*, s.studentName 
-        FROM confiscated_items ci
-        JOIN students s ON ci.studentID = s.studentID
-        """
-        cursorDict.execute(fetch_confiscated_items_query)
+        query = '''
+        SELECT 
+            ci.confiscated_item_id,
+            ci.item_name,
+            ci.student_ic,
+            s.name AS student_name,
+            ci.item_description,
+            ci.confiscation_date,
+            ci.confiscater_warden_ic,
+            w.name AS warden_name,
+            ci.item_status,
+            ci.confiscation_reason,
+            ci.return_date,
+            ci.notes
+        FROM 
+            confiscated_items ci
+        JOIN 
+            student s ON ci.student_ic = s.student_ic
+        JOIN 
+            warden w ON ci.confiscater_warden_ic = w.warden_ic
+        '''
+        cursorDict.execute(query)
 
         entries = cursorDict.fetchall()
         return entries

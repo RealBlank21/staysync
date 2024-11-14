@@ -42,9 +42,32 @@
         }
 
         th {
-            background-color: #009879;
-            color: #ffffff;
+            background-color: #009879 !important;
+            color: #ffffff !important;
             text-transform: uppercase;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%; /* Reduce width of the content */
+            margin-bottom: 20px; /* Space between header and table */
+            align-items: center; /* Vertically align content */
+        }
+
+        .search-input {
+            padding: 5px 10px; /* Reduced padding for smaller height */
+            width: 200px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            height: 40px; /* Reduce height */
+            align-self: center; /* Vertically align the search box */
+        }
+
+        th {
+            position: relative;
+            padding-left: 25px;  /* Give some space between the icon and the text */
         }
 
         tr {
@@ -62,106 +85,262 @@
         tr:hover {
             background-color: #f1f1f1;
         }
+
+        .sort-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sorted-asc::after {
+            content: " ↑";
+        }
+
+        .sorted-desc::after {
+            content: " ↓";
+        }
+
+        .modal-body .table {
+            margin-top: 0;  /* Remove top margin */
+            padding-top: 0; /* Remove top padding */
+        }
+
+        .modal-header {
+            background-color: #009879;
+            color: white;
+        }
+
+        /* Hide arrows in number input */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield; /* Firefox */
+        }
     </style>
 </head>
 <body>
-
     {% include 'components/navbar.html' %}
-    {% include 'components/hostel_application_modal.html' %}
     
     <div class="container">
-        <h3>Warden Information</h3>
-        <table border="1">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Phone Number</th>
-                <th>Gender</th>
-                <th></th>
-            </tr>
-            {% if entries %}
-                {% for entry in entries %}
-                <tr>
-                    <td>{{ entry.warden_id }}</td>
-                    <td>{{ entry.name }}</td>
-                    <td>{{ entry.phone_number }}</td>
-                    <td>{{ entry.gender }}</td>
-                    <td>
-                        <a class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#studentManageModal" data-index="{{ loop.index }}">
-                            <i class="fas fa-cog"></i> Manage
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="5">No entries available</td>
-                </tr>
-            {% endif %}
-        </table>
+        <div class="header-container">
+            <h1>Warden Information</h1>
+            <input type="number" id="searchInput" class="search-input" placeholder="Search by IC" oninput="searchTable()" step="1" />
+        </div>
+
+        <div class="table-responsive">
+            <table id="wardenTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">No.</th>
+                        <th style="width: 25%;">
+                            <span id="sortWardenIC" class="sort-icon" onclick="sortTable('warden_ic')">⬍</span>
+                            Warden IC
+                        </th>
+                        <th style="width: 30%;">
+                            <span id="sortName" class="sort-icon" onclick="sortTable('name')">⬍</span>
+                            Name
+                        </th>
+                        <th style="width: 25%;">
+                            <span id="sortPhoneNumber" class="sort-icon" onclick="sortTable('phone_number')">⬍</span>
+                            No. Phone
+                        </th>
+                        <th class="text-center" style="width: 15%;">Manage</th>
+                    </tr>
+                </thead>
+                <tbody id="wardenBody">
+                    <!-- Table rows will be generated here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="wardenModal" tabindex="-1" aria-labelledby="wardenModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="wardenForm" method="POST" action="/update-warden">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="wardenModalLabel">Edit Warden Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Body with Form Fields -->
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Warden IC</strong></td>
+                                        <td><input type="text" class="form-control" id="modalWardenIC" name="warden_ic"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Name</strong></td>
+                                        <td><input type="text" class="form-control" id="modalName" name="name"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email</strong></td>
+                                        <td><input type="email" class="form-control" id="modalEmail" name="email"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Phone Number</strong></td>
+                                        <td><input type="text" class="form-control" id="modalPhoneNumber" name="phone_number"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Address</strong></td>
+                                        <td><textarea class="form-control" id="modalAddress" name="address"></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Gender</strong></td>
+                                        <td>
+                                            <select class="form-select" id="modalGender" name="gender">
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Date of Joining</strong></td>
+                                        <td><span id="modalDateOfJoining"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Modal Footer with Submit and Close Buttons -->
+                    <div class="modal-footer justify-content-end">
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
-        let selectedEntry = 0;
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('studentManageModal');
+        // Sample data
+        const wardens = {{ warden | tojson }};
 
-            const entries = JSON.parse('{{ entries | tojson }}'); 
-    
-            modal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const index = button.getAttribute('data-index');
-                
-                const entry = entries[index - 1];
-                selectedEntry = entry;
-                document.getElementById('studentName').innerText = entry["studentName"];
-                document.getElementById('studentIc').innerText = entry["studentIc"];
-                document.getElementById('formClass').innerText = entry["formClass"];
-                document.getElementById('stream').innerText = entry["stream"];
-                document.getElementById('race').innerText = entry["race"];
-                document.getElementById('familyMembers').innerText = entry["familyMembers"];
-                document.getElementById('familyStudying').innerText = entry["familyStudying"];
-                document.getElementById('siblingsSPBT').innerText = entry["siblingsSPBT"];
-                document.getElementById('siblingsHostel').innerText = entry["siblingsHostel"];
-                document.getElementById('distance').innerText = entry["distance"];
-                document.getElementById('studentStatus').innerText = entry["studentStatus"];
-                document.getElementById('guardianStatus').innerText = entry["guardianStatus"];
-                document.getElementById('healthStatus').innerText = entry["healthStatus"];
-                document.getElementById('hostelReason').innerText = entry["hostelReason"];
-                document.getElementById('fatherGuardianName').innerText = entry["fatherGuardianName"];
-                document.getElementById('fatherGuardianIc').innerText = entry["fatherGuardianIc"];
-                document.getElementById('fatherCitizenship').innerText = entry["fatherCitizenship"];
-                document.getElementById('fatherGuardianAddress').innerText = entry["fatherGuardianAddress"];
-                document.getElementById('fatherPhoneHome').innerText = entry["fatherPhoneHome"];
-                document.getElementById('fatherPhoneMobile').innerText = entry["fatherPhoneMobile"];
-                document.getElementById('fatherOccupation').innerText = entry["fatherOccupation"];
-                document.getElementById('fatherIncome').innerText = entry["fatherIncome"];
-                document.getElementById('fatherEmployerAddress').innerText = entry["fatherEmployerAddress"];
-                document.getElementById('motherGuardianName').innerText = entry["motherGuardianName"];
-                document.getElementById('motherGuardianIc').innerText = entry["motherGuardianIc"];
-                document.getElementById('motherCitizenship').innerText = entry["motherCitizenship"];
-                document.getElementById('motherGuardianAddress').innerText = entry["motherGuardianAddress"];
-                document.getElementById('motherPhoneHome').innerText = entry["motherPhoneHome"];
-                document.getElementById('motherPhoneMobile').innerText = entry["motherPhoneMobile"];
-                document.getElementById('motherOccupation').innerText = entry["motherOccupation"];
-                document.getElementById('motherIncome').innerText = entry["motherIncome"];
-                document.getElementById('motherEmployerAddress').innerText = entry["motherEmployerAddress"];
-                document.getElementById('UPSRResult').innerText = entry["upsrResults"];
-                document.getElementById('PT3Result').innerText = entry["pmrResults"];
-                document.getElementById('SPMTrialResult').innerText = entry["spmResults"];
-                document.getElementById('scholarship').innerText = entry["scholarship"];
-                document.getElementById('kwapm').innerText = entry["kwapm"];
-                document.getElementById('uniformedUnit').innerText = entry["uniformedUnit"];
-                document.getElementById('uniformedUnitPosition').innerText = entry["uniformedUnitPosition"];
-                document.getElementById('uniformedUnitRepresenting').innerText = entry["uniformedUnitRepresenting"];
-                document.getElementById('clubAssociation').innerText = entry["clubAssociation"];
-                document.getElementById('clubPosition').innerText = entry["clubPosition"];
-                document.getElementById('clubRepresenting').innerText = entry["clubRepresenting"];
-                document.getElementById('sportsGames').innerText = entry["sportsGames"];
-                document.getElementById('sportsPosition').innerText = entry["sportsPosition"];
-                document.getElementById('sportsRepresenting').innerText = entry["sportsRepresenting"];
+        let statusSortDirection = 'asc'; // Track the sort direction for status
+
+        // Display the table
+        function displayTable(data) {
+            const tableBody = document.getElementById("wardenBody");
+            tableBody.innerHTML = ""; // Clear the table
+
+            data.forEach((warden, index) => {
+                const row = document.createElement("tr");
+
+                // Add No. column
+                const noCell = document.createElement("td");
+                noCell.textContent = index + 1; // Display the row number
+                row.appendChild(noCell);
+
+                const fields = ['warden_ic', 'name', 'phone_number'];
+                fields.forEach(field => {
+                    const cell = document.createElement("td");
+                    cell.textContent = warden[field];
+                    row.appendChild(cell);
+                });
+
+                // Create "Manage" button with gear icon
+                const manageButton = document.createElement("button");
+                manageButton.classList.add("btn", "btn-success", "d-flex", "align-items-center", "justify-content-center");  // Add Bootstrap classes for button styling and centering
+
+                // Create the gear icon
+                const gearIcon = document.createElement("i");
+                gearIcon.classList.add("bi", "bi-gear");  // Bootstrap gear icon class
+
+                // Append the gear icon to the button
+                manageButton.appendChild(gearIcon);
+
+                // Add event listener for the button to open the modal
+                manageButton.onclick = () => openModal(warden);
+
+                // Create a table cell for the button and append it to the row
+                const buttonCell = document.createElement("td");
+                buttonCell.classList.add("d-flex", "justify-content-center", "align-items-center");  // Use flex to center the button
+                buttonCell.appendChild(manageButton);
+                row.appendChild(buttonCell);
+
+                // Append the row to the table body
+                tableBody.appendChild(row);
             });
-        });
+        }
+
+        // Search the table
+        function searchTable() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const filteredData = wardens.filter(warden =>
+                Object.values(warden).some(value => 
+                    value.toString().toLowerCase().includes(query)
+                )
+            );
+            displayTable(filteredData);
+        }
+
+        // Sort the table by a given key
+        function sortTable(key) {
+            const sortedData = [...wardens].sort((a, b) => {
+                return a[key].toString().localeCompare(b[key].toString());
+            });
+            displayTable(sortedData);
+        }
+
+        // Open the modal and pre-fill form fields with warden details
+        function openModal(warden) {
+            // Pre-fill form fields with warden details
+            document.getElementById('modalWardenIC').value = warden.warden_ic;
+            document.getElementById('modalName').value = warden.name;
+            document.getElementById('modalEmail').value = warden.email;
+            document.getElementById('modalPhoneNumber').value = warden.phone_number;
+            document.getElementById('modalAddress').value = warden.address;
+            document.getElementById('modalDateOfJoining').textContent = warden.date_of_joining;
+            document.getElementById('modalGender').value = warden.gender;
+
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('wardenModal'));
+            modal.show();
+        }
+
+        // Close the modal
+        function closeWardenModal() {
+            const modalElement = document.getElementById('wardenModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+        }
+
+        displayTable(wardens);
+    </script>
+
+    <script>
+    document.getElementById('wardenForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from refreshing the page
+
+        // Gather form data
+        const formData = new FormData(this);
+
+        // Send the data via AJAX
+        fetch('/update-warden', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Warden details updated successfully!");
+                // Optionally, hide the modal or refresh data on the page
+                location.reload();
+            } else {
+                alert("Failed to update warden details. Please try again.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

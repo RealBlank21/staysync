@@ -10,6 +10,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <style>
             body {
                 font-family: 'Poppins', sans-serif;
@@ -144,6 +145,15 @@
                         </div>
                         
                         <div class="col-md-6">
+                            <label for="studentGender" class="form-label">Gender</label>
+                            <select class="form-control" id="studentGender" name="student_gender" required>
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
                             <label for="formClass" class="form-label">Form Class</label>
                             <input type="text" class="form-control" id="formClass" name="form_class" required>
                         </div>
@@ -201,6 +211,7 @@
         
                     <!-- Submit Button -->
                     <div class="col-md-12">
+                        <div class="g-recaptcha" data-sitekey="6LfycnsqAAAAAFZqNlroPkwGjcdhepUP-yO_DbMx"></div>
                         <button type="submit" class="btn btn-success w-100">Submit Application</button>
                     </div>
                 </form>

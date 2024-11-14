@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Students</title>
+    <title>Student</title>
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -42,9 +42,32 @@
         }
 
         th {
-            background-color: #009879;
-            color: #ffffff;
+            background-color: #009879 !important;
+            color: #ffffff !important;
             text-transform: uppercase;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%; /* Reduce width of the content */
+            margin-bottom: 20px; /* Space between header and table */
+            align-items: center; /* Vertically align content */
+        }
+
+        .search-input {
+            padding: 5px 10px; /* Reduced padding for smaller height */
+            width: 200px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            height: 40px; /* Reduce height */
+            align-self: center; /* Vertically align the search box */
+        }
+
+        th {
+            position: relative;
+            padding-left: 25px;  /* Give some space between the icon and the text */
         }
 
         tr {
@@ -63,344 +86,334 @@
             background-color: #f1f1f1;
         }
 
-        .btn-custom {
-            background-color: #009879 !important;
-            color: white !important; 
+        .sort-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
         }
 
-        .btn-custom:hover {
-            background-color: white !important;
-            color: #009879 !important; 
+        .sorted-asc::after {
+            content: " ↑";
+        }
+
+        .sorted-desc::after {
+            content: " ↓";
+        }
+
+        .modal-body .table {
+            margin-top: 0;  /* Remove top margin */
+            padding-top: 0; /* Remove top padding */
         }
 
         .modal-header {
             background-color: #009879;
+            color: white;
+        }
+
+        /* Hide arrows in number input */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield; /* Firefox */
+        }
+
+        table {
+            table-layout: fixed; /* Fixes column width */
+            width: 100%; /* Ensures table width fits within the parent container */
+        }
+
+        #studentBody td, #studentBody th {
+            white-space: nowrap; /* Prevents text from wrapping */
+            overflow: hidden; /* Hides overflowing content */
+            text-overflow: ellipsis; /* Adds "..." for truncated text */
         }
     </style>
 </head>
 <body>
-
     {% include 'components/navbar.html' %}
+    
+    <div class="container">
+        <div class="header-container">
+            <h1>Student Information</h1>
+            <input type="number" id="searchInput" class="search-input" placeholder="Search by IC" oninput="searchTable()" step="1" />
+        </div>
 
-    <div class="modal modal-xl fade" id="studentManageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="table-responsive">
+            <table id="studentTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">No.</th>
+                        <th style="width: 15%;">
+                            <span id="sortStudentIC" class="sort-icon" onclick="sortTable('student_ic')">⬍</span> Student IC
+                        </th>
+                        <th style="width: 20%;">
+                            <span id="sortName" class="sort-icon" onclick="sortTable('name')">⬍</span> Name
+                        </th>
+                        <th style="width: 15%;">
+                            <span id="sortEmail" class="sort-icon" onclick="sortTable('email')">⬍</span> Email
+                        </th>
+                        <th style="width: 10%;">
+                            <span id="sortFormClass" class="sort-icon" onclick="sortTable('form_class')">⬍</span> Class
+                        </th>
+                        <th style="width: 10%;">
+                            <span id="sortRace" class="sort-icon" onclick="sortTable('race')">⬍</span> Race
+                        </th>
+                        <th style="width: 10%;">
+                            <span id="sortGender" class="sort-icon" onclick="sortTable('gender')">⬍</span> Gender
+                        </th>
+                        <th style="width: 15%;">
+                            <span id="sortOutingBanPeriod" class="sort-icon" onclick="sortTable('outing_ban_period')">⬍</span> Outing Ban
+                        </th>
+                        <th class="text-center" style="width: 10%;">Manage</th>
+                    </tr>
+                </thead>
+                <tbody id="studentBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg"> <!-- Keep modal-lg for a larger modal -->
             <div class="modal-content">
-                <div class="modal-header text-light">
-                    <h4>Hostel Application</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form class="row g-3" method="POST">
-                        <!-- Part A: Student Information -->
-                        <div class="col-12 section-title">Part A: Student Information</div>
-                    
-                        <!-- Student Name -->
-                        <div class="col-md-12">
-                            <label for="studentName">Student Name</label>
-                            <input type="text" id="studentName" class="form-control" value="">
+                <form id="studentForm" method="POST" action="/update-student">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="studentModalLabel">Edit Student Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Body with Form Fields -->
+                    <div class="modal-body">
+                        <div class="table-responsive"> <!-- Add table-responsive for horizontal scroll if needed -->
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Name</strong></td>
+                                        <td><input type="text" class="form-control" id="modalName" name="name"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Student IC</strong></td>
+                                        <td><input type="text" class="form-control" id="modalStudentIC" name="student_ic"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email</strong></td>
+                                        <td><input type="email" class="form-control" id="modalEmail" name="email"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Gender</strong></td>
+                                        <td>
+                                            <select class="form-select" id="modalGender" name="gender">
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Form Class</strong></td>
+                                        <td><input type="text" class="form-control" id="modalFormClass" name="form_class"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Race</strong></td>
+                                        <td><input type="text" class="form-control" id="modalRace" name="race"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Citizenship</strong></td>
+                                        <td><input type="text" class="form-control" id="modalCitizenship" name="citizenship"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Family Members</strong></td>
+                                        <td><input type="number" class="form-control" id="modalFamilyMembers" name="family_members"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Address</strong></td>
+                                        <td><textarea class="form-control" id="modalAddress" name="address"></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Home Distance</strong></td>
+                                        <td><input type="text" class="form-control" id="modalHomeDistance" name="home_distance"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Guardian Status</strong></td>
+                                        <td><input type="text" class="form-control" id="modalGuardianStatus" name="guardian_status"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Guardian Contact</strong></td>
+                                        <td><input type="text" class="form-control" id="modalGuardianContact" name="guardian_contact"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Ban Period</strong></td>
+                                        <td><span id="modalBanPeriod"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    
-                        <!-- Identification Card Number -->
-                        <div class="col-md-6">
-                            <label for="studentIc">Identification Card Number</label>
-                            <input type="text" id="studentIc" class="form-control" value="Test">
-                        </div>
-                    
-                        <!-- Form (with Class Name) -->
-                        <div class="col-md-6">
-                            <label for="formClass">Form (with Class Name)</label>
-                            <input type="text" id="formClass" class="form-control" value="Test Form">
-                        </div>
-                    
-                        <!-- Stream -->
-                        <div class="col-md-6">
-                            <label for="stream">Stream</label>
-                            <input type="text" id="stream" class="form-control" value="Test Stream">
-                        </div>
-                    
-                        <!-- Race -->
-                        <div class="col-md-6">
-                            <label for="race">Race</label>
-                            <input type="text" id="race" class="form-control" value="Test Race">
-                        </div>
-                    
-                        <!-- Number of Family Members -->
-                        <div class="col-md-6">
-                            <label for="familyMembers">Number of Family Members</label>
-                            <input type="text" id="familyMembers" class="form-control" value="Test Members">
-                        </div>
-                    
-                        <!-- Number of Family Members Still Studying -->
-                        <div class="col-md-6">
-                            <label for="familyStudying">Number of Family Members Still Studying</label>
-                            <input type="text" id="familyStudying" class="form-control" value="Test Studying Members">
-                        </div>
-                    
-                        <!-- Number of Siblings Receiving SPBT -->
-                        <div class="col-md-6">
-                            <label for="siblingsSPBT">Number of Siblings Receiving SPBT</label>
-                            <input type="text" id="siblingsSPBT" class="form-control" value="Test SPBT">
-                        </div>
-                    
-                        <!-- Number of Siblings Staying in Hostel -->
-                        <div class="col-md-6">
-                            <label for="siblingsHostel">Number of Siblings Staying in Hostel</label>
-                            <input type="text" id="siblingsHostel" class="form-control" value="Test Hostel">
-                        </div>
-                    
-                        <!-- Distance from Home to School -->
-                        <div class="col-md-6">
-                            <label for="distance">Distance from Home to School (in km)</label>
-                            <input type="text" id="distance" class="form-control" value="Test Distance">
-                        </div>
-                    
-                        <!-- Student Status (Orphan/Non-Orphan) -->
-                        <div class="col-md-6">
-                            <label for="studentStatus">Student Status</label>
-                            <input type="text" id="studentStatus" class="form-control" value="Test Status">
-                        </div>
-                    
-                        <!-- Student Guardian Status -->
-                        <div class="col-md-6">
-                            <label for="guardianStatus">Student Guardian Status</label>
-                            <input type="text" id="guardianStatus" class="form-control" value="Test Guardian Status">
-                        </div>
-                    
-                        <!-- Health Status -->
-                        <div class="col-md-6">
-                            <label for="healthStatus">Health Status</label>
-                            <input type="text" id="healthStatus" class="form-control" value="Test Health">
-                        </div>
-                    
-                        <!-- Reasons for Applying for Hostel -->
-                        <div class="col-md-12">
-                            <label for="hostelReason">Reasons for Applying for Hostel</label>
-                            <input type="text" id="hostelReason" class="form-control" value="Test Reason">
-                        </div>
-                    
-                        <!-- Part B: Guardian Information (Father / Male Guardian) -->
-                        <div class="col-12 section-title">Part B: Guardian Information (Father / Male Guardian)</div>
-                    
-                        <!-- Guardian Name -->
-                        <div class="col-md-6">
-                            <label for="fatherGuardianName">Guardian Name (Father / Male)</label>
-                            <input type="text" id="fatherGuardianName" class="form-control" value="Test Father Name">
-                        </div>
-                    
-                        <!-- Guardian IC Number -->
-                        <div class="col-md-6">
-                            <label for="fatherGuardianIc">Guardian IC Number</label>
-                            <input type="text" id="fatherGuardianIc" class="form-control" value="Test Father IC">
-                        </div>
-                    
-                        <!-- Citizenship -->
-                        <div class="col-md-6">
-                            <label for="fatherCitizenship">Citizenship</label>
-                            <input type="text" id="fatherCitizenship" class="form-control" value="Test Citizenship">
-                        </div>
-                    
-                        <!-- Guardian Address -->
-                        <div class="col-md-12">
-                            <label for="fatherGuardianAddress">Home Address</label>
-                            <input type="text" id="fatherGuardianAddress" class="form-control" value="Test Address">
-                        </div>
-                    
-                        <!-- Phone Number (Home & Mobile) -->
-                        <div class="col-md-6">
-                            <label for="fatherPhoneHome">Phone Number (Home)</label>
-                            <input type="text" id="fatherPhoneHome" class="form-control" value="Test Home Phone">
-                        </div>
-                    
-                        <div class="col-md-6">
-                            <label for="fatherPhoneMobile">Phone Number (Mobile)</label>
-                            <input type="text" id="fatherPhoneMobile" class="form-control" value="Test Mobile Phone">
-                        </div>
-                    
-                        <!-- Guardian Occupation -->
-                        <div class="col-md-6">
-                            <label for="fatherOccupation">Occupation (Position Name)</label>
-                            <input type="text" id="fatherOccupation" class="form-control" value="Test Occupation">
-                        </div>
-                    
-                        <!-- Guardian Income -->
-                        <div class="col-md-6">
-                            <label for="fatherIncome">Income (Basic Salary + Fixed Allowance)</label>
-                            <input type="text" id="fatherIncome" class="form-control" value="Test Income">
-                        </div>
-                    
-                        <!-- Employer's Address -->
-                        <div class="col-md-12">
-                            <label for="fatherEmployerAddress">Employer's Address</label>
-                            <input type="text" id="fatherEmployerAddress" class="form-control" value="Test Employer Address">
-                        </div>
-                    
-                        <!-- Part B: Guardian Information (Mother / Female Guardian) -->
-                        <div class="col-12 section-title">Part B: Guardian Information (Mother / Female Guardian)</div>
-                    
-                        <!-- Guardian Name -->
-                        <div class="col-md-6">
-                            <label for="motherGuardianName">Guardian Name (Mother / Female)</label>
-                            <input type="text" id="motherGuardianName" class="form-control" value="Test Mother Name">
-                        </div>
-                    
-                        <!-- Guardian IC Number -->
-                        <div class="col-md-6">
-                            <label for="motherGuardianIc">Guardian IC Number</label>
-                            <input type="text" id="motherGuardianIc" class="form-control" value="Test Mother IC">
-                        </div>
-                    
-                        <!-- Citizenship -->
-                        <div class="col-md-6">
-                            <label for="motherCitizenship">Citizenship</label>
-                            <input type="text" id="motherCitizenship" class="form-control" value="Test Mother Citizenship">
-                        </div>
-                    
-                        <!-- Guardian Address -->
-                        <div class="col-md-12">
-                            <label for="motherGuardianAddress">Home Address</label>
-                            <input type="text" id="motherGuardianAddress" class="form-control" value="Test Mother Address">
-                        </div>
-                    
-                        <!-- Phone Number (Home & Mobile) -->
-                        <div class="col-md-6">
-                            <label for="motherPhoneHome">Phone Number (Home)</label>
-                            <input type="text" id="motherPhoneHome" class="form-control" value="Test Home Phone">
-                        </div>
-                    
-                        <div class="col-md-6">
-                            <label for="motherPhoneMobile">Phone Number (Mobile)</label>
-                            <input type="text" id="motherPhoneMobile" class="form-control" value="Test Mobile Phone">
-                        </div>
-                    
-                        <!-- Guardian Occupation -->
-                        <div class="col-md-6">
-                            <label for="motherOccupation">Occupation (Position Name)</label>
-                            <input type="text" id="motherOccupation" class="form-control" value="Test Mother Occupation">
-                        </div>
-                    
-                        <!-- Guardian Income -->
-                        <div class="col-md-6">
-                            <label for="motherIncome">Income (Basic Salary + Fixed Allowance)</label>
-                            <input type="text" id="motherIncome" class="form-control" value="Test Mother Income">
-                        </div>
-                    
-                        <!-- Employer's Address -->
-                        <div class="col-md-12">
-                            <label for="motherEmployerAddress">Employer's Address</label>
-                            <input type="text" id="motherEmployerAddress" class="form-control" value="Test Mother Employer Address">
-                        </div>
-                    
-                        <!-- Submit Button -->
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Submit Application</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <!-- Modal Footer with Submit and Close Buttons -->
+                    <div class="modal-footer justify-content-end">
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    
-    <div class="container">
-
-        <h3>Student Information</h3>
-
-        <table border="1">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>IC</th>
-                <th>Form</th>
-                <th></th>
-            </tr>
-            {% if entries %}
-                {% for entry in entries %}
-                <tr>
-                    <td>{{ entry.studentID }}</td>
-                    <td>{{ entry.studentName }}</td>
-                    <td>{{ entry.studentIc }}</td>
-                    <td>{{ entry.formClass }}</td>
-                    <td>
-                        <a class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#studentManageModal" data-index="{{ loop.index }}">
-                            <i class="fas fa-cog"></i> Manage
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="5">No entries available</td>
-                </tr>
-            {% endif %}
-        </table>
-    </div>
-
-
-
-
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('studentManageModal');
+        const students = {{ student | tojson }};
 
-            const entries = JSON.parse('{{ entries | tojson }}'); 
+        let statusSortDirection = 'asc'; // Track the sort direction for status
 
-            console.log(entries);
-    
-            modal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                const index = button.getAttribute('data-index');
-                
-                const entry = entries[index - 1];
+        // Display the table
+        function displayTable(data) {
+            const tableBody = document.getElementById("studentBody");
+            tableBody.innerHTML = ""; // Clear the table
 
-                console.log('Selected Entry:', entry);
-                document.getElementById('studentName').value = entry["studentName"];
-                document.getElementById('studentIc').value = entry["studentIc"];
-                document.getElementById('formClass').value = entry["formClass"];
-                document.getElementById('stream').value = entry["stream"];
-                document.getElementById('race').value = entry["race"];
-                document.getElementById('familyMembers').value = entry["familyMembers"];
-                document.getElementById('familyStudying').value = entry["familyStudying"];
-                document.getElementById('siblingsSPBT').value = entry["siblingsSPBT"];
-                document.getElementById('siblingsHostel').value = entry["siblingsHostel"];
-                document.getElementById('distance').value = entry["distance"];
-                document.getElementById('studentStatus').value = entry["studentStatus"];
-                document.getElementById('guardianStatus').value = entry["guardianStatus"];
-                document.getElementById('healthStatus').value = entry["healthStatus"];
-                document.getElementById('hostelReason').value = entry["hostelReason"];
-                document.getElementById('fatherGuardianName').value = entry["fatherGuardianName"];
-                document.getElementById('fatherGuardianIc').value = entry["fatherGuardianIc"];
-                document.getElementById('fatherCitizenship').value = entry["fatherCitizenship"];
-                document.getElementById('fatherGuardianAddress').value = entry["fatherGuardianAddress"];
-                document.getElementById('fatherPhoneHome').value = entry["fatherPhoneHome"];
-                document.getElementById('fatherPhoneMobile').value = entry["fatherPhoneMobile"];
-                document.getElementById('fatherOccupation').value = entry["fatherOccupation"];
-                document.getElementById('fatherIncome').value = entry["fatherIncome"];
-                document.getElementById('fatherEmployerAddress').value = entry["fatherEmployerAddress"];
-                document.getElementById('motherGuardianName').value = entry["motherGuardianName"];
-                document.getElementById('motherGuardianIc').value = entry["motherGuardianIc"];
-                document.getElementById('motherCitizenship').value = entry["motherCitizenship"];
-                document.getElementById('motherGuardianAddress').value = entry["motherGuardianAddress"];
-                document.getElementById('motherPhoneHome').value = entry["motherPhoneHome"];
-                document.getElementById('motherPhoneMobile').value = entry["motherPhoneMobile"];
-                document.getElementById('motherOccupation').value = entry["motherOccupation"];
-                document.getElementById('motherIncome').value = entry["motherIncome"];
-                document.getElementById('motherEmployerAddress').value = entry["motherEmployerAddress"];
-                document.getElementById('UPSRResult').value = entry["upsrResults"];
-                document.getElementById('PT3Result').value = entry["pmrResults"];
-                document.getElementById('SPMTrialResult').value = entry["spmResults"];
-                document.getElementById('scholarship').value = entry["scholarship"];
-                document.getElementById('kwapm').value = entry["kwapm"];
-                document.getElementById('uniformedUnit').value = entry["uniformedUnit"];
-                document.getElementById('uniformedUnitPosition').value = entry["uniformedUnitPosition"];
-                document.getElementById('uniformedUnitRepresenting').value = entry["uniformedUnitRepresenting"];
-                document.getElementById('clubAssociation').value = entry["clubAssociation"];
-                document.getElementById('clubPosition').value = entry["clubPosition"];
-                document.getElementById('clubRepresenting').value = entry["clubRepresenting"];
-                document.getElementById('sportsGames').value = entry["sportsGames"];
-                document.getElementById('sportsPosition').value = entry["sportsPosition"];
-                document.getElementById('sportsRepresenting').value = entry["sportsRepresenting"];
+            data.forEach((student, index) => {
+                const row = document.createElement("tr");
+
+                // Add No. column
+                const noCell = document.createElement("td");
+                noCell.textContent = index + 1; // Display the row number
+                row.appendChild(noCell);
+
+                const fields = [
+                    'student_ic', 'name', 'email', 'form_class', 'race', 
+                    'gender', 'outing_ban_period'
+                ];
+
+                fields.forEach(field => {
+                    const cell = document.createElement("td");
+                    cell.textContent = student[field] || '';
+
+                    if (field === 'outing_ban_period') {
+                        if (student.outing_ban_period) {
+                            const date = new Date(student.outing_ban_period);
+                            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+                            const formattedDate = date.toLocaleDateString('en-GB', options); // Customize to use 'en-GB' for the desired format
+                            cell.textContent = formattedDate;
+                        } else {
+                            cell.textContent = "-"; // If no date available
+                        }
+                    } else {
+                        cell.textContent = student[field];
+                    }
+                    row.appendChild(cell);
+                });
+
+                // Create "Manage" button with gear icon
+                const manageButton = document.createElement("button");
+                manageButton.classList.add("btn", "btn-success", "d-flex", "align-items-center", "justify-content-center");  // Add Bootstrap classes for button styling and centering
+
+                // Create the gear icon
+                const gearIcon = document.createElement("i");
+                gearIcon.classList.add("bi", "bi-gear");  // Bootstrap gear icon class
+
+                // Append the gear icon to the button
+                manageButton.appendChild(gearIcon);
+
+                // Add event listener for the button to open the modal
+                manageButton.onclick = () => openModal(student);
+
+                // Create a table cell for the button and append it to the row
+                const buttonCell = document.createElement("td");
+                buttonCell.classList.add("d-flex", "justify-content-center", "align-items-center");  // Use flex to center the button
+                buttonCell.appendChild(manageButton);
+                row.appendChild(buttonCell);
+
+                // Append the row to the table body
+                tableBody.appendChild(row);
             });
-        });
+        }
+
+        // Search the table
+        function searchTable() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const filteredData = students.filter(student =>
+                Object.values(student).some(value => 
+                    value.toString().toLowerCase().includes(query)
+                )
+            );
+            displayTable(filteredData);
+        }
+
+        // Sort the table by a given key
+        function sortTable(key) {
+            const sortedData = [...students].sort((a, b) => {
+                return a[key].toString().localeCompare(b[key].toString());
+            });
+            displayTable(sortedData);
+        }
+
+        // Open the modal and pre-fill form fields with student details
+        function openModal(student) {
+            // Pre-fill form fields with student details
+            document.getElementById('modalStudentIC').value = student.student_ic;
+            document.getElementById('modalName').value = student.name;
+            document.getElementById('modalEmail').value = student.email;
+            document.getElementById('modalGender').value = student.gender;
+            document.getElementById('modalFormClass').value = student.form_class;
+            document.getElementById('modalRace').value = student.race;
+            document.getElementById('modalCitizenship').value = student.citizenship;
+            document.getElementById('modalFamilyMembers').value = student.family_members;
+            document.getElementById('modalAddress').value = student.address;
+            document.getElementById('modalHomeDistance').value = student.home_distance;
+            document.getElementById('modalGuardianStatus').value = student.guardian_status;
+            document.getElementById('modalGuardianContact').value = student.guardian_contact;
+
+            if (student.outing_ban_period) {
+                // Format and set the ban period date if it exists
+                const date = new Date(student.outing_ban_period);
+                const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+                const formattedDate = date.toLocaleDateString('en-GB', options); // 'en-GB' for "Fri, 15 Nov 2024" format
+                document.getElementById('modalBanPeriod').textContent = formattedDate;
+            } else {
+                // Set a placeholder '-' if outing_ban_period is empty
+                document.getElementById('modalBanPeriod').textContent = '-';
+            }
+
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('studentModal'));
+            modal.show();
+        }
+
+        // Close the modal
+        function closeModal() {
+            const modalElement = document.getElementById('studentModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+        }
+
+        displayTable(students);
+    </script>
+
+    <script>
+    document.getElementById('studentForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from refreshing the page
+
+        // Gather form data
+        const formData = new FormData(this);
+
+        // Send the data via AJAX
+        fetch('/update-student', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Student details updated successfully!");
+                // Optionally, hide the modal or refresh data on the page
+                location.reload();
+            } else {
+                alert("Failed to update student details. Please try again.");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

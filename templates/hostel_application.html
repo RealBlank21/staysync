@@ -42,8 +42,8 @@
         }
 
         th {
-            background-color: #009879;
-            color: #ffffff;
+            background-color: #009879 !important;
+            color: #ffffff !important;
             text-transform: uppercase;
         }
 
@@ -68,13 +68,6 @@
         th {
             position: relative;
             padding-left: 25px;  /* Give some space between the icon and the text */
-        }
-
-        .sort-icon {
-            position: absolute;
-            left: 5px; /* Adjust icon position to the left */
-            top: 50%;
-            transform: translateY(-50%);
         }
 
         tr {
@@ -115,6 +108,28 @@
             background-color: #009879;
             color: white;
         }
+
+        /* Hide arrows in number input */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield; /* Firefox */
+        }
+
+        table {
+            table-layout: fixed; /* Fixes column width */
+            width: 100%; /* Ensures table width fits within the parent container */
+        }
+
+        #studentBody td, #studentBody th {
+            white-space: nowrap; /* Prevents text from wrapping */
+            overflow: hidden; /* Hides overflowing content */
+            text-overflow: ellipsis; /* Adds "..." for truncated text */
+        }
     </style>
 </head>
 <body>
@@ -124,48 +139,48 @@
     <div class="container">
         <div class="header-container">
             <h1>Hostel Application</h1>
-            <input type="text" id="searchInput" class="search-input" placeholder="Search by IC" oninput="searchTable()" />
+            <input type="number" id="searchInput" class="search-input" placeholder="Search by IC" oninput="searchTable()" step="1" />
         </div>
 
-        <table id="studentTable">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>
-                        <span id="sortStudentIC" class="sort-icon" onclick="sortTable('student_ic')">⬍</span>
-                        Student IC
-                    </th>
-                    <th>
-                        <span id="sortName" class="sort-icon" onclick="sortTable('name')">⬍</span>
-                        Name
-                    </th>
-                    <th>
-                        <span id="sortFormClass" class="sort-icon" onclick="sortTable('form_class')">⬍</span>
-                        Form Class
-                    </th>
-                    <th>
-                        <span id="sortRace" class="sort-icon" onclick="sortTable('race')">⬍</span>
-                        Race
-                    </th>
-                    <th>
-                        <span id="sortCitizenship" class="sort-icon" onclick="sortTable('citizenship')">⬍</span>
-                        Citizenship
-                    </th>
-                    <th id="statusHeader">
-                        <span id="sortStatus" class="sort-icon" onclick="sortStatus()">⬍</span>
-                        Status
-                    </th>
-                    <th class="text-center">Manage</th>
-                </tr>
-            </thead>
-            <tbody id="studentBody"></tbody>
-        </table>
-
+        <div class="table-responsive">
+            <table id="studentTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">No.</th>
+                        <th style="width: 15%;">
+                            <span id="sortStudentIC" class="sort-icon" onclick="sortTable('student_ic')">⬍</span>
+                            Student IC
+                        </th>
+                        <th style="width: 20%;">
+                            <span id="sortName" class="sort-icon" onclick="sortTable('name')">⬍</span>
+                            Name
+                        </th>
+                        <th style="width: 10%;">
+                            <span id="sortFormClass" class="sort-icon" onclick="sortTable('form_class')">⬍</span>
+                            Class
+                        </th>
+                        <th style="width: 10%;">
+                            <span id="sortRace" class="sort-icon" onclick="sortTable('race')">⬍</span>
+                            Race
+                        </th>
+                        <th style="width: 15%;">
+                            <span id="sortCitizenship" class="sort-icon" onclick="sortTable('citizenship')">⬍</span>
+                            Citizenship
+                        </th>
+                        <th id="statusHeader" style="width: 10%;">
+                            <span id="sortStatus" class="sort-icon" onclick="sortStatus()">⬍</span>
+                            Status
+                        </th>
+                        <th class="text-center" style="width: 15%;">Manage</th>
+                    </tr>
+                </thead>
+                <tbody id="studentBody"></tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal fade" id="studentModal" tabindex="-1" aria-labelledby="studentModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg"> <!-- Add modal-lg for a larger modal -->
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="studentModalLabel">Student Details</h5>
@@ -173,58 +188,64 @@
                 </div>
                 <!-- Modal Body with Table -->
                 <div class="modal-body">
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td><strong>Name:</strong></td>
-                                <td><span id="modalName"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Student IC:</strong></td>
-                                <td><span id="modalStudentIC"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Email:</strong></td>
-                                <td><span id="modalEmail"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Form Class:</strong></td>
-                                <td><span id="modalFormClass"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Race:</strong></td>
-                                <td><span id="modalRace"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Citizenship:</strong></td>
-                                <td><span id="modalCitizenship"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Family Members:</strong></td>
-                                <td><span id="modalFamilyMembers"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Address:</strong></td>
-                                <td><span id="modalAddress"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Home Distance:</strong></td>
-                                <td><span id="modalHomeDistance"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Guardian Status:</strong></td>
-                                <td><span id="modalGuardianStatus"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Guardian Contact:</strong></td>
-                                <td><span id="modalGuardianContact"></span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Status:</strong></td>
-                                <td><span id="modalStatus"></span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive"> <!-- Add table-responsive for horizontal scroll if needed -->
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td><strong>Name</strong></td>
+                                    <td><span id="modalName"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Student IC</strong></td>
+                                    <td><span id="modalStudentIC"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email</strong></td>
+                                    <td><span id="modalEmail"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Gender</strong></td>
+                                    <td><span id="modalGender"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Form Class</strong></td>
+                                    <td><span id="modalFormClass"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Race</strong></td>
+                                    <td><span id="modalRace"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Citizenship</strong></td>
+                                    <td><span id="modalCitizenship"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Family Members</strong></td>
+                                    <td><span id="modalFamilyMembers"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Address</strong></td>
+                                    <td><span id="modalAddress"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Home Distance</strong></td>
+                                    <td><span id="modalHomeDistance"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Guardian Status</strong></td>
+                                    <td><span id="modalGuardianStatus"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Guardian Contact</strong></td>
+                                    <td><span id="modalGuardianContact"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status</strong></td>
+                                    <td><span id="modalStatus"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- Modal Footer with Accept and Reject Buttons -->
                 <div class="modal-footer justify-content-end">
@@ -254,32 +275,60 @@
                 noCell.textContent = index + 1; // Display the row number
                 row.appendChild(noCell);
 
-                const fields = ['student_ic', 'name', 'form_class', 'race', 'citizenship', 'status'];
+                const fields = ['student_ic', 'name', 'form_class', 'race', 'citizenship'];
                 fields.forEach(field => {
                     const cell = document.createElement("td");
                     cell.textContent = student[field];
                     row.appendChild(cell);
                 });
 
-                // Create "Manage" button with gear icon
-                const manageButton = document.createElement("button");
-                manageButton.classList.add("btn", "btn-success", "d-flex", "align-items-center", "justify-content-center");  // Add Bootstrap classes for button styling and centering
+                // Create a badge for the student's status
+                const statusCell = document.createElement("td");
+                let statusBadge;
+                
+                if (student.status === "Approved") {
+                    statusBadge = document.createElement("span");
+                    statusBadge.classList.add("badge", "text-bg-success");
+                    statusBadge.textContent = "Approved";
+                } else if (student.status === "Rejected") {
+                    statusBadge = document.createElement("span");
+                    statusBadge.classList.add("badge", "text-bg-danger");
+                    statusBadge.textContent = "Rejected";
+                } else if (student.status === "Pending") {
+                    statusBadge = document.createElement("span");
+                    statusBadge.classList.add("badge", "text-bg-warning");
+                    statusBadge.textContent = "Pending";
+                }
 
-                // Create the gear icon
-                const gearIcon = document.createElement("i");
-                gearIcon.classList.add("bi", "bi-gear");  // Bootstrap gear icon class
+                statusCell.appendChild(statusBadge);
+                row.appendChild(statusCell);
 
-                // Append the gear icon to the button
-                manageButton.appendChild(gearIcon);
+                // Check if the status is "Pending" before creating the "Manage" button
+                if (student.status === "Pending") {
+                    // Create "Manage" button with gear icon
+                    const manageButton = document.createElement("button");
+                    manageButton.classList.add("btn", "btn-success", "d-flex", "align-items-center", "justify-content-center");  // Add Bootstrap classes for button styling and centering
 
-                // Add event listener for the button to open the modal
-                manageButton.onclick = () => openModal(student);
+                    // Create the gear icon
+                    const gearIcon = document.createElement("i");
+                    gearIcon.classList.add("bi", "bi-gear");  // Bootstrap gear icon class
 
-                // Create a table cell for the button and append it to the row
-                const buttonCell = document.createElement("td");
-                buttonCell.classList.add("d-flex", "justify-content-center", "align-items-center");  // Use flex to center the button
-                buttonCell.appendChild(manageButton);
-                row.appendChild(buttonCell);
+                    // Append the gear icon to the button
+                    manageButton.appendChild(gearIcon);
+
+                    // Add event listener for the button to open the modal
+                    manageButton.onclick = () => openModal(student);
+
+                    // Create a table cell for the button and append it to the row
+                    const buttonCell = document.createElement("td");
+                    buttonCell.classList.add("d-flex", "justify-content-center", "align-items-center");  // Use flex to center the button
+                    buttonCell.appendChild(manageButton);
+                    row.appendChild(buttonCell);
+                } else {
+                    // If the status is not "Pending", add an empty cell to keep the table structure intact
+                    const emptyCell = document.createElement("td");
+                    row.appendChild(emptyCell);
+                }
 
                 // Append the row to the table body
                 tableBody.appendChild(row);
@@ -328,6 +377,7 @@
             document.getElementById('modalStudentIC').textContent = student.student_ic;
             document.getElementById('modalName').textContent = student.name;
             document.getElementById('modalEmail').textContent = student.email;
+            document.getElementById('modalGender').textContent = student.gender;
             document.getElementById('modalFormClass').textContent = student.form_class;
             document.getElementById('modalRace').textContent = student.race;
             document.getElementById('modalCitizenship').textContent = student.citizenship;

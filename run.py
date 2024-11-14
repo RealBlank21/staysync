@@ -147,11 +147,15 @@ def login():
                 user_email = db.retrieve_mail(ic)
 
                 send_verification_email(user_email)
-                return redirect(url_for('front_page'))
+                return redirect(url_for('check_mail'))
             else:
                 error_message = "Incorrect username or password."
 
     return render_template('login.html', error_message=error_message)
+
+@app.route('/check_mail')
+def check_mail():
+    return render_template('check_mail.html')
 
 @app.route('/dashboard')
 def dashboard():

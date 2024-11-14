@@ -61,7 +61,7 @@ def send_verification_email(user_email):
 @app.route('/verify_email/<token>')
 def verify_email(token):
     try:
-        user_email = serializer.loads(token, salt='email-verify', max_age=3600)  # Token valid for 1 hour
+        user_email = serializer.loads(token, salt='email-verify', max_age=86400)  # Token valid for 24 hour
         # Retrieve user information based on the email
         user = db.get_user_by_email(user_email)  # Function to retrieve user details from the database
 

@@ -110,21 +110,12 @@
                                 </div>
                             {% endif %}
                             
-                            {% if session.get('user_role') == 'Warden' %}
-                                <div class="section">
-                                    <div class="dropdown-header"><strong>Outing</strong></div>
-                                    <a class="dropdown-item" href="{{ url_for('outing_manager') }}">
-                                        <i class="bi bi-journal-text"></i> Outing Manager
-                                    </a>
-                                </div>
-                            {% endif %}
-                            
                             {% if session.get('user_role') != 'Student' %}
                                 <div class="section">
                                     <div class="dropdown-header"><strong>Miscellaneous</strong></div>
                                     
-                                    {% if session.get('user_role') == 'Admin' %}
-                                        <a class="dropdown-item" href="{{ url_for('dashboard') }}">
+                                    {% if session.get('is_root') == True %}
+                                        <a class="dropdown-item" href="{{ url_for('add_user') }}">
                                             <i class="bi bi-person-plus-fill"></i> Add User
                                         </a>
                                     {% endif %}

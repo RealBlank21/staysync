@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <style>
+        /* Unique CSS ID for styling */
+        #userRegistrationForm {
+            margin-top: 50px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .btn-custom {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+{% include 'components/navbar.html' %}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6" id="userRegistrationForm">
+            <h2 class="text-center">Add User</h2>
+            <form>
+                <div class="form-group">
+                    <label for="userType">User  Type</label>
+                    <select class="form-control" id="userType" required>
+                        <option value="" disabled selected>Select User Type</option>
+                        <option value="admin">Admin</option>
+                        <option value="warden">Warden</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="icLabel" for="admin_ic">Admin IC</label>
+                    <input type="text" class="form-control" id="admin_ic" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone_number" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea class="form-control" id="address" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="date_of_joining">Date of Joining</label>
+                    <input type="date" class="form-control" id="date_of_joining" value="" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select class="form-control" id="gender" required>
+                        <option value="" disabled selected>Select your gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="password" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="generatePassword">Generate</button>
+                        </div>
+                    </div>
+                    <small id="passwordRequirements" class="form-text text-muted"></small>
+                </div>
+                <button type="submit" class="btn btn-success btn-block btn-custom" id="registerButton">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const userTypeSelect = document.getElementById('userType');
+        const icLabel = document.getElementById('icLabel');
+        const adminICInput = document.getElementById('admin_ic');
+        const dateOfJoiningInput = document.getElementById('date_of_joining');
+        const nameInput = document.getElementById('name');
+        const passwordInput = document.getElementById('password');
+        const passwordRequirements = document.getElementById('passwordRequirements');
+        const generatePasswordButton = document.getElementById('generatePassword');
+        const form = document.querySelector('form');
+
+        // Set today's date in the Date of Joining input
+        const today = new Date().toISOString().split('T')[0];
+        dateOfJoiningInput.value = today;
+
+        // Capitalize the name automatically
+        nameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\b\w/g, char => char.toUpperCase());
+        });
+
+        // User type change event
+        userTypeSelect.addEventListener('change', function() {
+            if (this.value === 'admin') {
+                icLabel.textContent = 'Admin IC';
+                adminICInput.id = 'admin_ic';
+                adminICInput.placeholder = 'Enter Admin IC';
+            } else if (this.value === 'warden') {
+                icLabel.textContent = 'Warden IC';
+                adminICInput.id = 'warden_ic';
+                adminICInput.placeholder = 'Enter Warden IC';
+            }
+            adminICInput.value = ''; // Clear the input when changing types
+        });
+
+        // Function to validate form fields
+        function validateForm() {
+            const userType = userTypeSelect.value;
+            const adminIC = adminICInput.value;
+            const email = document.getElementById('email').value;
+            const phoneNumber = document.getElementById('phone_number').value;
+            const address = document.getElementById('address').value;
+            const gender = document.getElementById('gender').value;
+
+            // Validate Admin IC or Warden IC
+            if (!/^\d{12}$/.test(adminIC)) {
+                alert("IC must be 12 digits long and contain only numbers.");
+                return false;
+            }
+
+            // Validate Email
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return false;
+            }
+
+            // Validate Phone Number
+            if (!/^\d+$/.test(phoneNumber)) {
+                alert("Phone Number must contain only numbers.");
+                return false;
+            }
+
+            // Validate Address
+            if (address.trim() === "") {
+                alert("Address cannot be empty.");
+                return false;
+            }
+
+            // Validate Gender
+            if (gender !== "Male" && gender !== "Female") {
+                alert("Please select either Male or Female.");
+                return false;
+            }
+
+            return true; // All validations passed
+        }
+
+        // Send the JSON object to the Flask backend
+        function addNewUser (data) {
+            fetch('/add_new_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Refresh the page after action is successful
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Event listener for the Register button
+        document.getElementById('registerButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            if (validateForm()) { // Validate the form
+                // Collect form data
+                const userData = {
+                    user_type: userTypeSelect.value,
+                    user_IC: adminICInput.value,
+                    name: nameInput.value,
+                    email: document.getElementById('email').value,
+                    phone_number: document.getElementById('phone_number').value,
+                    address: document.getElementById('address').value,
+                    date_of_joining: dateOfJoiningInput.value,
+                    gender: document.getElementById('gender').value,
+                    password: passwordInput.value
+                };
+
+                // Send the data to the backend
+                addNewUser (userData);
+            }
+        });
+
+        // Password validation and generation
+        function validatePassword(password) {
+            const requirements = [];
+            if (password.length < 8) {
+                requirements.push("At least 8 characters long");
+            }
+            if (!/[A-Z]/.test(password)) {
+                requirements.push("At least one uppercase letter");
+            }
+            if (!/[a-z]/.test(password)) {
+                requirements.push("At least one lowercase letter");
+            }
+            if (!/\d/.test(password)) {
+                requirements.push("At least one number");
+            }
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                requirements.push("At least one special character");
+            }
+            return requirements;
+        }
+
+        function updatePasswordRequirements(password) {
+            const requirements = validatePassword(password);
+            if (requirements.length > 0) {
+                passwordRequirements.innerHTML = "Password must meet the following requirements: <br>" + requirements.join("<br>");
+                passwordRequirements.style.color = "red";
+            } else {
+                passwordRequirements.innerHTML = "Password meets all requirements.";
+                passwordRequirements.style.color = "green";
+            }
+        }
+
+        passwordInput.addEventListener('input', function() {
+            updatePasswordRequirements(this.value);
+        });
+
+        function generateRandomPassword(length = 16) {
+            const upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
+            const numbers = "0123456789";
+            const specialChars = "!@#$%^&*(),.?\":{}|<>";
+
+            const allChars = upperCaseChars + lowerCaseChars + numbers + specialChars;
+
+            let password = "";
+            password += upperCaseChars[Math.floor(Math.random() * upperCaseChars.length)];
+            password += lowerCaseChars[Math.floor(Math.random() * lowerCaseChars.length)];
+            password += numbers[Math.floor(Math.random() * numbers.length)];
+            password += specialChars[Math.floor(Math.random() * specialChars.length)];
+
+            for (let i = 4; i < length; i++) {
+                password += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+
+            password = password.split('').sort(() => Math.random() - 0.5).join('');
+            return password;
+        }
+
+        generatePasswordButton.addEventListener('click', function() {
+            const newPassword = generateRandomPassword();
+            passwordInput.value = newPassword;
+            updatePasswordRequirements(newPassword);
+        });
+    });
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

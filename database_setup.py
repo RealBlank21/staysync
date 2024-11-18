@@ -257,10 +257,10 @@ try:
 
     data = [
         ('Smartphone', '020202225678', 'Black iPhone 12', '2024-08-15', 
-        '880212123456', 'Confiscated', 'Usage during class', None, 'Item is still in good condition.'),
+        '000000000001', 'Confiscated', 'Usage during class', None, 'Item is still in good condition.'),
 
         ('Headphones', '030303337890', 'Wireless Bluetooth Headphones', '2024-09-05', 
-        '880212123456', 'Confiscated', 'Used during study hour', None, 'Has charging cable included.'),
+        '000000000001', 'Confiscated', 'Used during study hour', None, 'Has charging cable included.'),
 
         ('Power Bank', '040404442345', '10,000mAh Portable Charger', '2024-07-30', 
         '910305089876', 'Confiscated', 'Unpermitted item in hostel', None, 'Slight damage to casing.')

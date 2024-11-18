@@ -1,7 +1,33 @@
 import mysql.connector
 from mysql.connector import Error
+import os
+import argon2
 
 mysql_url = "mysql://root:cldWscwfzqrsQIsVFeEFSIvOPjwhWhfd@junction.proxy.rlwy.net:20548/railway"
+
+# Open and read the PEPPER.txt file
+with open("PEPPER.txt", 'r') as file:
+    PEPPER = file.read().strip()
+
+def hash_password(password):
+    try:
+        salt = os.urandom(16)
+        ph = argon2.PasswordHasher()
+        hashed_password = ph.hash(password + PEPPER)
+        return hashed_password
+    except Exception as e:
+        print(f"Error hashing password: {e}")
+        return None
+
+def hash_password(password):
+    try:
+        salt = os.urandom(16)
+        ph = argon2.PasswordHasher()
+        hashed_password = ph.hash(password + PEPPER)
+        return hashed_password
+    except Exception as e:
+        print(f"Error hashing password: {e}")
+        return None
 
 def connect_db():
     try:
@@ -364,6 +390,7 @@ def update_student_data(data):
         return "Error: Unable to connect to the database."
 
     cursor = mydb.cursor()
+    print(data)
     student_ic = data.get('student_ic')
     if not student_ic:
         raise ValueError("student_ic is required to update student data.")
@@ -519,6 +546,93 @@ def retrieve_hostel_application_record(IC):
         cursor.execute(query, (IC,))
         record = cursor.fetchone()
         return record
+    finally:
+        cursor.close()
+        mydb.close()
+
+def add_new_user(data):
+    mydb = connect_db()
+    if mydb is None:
+        return "Error: Unable to connect to the database."
+
+    cursor = mydb.cursor()
+    try:
+        # Hash the password
+        password = data['password']
+        hashed_password = hash_password(password)
+        data['password'] = hashed_password
+
+        if data['user_type'] == "warden":
+            insert_query = """
+            INSERT INTO warden (warden_ic, name, email, phone_number, address, date_of_joining, gender, password)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(insert_query, (
+                data['warden_ic'],
+                data['name'],
+                data['email'],
+                data['phone_number'],
+                data['address'],
+                data['date_of_joining'],
+                data['gender'],
+                data['password']
+            ))
+        
+        elif data['user_type'] == "admin":
+            insert_query = """
+            INSERT INTO admin (admin_ic, name, email, phone_number, address, date_of_joining, gender, password)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(insert_query, (
+                data['admin_ic'],
+                data['name'],
+                data['email'],
+                data['phone_number'],
+                data['address'],
+                data['date_of_joining'],
+                data['gender'],
+                data['password']
+            ))
+        
+        # Commit the transaction
+        mydb.commit()
+        return "User  added successfully."
+
+    except Error as e:
+        print("Error while inserting data into MySQL", e)
+        return "Error: Unable to add user."
+
+    finally:
+        cursor.close()
+        mydb.close()
+
+def set_new_password(ic, new_password):
+    mydb = connect_db()
+    if mydb is None:
+        return "Error: Unable to connect to the database."
+
+    cursor = mydb.cursor()
+    try:
+        hashed_password = hash_password(new_password)
+        role = retrieve_role(ic)
+
+        if role == "Admin":
+            # Update the password for the admin table
+            cursor.execute("UPDATE admin SET password = %s WHERE admin_ic = %s", (hashed_password, ic))
+        
+        elif role == "Warden":
+            # Update the password for the warden table
+            cursor.execute("UPDATE warden SET password = %s WHERE warden_ic = %s", (hashed_password, ic))
+        
+        # Commit the changes to the database
+        mydb.commit()
+
+        return "Success"
+    
+    except Exception as e:
+        mydb.rollback()  # Rollback in case of error
+        return f"Error: {str(e)}"
+    
     finally:
         cursor.close()
         mydb.close()

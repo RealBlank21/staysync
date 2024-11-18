@@ -297,7 +297,9 @@ def outing_application():
     username = session.get('username')
     user_role = session.get('user_role')
 
-    return render_template('outing_application.html', username=username, user_role=user_role)
+    entries = db.retrieve_table_dict('student')
+
+    return render_template('outing_application.html', username=username, user_role=user_role, student=entries)
 
 @app.route('/update-admin', methods=['POST'])
 def update_admin():
@@ -335,6 +337,7 @@ def confiscated_item_log():
     user_role = session.get('user_role')
 
     entries = db.retrieve_confiscated_item_log()
+    print(entries)
 
     student_data = db.retrieve_table_dict('student')
 
@@ -403,6 +406,59 @@ def admin_information():
     entries = db.retrieve_table_dict("admin")
 
     return render_template('admin.html', username=username, user_role=user_role, admin=entries, is_root = is_root)
+
+@app.route('/add_user')
+def add_user():
+    if session.get('is_root') is not True:
+        return redirect(url_for('login'))
+    
+    username = session.get('username')
+    user_role = session.get('user_role')
+    is_root = session.get('is_root')
+
+    return render_template('add_user.html', username=username, user_role=user_role, is_root=is_root)
+
+@app.route('/add_new_user', methods=['POST'])
+def receive_json():
+    if request.is_json:
+        data = request.get_json()  # Get the JSON data
+
+        print(data['user_type'])
+
+        # Create a new dictionary based on user_type
+        if data['user_type'] == 'admin':
+            new_data = {
+                'user_type': data['user_type'],
+                'admin_ic': data['user_IC'],
+                'name': data['name'],
+                'email': data['email'],
+                'phone_number': data['phone_number'],
+                'address': data['address'],
+                'date_of_joining': data['date_of_joining'],
+                'gender': data['gender'],
+                'password': data['password']
+            }
+        elif data['user_type'] == 'warden':
+            new_data = {
+                'user_type': data['user_type'],
+                'warden_ic': data['user_IC'],  # Assuming adminIC is used for warden as well
+                'name': data['name'],
+                'email': data['email'],
+                'phone_number': data['phone_number'],
+                'address': data['address'],
+                'date_of_joining': data['date_of_joining'],
+                'gender': data['gender'],
+                'password': data['password']
+            }
+        else:
+            return jsonify({"error": "Invalid user type"}), 400
+
+        # Here you can save new_data to the database or perform other actions
+        print(db.add_new_user(new_data))
+
+        return jsonify({"message": "Data received successfully!", "data": new_data}), 200
+    else:
+        return jsonify({"error": "Request must be JSON"}), 400
 
 @app.route('/outing_manager')
 def outing_manager():
@@ -475,6 +531,65 @@ def get_data():
 @app.route('/forgot_password')
 def forgot_password():
     return render_template('forgot_password.html')
+
+@app.route('/send_password_reset_email', methods=['POST'])
+def send_password_reset_email():
+    if request.method == 'POST':
+        email = request.form['email']
+        
+        user = db.get_user_by_email(email)
+
+        if not user:
+            flash('Email does not exist!', 'error')
+            return render_template('forgot_password.html')
+        
+        token = serializer.dumps(email, salt='email-verify')
+        verification_url = url_for('verify_password_reset', token=token, _external=True)
+        
+        msg = Message('Email Verification', recipients=[email])
+        msg.body = f"Please click on the following link to reset your password: {verification_url}"
+        mail.send(msg)
+
+        
+        flash('A password reset link has been sent to your email address.', 'success')
+        return redirect(url_for('check_mail'))
+
+    return render_template('forgot_password.html')
+
+@app.route('/verify_password_reset/<token>', methods=['GET'])
+def verify_password_reset(token):
+    try:
+        user_email = serializer.loads(token, salt='email-verify', max_age=86400)
+        user = db.get_user_by_email(user_email)
+        print(user_email)
+        if not user:
+            abort(404)  # Invalid or expired token
+        return render_template('reset_password.html', token=token, user_email=user_email)
+    except Exception as e:
+        print(f"Token verification error: {e}")  # Log the error for debugging
+        abort(404)  # Invalid or expired token
+
+@app.route('/reset_password_action', methods=['POST'])
+def reset_password_action():
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        user_email = request.form.get('user_email')
+
+        try:
+            user = db.get_user_by_email(user_email)
+            if user:
+                print(user['ic'], new_password)
+                db.set_new_password(user['ic'], new_password)  # Assuming you have a method to set the password
+                return redirect(url_for('login'))  # Redirect to the login page after successful reset
+            else:
+                print("Test1")
+                abort(404)  # User not found
+        except Exception as e:
+            print("Test2")
+            print(f"Token verification error: {e}")  # Log the error for debugging
+            abort(404)  # Invalid or expired token
+    
+
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():

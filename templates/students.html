@@ -243,8 +243,12 @@
                                         <td><input type="text" class="form-control" id="modalGuardianContact" name="guardian_contact" {% if user_role != 'Admin' %}disabled{% endif %}></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Ban Period</strong></td>
-                                        <td><span id="modalBanPeriod"></span></td>
+                                        <tr>
+                                            <td><strong>Ban Period</strong></td>
+                                            <td>
+                                                <input type="date" class="form-control" id="modalBanPeriod" name="outing_ban_period" {% if user_role != 'Warden' %}disabled{% endif %}>
+                                            </td>
+                                        </tr>
                                     </tr>
                                 </tbody>
                             </table>
@@ -289,18 +293,18 @@
                     const cell = document.createElement("td");
                     cell.textContent = student[field] || '';
 
-                    if (field === 'outing_ban_period') {
-                        if (student.outing_ban_period) {
-                            const date = new Date(student.outing_ban_period);
-                            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
-                            const formattedDate = date.toLocaleDateString('en-GB', options); // Customize to use 'en-GB' for the desired format
-                            cell.textContent = formattedDate;
-                        } else {
-                            cell.textContent = "-"; // If no date available
-                        }
-                    } else {
-                        cell.textContent = student[field];
-                    }
+                    //if (field === 'outing_ban_period') {
+                    //    if (student.outing_ban_period) {
+                    //        const date = new Date(student.outing_ban_period);
+                    //        const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+                    //        const formattedDate = date.toLocaleDateString('en-GB', options); // Customize to use 'en-GB' for the desired format
+                    //        cell.textContent = formattedDate;
+                    //    } else {
+                    //         cell.textContent = "-"; // If no date available
+                    //    }
+                    //} else {
+                    //    cell.textContent = student[field];
+                    //}
 
                     if (field === 'fid') {
                         if (student.fid) {
@@ -402,29 +406,38 @@
     </script>
 
     <script>
-    document.getElementById('studentForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the form from refreshing the page
+        document.getElementById('studentForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from refreshing the page
 
-        // Gather form data
-        const formData = new FormData(this);
+            // Gather form data
+            const formData = new FormData(this);
 
-        // Send the data via AJAX
-        fetch('/update-student', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Student details updated successfully!");
-                // Optionally, hide the modal or refresh data on the page
-                location.reload();
-            } else {
-                alert("Failed to update student details. Please try again.");
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    });
+            // Get the value of the Student IC
+            const studentIC = document.getElementById('modalStudentIC').value;
+
+            // Check if the user is not an Admin before appending the Student IC
+            {% if user_role != 'Admin' %}
+                // Append the Student IC to the FormData
+                formData.append('student_ic', studentIC);
+            {% endif %}
+
+            // Send the data via AJAX
+            fetch('/update-student', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Student details updated successfully!");
+                    // Optionally, hide the modal or refresh data on the page
+                    location.reload();
+                } else {
+                    alert("Failed to update student details. Please try again.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

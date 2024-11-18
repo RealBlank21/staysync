@@ -133,6 +133,8 @@ def login():
         recaptcha_result = requests.post('https://www.google.com/recaptcha/api/siteverify', data=recaptcha_payload)
         recaptcha_json = recaptcha_result.json()
 
+        print(recaptcha_json)
+
         if not recaptcha_json.get('score') >= 0.5:
             error_message = "reCAPTCHA verification failed. Please try again."
             return render_template('login.html', error_message=error_message)

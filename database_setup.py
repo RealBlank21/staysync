@@ -108,7 +108,7 @@ try:
     hashed_password = [hash_password('Warden1'), hash_password('Warden2')]
 
     data = [
-        ('880212123456', 'ADAM RAHMAN', 'adam.rahman@gmail.com', '0198765432', '56 Jalan Bayan Lepas, Penang', '2021-04-20', 'Male', hashed_password[0]),
+        ('000000000001', 'ADAM RAHMAN', 'realblanket21@gmail.com', '0198765432', '56 Jalan Bayan Lepas, Penang', '2021-04-20', 'Male', hashed_password[0]),
         ('910305089876', 'SITI MARIAM', 'siti.mariam@gmail.com', '0172345678', '21 Jalan Perak, George Town, Penang', '2022-06-15', 'Female', hashed_password[1])
     ]
 

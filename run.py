@@ -249,6 +249,9 @@ def hostel_application():
 
     entries = db.retrieve_table_dict("hostel_application")
 
+    for i in entries:
+        print(i)
+
     return render_template('hostel_application.html', students=entries, username=username, user_role=user_role)
 
 @app.route('/hostel_application_action', methods=['POST'])

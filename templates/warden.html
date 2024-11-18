@@ -173,28 +173,28 @@
                                 <tbody>
                                     <tr>
                                         <td><strong>Warden IC</strong></td>
-                                        <td><input type="text" class="form-control" id="modalWardenIC" name="warden_ic"></td>
+                                        <td><input type="text" class="form-control" id="modalWardenIC" name="warden_ic" {% if user_role != 'Admin' %}disabled{% endif %}></td>
                                     </tr>
                                     <tr>
                                         <td><strong>Name</strong></td>
-                                        <td><input type="text" class="form-control" id="modalName" name="name"></td>
+                                        <td><input type="text" class="form-control" id="modalName" name="name" {% if user_role != 'Admin' %}disabled{% endif %}></td>
                                     </tr>
                                     <tr>
                                         <td><strong>Email</strong></td>
-                                        <td><input type="email" class="form-control" id="modalEmail" name="email"></td>
+                                        <td><input type="email" class="form-control" id="modalEmail" name="email" {% if user_role != 'Admin' %}disabled{% endif %}></td>
                                     </tr>
                                     <tr>
                                         <td><strong>Phone Number</strong></td>
-                                        <td><input type="text" class="form-control" id="modalPhoneNumber" name="phone_number"></td>
+                                        <td><input type="text" class="form-control" id="modalPhoneNumber" name="phone_number" {% if user_role != 'Admin' %}disabled{% endif %}></td>
                                     </tr>
                                     <tr>
                                         <td><strong>Address</strong></td>
-                                        <td><textarea class="form-control" id="modalAddress" name="address"></textarea></td>
+                                        <td><textarea class="form-control" id="modalAddress" name="address" {% if user_role != 'Admin' %}disabled{% endif %}></textarea></td>
                                     </tr>
                                     <tr>
                                         <td><strong>Gender</strong></td>
                                         <td>
-                                            <select class="form-select" id="modalGender" name="gender">
+                                            <select class="form-select" id="modalGender" name="gender" {% if user_role != 'Admin' %}disabled{% endif %}>
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
                                                 <option value="Other">Other</option>

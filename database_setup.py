@@ -139,7 +139,8 @@ try:
         home_distance INT,
         guardian_status ENUM('Father', 'Mother', 'Others'),
         guardian_contact VARCHAR(20),
-        outing_ban_period DATE DEFAULT NULL
+        outing_ban_period DATE DEFAULT NULL,
+        fid INT
     );
     """
     cursor.execute(create_table_query)
@@ -241,7 +242,7 @@ try:
         item_name VARCHAR(255) NOT NULL,
         student_ic VARCHAR(20) NOT NULL,
         item_description TEXT,
-        confiscation_date DATE NOT NULL DEFAULT CURRENT_DATE,
+        confiscation_date DATE NOT NULL DEFAULT (CURRENT_DATE),
         confiscater_warden_ic VARCHAR(20) NOT NULL,
         item_status ENUM('Confiscated', 'Returned', 'Disposed') NOT NULL DEFAULT 'Confiscated',
         confiscation_reason TEXT,

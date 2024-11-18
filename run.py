@@ -72,6 +72,9 @@ def verify_email(token):
         session['username'] = user['name']
         session['user_ic'] = user['ic']
 
+        if user['ic'] == '000000000000':
+            session['is_root'] = True
+
         print(session)
 
         # Make the session permanent
@@ -390,10 +393,11 @@ def admin_information():
     
     username = session.get('username')
     user_role = session.get('user_role')
+    is_root = session.get('is_root')
 
     entries = db.retrieve_table_dict("admin")
 
-    return render_template('admin.html', username=username, user_role=user_role, admin=entries)
+    return render_template('admin.html', username=username, user_role=user_role, admin=entries, is_root = is_root)
 
 @app.route('/outing_manager')
 def outing_manager():
@@ -450,6 +454,18 @@ def send_email():
         return "Mail Sent!"
     except Exception as e:
         return str(e)
+
+data_store = []
+
+@app.route('/send_data', methods=['POST'])
+def receive_data():
+    data = request.json
+    data_store.append(data)
+    return jsonify({"status": "success", "data": data})
+
+@app.route('/get_data', methods=['GET'])
+def get_data():
+    return jsonify(data_store)
 
 @app.route('/forgot_password')
 def forgot_password():

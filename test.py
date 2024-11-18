@@ -1,3 +1,5 @@
-from app import db
+import requests
 
-print(db.get_user_by_email("realblank21@gmail.com"))
+data = {"ic": "041121070023"}
+response = requests.post('http://localhost:6000/register_fingerprint', json=data)
+print(response.json())

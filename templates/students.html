@@ -346,7 +346,7 @@
             const query = document.getElementById("searchInput").value.toLowerCase();
             const filteredData = students.filter(student =>
                 Object.values(student).some(value => 
-                    value.toString().toLowerCase().includes(query)
+                    (value ? value.toString().toLowerCase() : '').includes(query)
                 )
             );
             displayTable(filteredData);
